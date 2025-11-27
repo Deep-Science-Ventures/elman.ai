@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elman | Combinatorial Therapeutics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Plus Jakarta Sans for that rounded, clean, modern feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050505;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --disease-color: #ff3355; /* Bright warning red */
+            --health-color: #10b981;  /* Emerald green */
+            --neutral-color: #334155;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow: hidden;
+            color: var(--text-primary);
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.8; 
+        }
+
+        .ui-layer {
+            position: relative;
+            z-index: 10;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 3rem 4rem;
+            pointer-events: none;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            pointer-events: auto;
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-mark {
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .hero-content {
+            max-width: 1000px;
+            margin-top: 15vh; /* Pushed down slightly */
+            pointer-events: auto;
+        }
+
+        h1 {
+            /* We use Tailwind classes in the HTML tag for layout now to ensure priority */
+            letter-spacing: -0.03em;
+            background: linear-gradient(180deg, #fff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sub-headline {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            max-width: 700px;
+            font-weight: 400;
+        }
+
+        .highlight {
+            color: #e2e8f0;
+            font-weight: 500;
+        }
+
+        .meta-footer {
+            margin-top: auto;
+            display: flex;
+            gap: 4rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            pointer-events: auto;
+        }
+
+        a {
+            color: white;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            transition: all 0.3s;
+        }
+
+        a:hover {
+            border-color: white;
+        }
+
+        @media (max-width: 768px) {
+            .ui-layer { padding: 1.5rem; }
+            .sub-headline { font-size: 1.1rem; }
+            h1 { line-height: 1.3 !important; }
+        }
+
+        .fade-in {
+            animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="clusterCanvas"></canvas>
+
+    <div class="ui-layer">
+        <nav class="fade-in" style="animation-delay: 0s;">
+            <div class="logo">
+                <div class="logo-mark"></div>
+                Elman Bio
+            </div>
+        </nav>
+
+        <div class="hero-content fade-in" style="animation-delay: 0.2s;">
+            <!-- 
+               UPDATED SPACING:
+               - leading-[1.4]: Forces a clear gap between lines of the title.
+               - mb-5: Significantly reduces the gap between title and subtitle (was mb-10).
+            -->
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-semibold leading-[1.4] mb-5">
+                Designing optimal<br>combination therapies.
+            </h1>
+            <p class="sub-headline">
+                Massive agentic-driven target space exploration to identify synergistic interventions that drive clinical efficacy.
+            </p>
+        </div>
+
+        <div class="meta-footer fade-in" style="animation-delay: 0.4s;">
+            <div>
+                <span class="block text-xs uppercase tracking-wider text-slate-500 mb-1">Contact</span>
+                <a href="mailto:hello@elman.ai">hello@elman.ai</a>
+            </div>
+            <div>
+                <span class="block text-xs uppercase tracking-wider text-slate-500 mb-1">Location</span>
+                London
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('clusterCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        let clusters = [];
+        let agents = [];
+
+        // Expanded bio targets list (Onco / Immuno / Neuro)
+        const targetNames = [
+            // Oncology
+            "TP53", "KRAS", "EGFR", "MYC", "BRCA1", "PIK3CA", "PTEN", "HER2", "BRAF", "MEK", "ALK", "ROS1", "PARP", "CDK4/6",
+            // Immuno-Oncology
+            "PD-1", "PD-L1", "CTLA4", "LAG3", "TIM3", "TIGIT", "OX40", "STING", "IL-6", "JAK1", "STAT3", "VEGF",
+            // Neurodegeneration
+            "BACE1", "MAPT", "SNCA", "LRRK2", "APOE4", "NMDA", "TREM2", "PINK1", "ACHE", "HTT"
+        ];
+
+        // Configuration
+        const config = {
+            clusterCount: 6,      
+            pointsPerCluster: 80, 
+            clusterSpread: 130,   
+            agentCount: 1,        // Updated: Only 1 agent
+            influenceRadius: 160, // Slightly larger reach for single agent
+            colors: {
+                disease: {r: 255, g: 51, b: 85},   // Red
+                health: {r: 16, g: 185, b: 129},   // Green
+                neutral: {r: 40, g: 45, b: 60}     // Darker Slate/Grey
+            }
+        };
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            init();
+        }
+
+        function randomGaussian() {
+            let u = 0, v = 0;
+            while(u === 0) u = Math.random();
+            while(v === 0) v = Math.random();
+            return Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
+        }
+
+        class Point {
+            constructor(centerX, centerY, type) {
+                this.x = centerX + randomGaussian() * (config.clusterSpread * 0.7);
+                this.y = centerY + randomGaussian() * (config.clusterSpread * 0.7);
+                
+                this.type = type; 
+                this.size = Math.random() * 2 + 1.5;
+                this.healState = 0; 
+                
+                // Assign a name
+                this.name = targetNames[Math.floor(Math.random() * targetNames.length)];
+                // Increase probability of showing label slightly since we have more names
+                this.showLabel = Math.random() > 0.75; 
+
+                this.vx = (Math.random() - 0.5) * 0.15;
+                this.vy = (Math.random() - 0.5) * 0.15;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                
+                if (this.healing) {
+                    this.healState += 0.01; // Slightly slower healing for effect
+                    if (this.healState > 1) this.healState = 1;
+                }
+            }
+
+            draw() {
+                let r, g, b, a;
+
+                if (this.type === 'neutral') {
+                    r = config.colors.neutral.r;
+                    g = config.colors.neutral.g;
+                    b = config.colors.neutral.b;
+                    a = 0.3;
+                } else {
+                    r = config.colors.disease.r + (config.colors.health.r - config.colors.disease.r) * this.healState;
+                    g = config.colors.disease.g + (config.colors.health.g - config.colors.disease.g) * this.healState;
+                    b = config.colors.disease.b + (config.colors.health.b - config.colors.disease.b) * this.healState;
+                    a = 0.8;
+                }
+
+                ctx.fillStyle = `rgba(${Math.floor(r)}, ${Math.floor(g)}, ${Math.floor(b)}, ${a})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Draw Label Logic
+                // Only for 'disease' type points (which are the interesting targets)
+                // AND if randomly selected to show label
+                // REMOVED: "&& this.healState < 1" -> Labels now persist
+                if (this.type === 'disease' && this.showLabel) {
+                    
+                    // Text color mimics state (reddish -> greenish white)
+                    // We keep it mostly white/bright for readability
+                    ctx.fillStyle = `rgba(255, 255, 255, ${0.4 + (this.healState * 0.2)})`;
+                    
+                    ctx.font = '10px "Plus Jakarta Sans"';
+                    ctx.fillText(this.name, this.x + 8, this.y + 3);
+                }
+            }
+        }
+
+        class Agent {
+            constructor() {
+                this.reset();
+            }
+            
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 1.8; // Slightly faster single agent
+                this.vy = (Math.random() - 0.5) * 1.8;
+            }
+
+            update(allPoints) {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+
+                let connectedPoints = [];
+
+                allPoints.forEach(p => {
+                    if (p.type === 'neutral') return;
+
+                    const dx = this.x - p.x;
+                    const dy = this.y - p.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+
+                    if (dist < config.influenceRadius) {
+                        connectedPoints.push({point: p, dist: dist});
+                    }
+                });
+
+                if (connectedPoints.length > 0) {
+                    ctx.beginPath();
+                    connectedPoints.forEach(item => {
+                        if (item.point.type === 'disease') {
+                            item.point.healing = true;
+                        }
+                        ctx.moveTo(this.x, this.y);
+                        ctx.lineTo(item.point.x, item.point.y);
+                    });
+                    ctx.strokeStyle = `rgba(255, 255, 255, 0.08)`;
+                    ctx.stroke();
+                }
+            }
+
+            draw() {
+                // Agent Dot
+                ctx.fillStyle = 'white';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 4, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Agent Label
+                ctx.fillStyle = 'white';
+                ctx.font = '600 13px "Plus Jakarta Sans"';
+                ctx.fillText("Elman", this.x + 10, this.y - 10);
+
+                // Glow
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = 'rgba(255,255,255,0.6)';
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        function init() {
+            clusters = [];
+            agents = [];
+
+            for (let i = 0; i < config.clusterCount; i++) {
+                let centerX = Math.random() * (width * 0.8) + (width * 0.1);
+                let centerY = Math.random() * (height * 0.8) + (height * 0.1);
+                
+                let type = Math.random() > 0.5 ? 'disease' : 'neutral';
+
+                for (let j = 0; j < config.pointsPerCluster; j++) {
+                    clusters.push(new Point(centerX, centerY, type));
+                }
+            }
+
+            for (let i = 0; i < config.agentCount; i++) {
+                agents.push(new Agent());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+
+            clusters.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            agents.forEach(a => {
+                a.update(clusters);
+                a.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+        animate();
+
+    </script>
+</body>
+</html>
