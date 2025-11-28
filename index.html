@@ -12,8 +12,8 @@
             --bg-color: #050505;
             --text-primary: #ffffff;
             --text-secondary: #94a3b8;
-            --disease-color: #ff3355; /* Bright warning red */
-            --health-color: #10b981;  /* Emerald green */
+            --disease-color: #ff5577; /* Brighter warning red */
+            --health-color: #34d399;  /* Brighter Emerald green */
             --neutral-color: #334155;
         }
 
@@ -75,13 +75,9 @@
             margin-top: 15vh; /* Pushed down slightly */
             pointer-events: auto;
         }
-
         h1 {
             /* We use Tailwind classes in the HTML tag for layout now to ensure priority */
             letter-spacing: -0.03em;
-            background: linear-gradient(180deg, #fff 0%, #cbd5e1 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
         }
 
         .sub-headline {
@@ -129,6 +125,15 @@
             transform: translateY(30px);
         }
 
+        .black-background {
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 10px 15px;
+            border-radius: 8px;
+            display: inline-block;
+            /* Soften the edges */
+            box-shadow: 0 0 20px 15px rgba(0, 0, 0, 0.6);
+        }
+
         @keyframes fadeInUp {
             to { opacity: 1; transform: translateY(0); }
         }
@@ -152,10 +157,10 @@
                - leading-[1.4]: Forces a clear gap between lines of the title.
                - mb-5: Significantly reduces the gap between title and subtitle (was mb-10).
             -->
-            <h1 class="text-4xl md:text-5xl lg:text-6xl font-semibold leading-[1.4] mb-5">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-semibold leading-[1.4] mb-5 black-background">
                 Designing optimal<br>combination therapies.
             </h1>
-            <p class="sub-headline">
+            <p class="sub-headline black-background">
                 Massive agentic-driven target space exploration to identify synergistic interventions that drive clinical efficacy.
             </p>
         </div>
@@ -198,8 +203,8 @@
             agentCount: 1,        // Updated: Only 1 agent
             influenceRadius: 160, // Slightly larger reach for single agent
             colors: {
-                disease: {r: 255, g: 51, b: 85},   // Red
-                health: {r: 16, g: 185, b: 129},   // Green
+                disease: {r: 255, g: 85, b: 119},   // Brighter Red
+                health: {r: 52, g: 211, b: 153},    // Brighter Green
                 neutral: {r: 40, g: 45, b: 60}     // Darker Slate/Grey
             }
         };
@@ -225,7 +230,7 @@
                 this.y = centerY + randomGaussian() * (config.clusterSpread * 0.7);
                 
                 this.type = type; 
-                this.size = Math.random() * 2 + 1.5;
+                this.size = Math.random() * 2 + 2.5; // Slightly bigger dots
                 this.healState = 0; 
                 
                 // Assign a name
@@ -275,10 +280,11 @@
                     
                     // Text color mimics state (reddish -> greenish white)
                     // We keep it mostly white/bright for readability
-                    ctx.fillStyle = `rgba(255, 255, 255, ${0.4 + (this.healState * 0.2)})`;
+                    // Made even whiter/brighter as requested
+                    ctx.fillStyle = `rgba(255, 255, 255, ${0.7 + (this.healState * 0.3)})`;
                     
-                    ctx.font = '10px "Plus Jakarta Sans"';
-                    ctx.fillText(this.name, this.x + 8, this.y + 3);
+                    ctx.font = '12px "Plus Jakarta Sans"'; // Bigger font
+                    ctx.fillText(this.name, this.x + 10, this.y + 4);
                 }
             }
         }
@@ -296,6 +302,18 @@
             }
 
             update(allPoints) {
+                // Limit speed
+                const speed = Math.sqrt(this.vx*this.vx + this.vy*this.vy);
+                const maxSpeed = 1.0;
+                if (speed > maxSpeed) {
+                    this.vx = (this.vx / speed) * maxSpeed;
+                    this.vy = (this.vy / speed) * maxSpeed;
+                }
+
+                // Add small random noise to prevent getting stuck in equilibrium
+                this.vx += (Math.random() - 0.5) * 0.05;
+                this.vy += (Math.random() - 0.5) * 0.05;
+
                 this.x += this.vx;
                 this.y += this.vy;
 
@@ -311,6 +329,15 @@
                     const dy = this.y - p.y;
                     const dist = Math.sqrt(dx*dx + dy*dy);
 
+                    // Attraction to disease points (only if not fully healed)
+                    if (p.type === 'disease' && p.healState < 1) {
+                        // Use inverse distance to prioritize closer targets and prevent getting stuck
+                        // preventing division by zero with Math.max
+                        const force = 0.5 / Math.max(dist, 10); 
+                        this.vx -= (dx / dist) * force;
+                        this.vy -= (dy / dist) * force;
+                    }
+
                     if (dist < config.influenceRadius) {
                         connectedPoints.push({point: p, dist: dist});
                     }
@@ -325,8 +352,10 @@
                         ctx.moveTo(this.x, this.y);
                         ctx.lineTo(item.point.x, item.point.y);
                     });
-                    ctx.strokeStyle = `rgba(255, 255, 255, 0.08)`;
+                    ctx.lineWidth = 1.5;
+                    ctx.strokeStyle = `rgba(255, 255, 255, 0.2)`;
                     ctx.stroke();
+                    ctx.lineWidth = 1;
                 }
             }
 
@@ -334,12 +363,12 @@
                 // Agent Dot
                 ctx.fillStyle = 'white';
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, 4, 0, Math.PI * 2);
+                ctx.arc(this.x, this.y, 6, 0, Math.PI * 2);
                 ctx.fill();
                 
                 // Agent Label
                 ctx.fillStyle = 'white';
-                ctx.font = '600 13px "Plus Jakarta Sans"';
+                ctx.font = '600 14px "Plus Jakarta Sans"';
                 ctx.fillText("Elman", this.x + 10, this.y - 10);
 
                 // Glow
