@@ -3,17 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elman | Combinatorial Therapeutics</title>
+    <title>Elman Bio — Discovery you can trace to the figure</title>
+    <meta name="description" content="Elman Bio is an autonomous scientific discovery engine. We reason over a compounding knowledge graph of experimental facts to produce testable mechanistic hypotheses — every finding traced to a specific experiment.">
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:title" content="Elman Bio — Discovery you can trace to the figure">
+    <meta property="og:description" content="An autonomous scientific discovery engine. Reasoning over a compounding knowledge graph of experimental facts to produce testable, traceable mechanistic hypotheses.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://elman.ai/">
+    <meta property="og:site_name" content="Elman Bio">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Elman Bio — Discovery you can trace to the figure">
+    <meta name="twitter:description" content="An autonomous scientific discovery engine. Reasoning over a compounding knowledge graph of experimental facts to produce testable, traceable mechanistic hypotheses.">
+
+    <!-- Inline SVG favicon (white dot on dark) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23050505'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23ffffff'/%3E%3C/svg%3E">
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Plus Jakarta Sans for that rounded, clean, modern feel -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-color: #050505;
             --text-primary: #ffffff;
             --text-secondary: #94a3b8;
-            --disease-color: #ff5577; /* Brighter warning red */
-            --health-color: #34d399;  /* Brighter Emerald green */
+            --text-tertiary: #64748b;
+            --disease-color: #ff5577;
+            --health-color: #34d399;
             --neutral-color: #334155;
         }
 
@@ -33,13 +48,13 @@
             width: 100%;
             height: 100%;
             z-index: 0;
-            opacity: 0.8; 
+            opacity: 0.8;
         }
 
         .ui-layer {
             position: relative;
             z-index: 10;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             padding: 3rem 4rem;
@@ -61,6 +76,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            white-space: nowrap;
         }
 
         .logo-mark {
@@ -68,23 +84,31 @@
             height: 12px;
             background: white;
             border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .nav-meta {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-secondary);
         }
 
         .hero-content {
             max-width: 1000px;
-            margin-top: 15vh; /* Pushed down slightly */
+            margin-top: 12vh;
             pointer-events: auto;
         }
+
         h1 {
-            /* We use Tailwind classes in the HTML tag for layout now to ensure priority */
             letter-spacing: -0.03em;
         }
 
         .sub-headline {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             line-height: 1.6;
             color: var(--text-secondary);
-            max-width: 700px;
+            max-width: 720px;
             font-weight: 400;
         }
 
@@ -93,9 +117,85 @@
             font-weight: 500;
         }
 
+        .cta-row {
+            margin-top: 1.75rem;
+            display: inline-block;
+        }
+
+        .cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #ffffff;
+            border-bottom: 1px solid rgba(255,255,255,0.4);
+            padding-bottom: 2px;
+            transition: all 0.25s ease;
+        }
+
+        .cta .arrow {
+            transition: transform 0.25s ease;
+            display: inline-block;
+        }
+
+        .cta:hover {
+            border-color: white;
+        }
+
+        .cta:hover .arrow {
+            transform: translateX(3px);
+        }
+
+        .pillars {
+            margin-top: 4rem;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 2.5rem;
+            max-width: 1000px;
+            pointer-events: auto;
+        }
+
+        .pillar {
+            border-left: 1px solid rgba(255,255,255,0.18);
+            padding-left: 1.1rem;
+        }
+
+        .pillar h3 {
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: #ffffff;
+            margin: 0 0 0.55rem 0;
+        }
+
+        .pillar p {
+            font-size: 0.95rem;
+            line-height: 1.55;
+            color: var(--text-secondary);
+            margin: 0;
+            text-shadow: 0 0 12px rgba(0,0,0,0.85), 0 0 4px rgba(0,0,0,0.85);
+        }
+
+        .pillar h3 {
+            text-shadow: 0 0 10px rgba(0,0,0,0.85);
+        }
+
+        .heartbeat {
+            margin-top: 2.25rem;
+            font-size: 0.95rem;
+            font-style: italic;
+            color: var(--text-secondary);
+            pointer-events: auto;
+            text-shadow: 0 0 12px rgba(0,0,0,0.85), 0 0 4px rgba(0,0,0,0.85);
+        }
+
         .meta-footer {
             margin-top: auto;
+            padding-top: 4rem;
             display: flex;
+            flex-wrap: wrap;
             gap: 4rem;
             font-size: 0.9rem;
             color: var(--text-secondary);
@@ -113,25 +213,61 @@
             border-color: white;
         }
 
+        /* Soft frosted veil behind text blocks: dark + backdrop blur,
+           mask radial-fades the edges so it dissolves into the canvas. */
+        .veil {
+            position: relative;
+            z-index: 0; /* establish a local stacking context so ::before doesn't fall behind the canvas */
+        }
+
+        .veil::before {
+            content: '';
+            position: absolute;
+            inset: -1.4rem -2rem;
+            z-index: -1;
+            background: rgba(5, 5, 5, 0.6);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-radius: 22px;
+            -webkit-mask-image: radial-gradient(
+                ellipse at center,
+                black 60%,
+                transparent 100%
+            );
+                    mask-image: radial-gradient(
+                ellipse at center,
+                black 60%,
+                transparent 100%
+            );
+            pointer-events: none;
+        }
+
+        .veil-tight::before {
+            inset: -0.9rem -1.4rem;
+            border-radius: 16px;
+        }
+
         @media (max-width: 768px) {
+            body { overflow-y: auto; }
             .ui-layer { padding: 1.5rem; }
-            .sub-headline { font-size: 1.1rem; }
-            h1 { line-height: 1.3 !important; }
+            .sub-headline { font-size: 1.02rem; }
+            h1 { line-height: 1.25 !important; font-size: 2rem !important; }
+            .pillars { grid-template-columns: 1fr; gap: 1.5rem; margin-top: 3rem; }
+            .meta-footer { gap: 2rem; padding-top: 2.5rem; }
+            .hero-content { margin-top: 7vh; }
+            .heartbeat { margin-top: 1.75rem; font-size: 0.9rem; }
+        }
+
+        @media (max-width: 640px) {
+            .nav-meta { display: none; }
+            .logo { font-size: 1.25rem; }
+            h1 br { display: none; }
         }
 
         .fade-in {
             animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             opacity: 0;
             transform: translateY(30px);
-        }
-
-        .black-background {
-            background-color: rgba(0, 0, 0, 0.6);
-            padding: 10px 15px;
-            border-radius: 8px;
-            display: inline-block;
-            /* Soften the edges */
-            box-shadow: 0 0 20px 15px rgba(0, 0, 0, 0.6);
         }
 
         @keyframes fadeInUp {
@@ -149,30 +285,54 @@
                 <div class="logo-mark"></div>
                 Elman Bio
             </div>
+            <div class="nav-meta">A Deep Science Ventures spin-out</div>
         </nav>
 
-        <div class="hero-content fade-in" style="animation-delay: 0.2s;">
-            <!-- 
-               UPDATED SPACING:
-               - leading-[1.4]: Forces a clear gap between lines of the title.
-               - mb-5: Significantly reduces the gap between title and subtitle (was mb-10).
-            -->
-            <h1 class="text-4xl md:text-5xl lg:text-6xl font-semibold leading-[1.4] mb-5 black-background">
-                Designing optimal<br>combination therapies.
+        <div class="hero-content veil fade-in" style="animation-delay: 0.2s;">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-semibold leading-[1.4] mb-5">
+                Discovery you can trace <br>to the figure.
             </h1>
-            <p class="sub-headline black-background">
-                Massive agentic-driven target space exploration to identify synergistic interventions that drive clinical efficacy.
+            <p class="sub-headline">
+                Elman is an autonomous scientific discovery engine. We reason over a compounding knowledge graph of experimental facts to produce <span class="highlight">testable mechanistic hypotheses</span> &mdash; from raw biological data to candidate intervention points, with every finding traced to the experiment that produced it.
             </p>
+            <div class="cta-row">
+                <a class="cta" href="mailto:moustafa@deepscienceventures.com">
+                    Get in touch <span class="arrow">→</span>
+                </a>
+            </div>
         </div>
 
-        <div class="meta-footer fade-in" style="animation-delay: 0.4s;">
+        <div class="pillars fade-in" style="animation-delay: 0.5s;">
+            <div class="pillar veil veil-tight">
+                <h3>Full provenance</h3>
+                <p>Every finding is anchored to a specific experimental arm in a specific paper or in-silico run &mdash; never to a model's parametric memory. Auditable down to the figure.</p>
+            </div>
+            <div class="pillar veil veil-tight">
+                <h3>Rational pruning</h3>
+                <p>The reasoning agent chases specific questions through the graph one edge at a time, surfacing low-magnitude but statistically significant signal where the tractable biology lives.</p>
+            </div>
+            <div class="pillar veil veil-tight">
+                <h3>Compounding</h3>
+                <p>A single schema across literature, in-silico and wet-lab evidence. Every result sharpens the substrate every future run consumes &mdash; across indications, not just within one.</p>
+            </div>
+        </div>
+
+        <p class="heartbeat veil veil-tight fade-in" style="animation-delay: 0.65s;">
+            Indication-agnostic by design.
+        </p>
+
+        <div class="meta-footer veil fade-in" style="animation-delay: 0.8s;">
             <div>
                 <span class="block text-xs uppercase tracking-wider text-slate-500 mb-1">Contact</span>
-                <a href="mailto:hello@elman.ai">hello@elman.ai</a>
+                <a href="mailto:moustafa@deepscienceventures.com">moustafa@deepscienceventures.com</a>
             </div>
             <div>
                 <span class="block text-xs uppercase tracking-wider text-slate-500 mb-1">Location</span>
                 London
+            </div>
+            <div>
+                <span class="block text-xs uppercase tracking-wider text-slate-500 mb-1">Backed by</span>
+                Deep Science Ventures
             </div>
         </div>
     </div>
@@ -185,29 +345,30 @@
         let clusters = [];
         let agents = [];
 
-        // Expanded bio targets list (Onco / Immuno / Neuro)
         const targetNames = [
-            // Oncology
             "TP53", "KRAS", "EGFR", "MYC", "BRCA1", "PIK3CA", "PTEN", "HER2", "BRAF", "MEK", "ALK", "ROS1", "PARP", "CDK4/6",
-            // Immuno-Oncology
             "PD-1", "PD-L1", "CTLA4", "LAG3", "TIM3", "TIGIT", "OX40", "STING", "IL-6", "JAK1", "STAT3", "VEGF",
-            // Neurodegeneration
             "BACE1", "MAPT", "SNCA", "LRRK2", "APOE4", "NMDA", "TREM2", "PINK1", "ACHE", "HTT"
         ];
 
-        // Configuration
         const config = {
-            clusterCount: 6,      
-            pointsPerCluster: 80, 
-            clusterSpread: 130,   
-            agentCount: 1,        // Updated: Only 1 agent
-            influenceRadius: 160, // Slightly larger reach for single agent
+            clusterCount: 6,
+            pointsPerCluster: 80,
+            clusterSpread: 130,
+            agentCount: 1,
+            influenceRadius: 160,
             colors: {
-                disease: {r: 255, g: 85, b: 119},   // Brighter Red
-                health: {r: 52, g: 211, b: 153},    // Brighter Green
-                neutral: {r: 40, g: 45, b: 60}     // Darker Slate/Grey
+                disease: {r: 255, g: 85, b: 119},
+                health: {r: 52, g: 211, b: 153},
+                neutral: {r: 40, g: 45, b: 60}
             }
         };
+
+        // Density of floating target labels — much sparser on small screens
+        // so the canvas doesn't fight with the hero copy.
+        function labelThreshold() {
+            return window.innerWidth < 640 ? 0.94 : 0.75;
+        }
 
         function resize() {
             width = window.innerWidth;
@@ -228,15 +389,13 @@
             constructor(centerX, centerY, type) {
                 this.x = centerX + randomGaussian() * (config.clusterSpread * 0.7);
                 this.y = centerY + randomGaussian() * (config.clusterSpread * 0.7);
-                
-                this.type = type; 
-                this.size = Math.random() * 2 + 2.5; // Slightly bigger dots
-                this.healState = 0; 
-                
-                // Assign a name
+
+                this.type = type;
+                this.size = Math.random() * 2 + 2.5;
+                this.healState = 0;
+
                 this.name = targetNames[Math.floor(Math.random() * targetNames.length)];
-                // Increase probability of showing label slightly since we have more names
-                this.showLabel = Math.random() > 0.75; 
+                this.showLabel = Math.random() > labelThreshold();
 
                 this.vx = (Math.random() - 0.5) * 0.15;
                 this.vy = (Math.random() - 0.5) * 0.15;
@@ -245,9 +404,9 @@
             update() {
                 this.x += this.vx;
                 this.y += this.vy;
-                
+
                 if (this.healing) {
-                    this.healState += 0.01; // Slightly slower healing for effect
+                    this.healState += 0.01;
                     if (this.healState > 1) this.healState = 1;
                 }
             }
@@ -272,18 +431,9 @@
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Draw Label Logic
-                // Only for 'disease' type points (which are the interesting targets)
-                // AND if randomly selected to show label
-                // REMOVED: "&& this.healState < 1" -> Labels now persist
                 if (this.type === 'disease' && this.showLabel) {
-                    
-                    // Text color mimics state (reddish -> greenish white)
-                    // We keep it mostly white/bright for readability
-                    // Made even whiter/brighter as requested
                     ctx.fillStyle = `rgba(255, 255, 255, ${0.7 + (this.healState * 0.3)})`;
-                    
-                    ctx.font = '12px "Plus Jakarta Sans"'; // Bigger font
+                    ctx.font = '12px "Plus Jakarta Sans"';
                     ctx.fillText(this.name, this.x + 10, this.y + 4);
                 }
             }
@@ -293,16 +443,15 @@
             constructor() {
                 this.reset();
             }
-            
+
             reset() {
                 this.x = Math.random() * width;
                 this.y = Math.random() * height;
-                this.vx = (Math.random() - 0.5) * 1.8; // Slightly faster single agent
+                this.vx = (Math.random() - 0.5) * 1.8;
                 this.vy = (Math.random() - 0.5) * 1.8;
             }
 
             update(allPoints) {
-                // Limit speed
                 const speed = Math.sqrt(this.vx*this.vx + this.vy*this.vy);
                 const maxSpeed = 1.0;
                 if (speed > maxSpeed) {
@@ -310,7 +459,6 @@
                     this.vy = (this.vy / speed) * maxSpeed;
                 }
 
-                // Add small random noise to prevent getting stuck in equilibrium
                 this.vx += (Math.random() - 0.5) * 0.05;
                 this.vy += (Math.random() - 0.5) * 0.05;
 
@@ -329,11 +477,8 @@
                     const dy = this.y - p.y;
                     const dist = Math.sqrt(dx*dx + dy*dy);
 
-                    // Attraction to disease points (only if not fully healed)
                     if (p.type === 'disease' && p.healState < 1) {
-                        // Use inverse distance to prioritize closer targets and prevent getting stuck
-                        // preventing division by zero with Math.max
-                        const force = 0.5 / Math.max(dist, 10); 
+                        const force = 0.5 / Math.max(dist, 10);
                         this.vx -= (dx / dist) * force;
                         this.vy -= (dy / dist) * force;
                     }
@@ -360,18 +505,15 @@
             }
 
             draw() {
-                // Agent Dot
                 ctx.fillStyle = 'white';
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, 6, 0, Math.PI * 2);
                 ctx.fill();
-                
-                // Agent Label
+
                 ctx.fillStyle = 'white';
                 ctx.font = '600 14px "Plus Jakarta Sans"';
                 ctx.fillText("Elman", this.x + 10, this.y - 10);
 
-                // Glow
                 ctx.shadowBlur = 15;
                 ctx.shadowColor = 'rgba(255,255,255,0.6)';
                 ctx.fill();
@@ -386,7 +528,7 @@
             for (let i = 0; i < config.clusterCount; i++) {
                 let centerX = Math.random() * (width * 0.8) + (width * 0.1);
                 let centerY = Math.random() * (height * 0.8) + (height * 0.1);
-                
+
                 let type = Math.random() > 0.5 ? 'disease' : 'neutral';
 
                 for (let j = 0; j < config.pointsPerCluster; j++) {
