@@ -3,564 +3,1213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elman Bio — Discovery you can trace to the figure</title>
-    <meta name="description" content="Elman Bio is an autonomous scientific discovery engine. We reason over a compounding knowledge graph of experimental facts to produce testable mechanistic hypotheses — every finding traced to a specific experiment.">
+    <title>Elman — Discovery you can trace to the figure</title>
+    <meta name="description" content="An autonomous discovery engine for the life sciences. Every claim Elman makes is read directly from a specific experimental arm — never paraphrased from a model's memory.">
 
-    <!-- Open Graph / Twitter -->
-    <meta property="og:title" content="Elman Bio — Discovery you can trace to the figure">
-    <meta property="og:description" content="An autonomous scientific discovery engine. Reasoning over a compounding knowledge graph of experimental facts to produce testable, traceable mechanistic hypotheses.">
+    <meta property="og:title" content="Elman — Discovery you can trace to the figure">
+    <meta property="og:description" content="An autonomous discovery engine for the life sciences. Every claim is read directly from a specific experimental arm — never paraphrased from a model's memory.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://elman.ai/">
-    <meta property="og:site_name" content="Elman Bio">
+    <meta property="og:site_name" content="Elman">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Elman Bio — Discovery you can trace to the figure">
-    <meta name="twitter:description" content="An autonomous scientific discovery engine. Reasoning over a compounding knowledge graph of experimental facts to produce testable, traceable mechanistic hypotheses.">
+    <meta name="twitter:title" content="Elman — Discovery you can trace to the figure">
+    <meta name="twitter:description" content="An autonomous discovery engine for the life sciences. Every claim is read directly from a specific experimental arm — never paraphrased from a model's memory.">
 
-    <!-- Inline SVG favicon (white dot on dark) -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23050505'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23ffffff'/%3E%3C/svg%3E">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230e0c12'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%239bb098'/%3E%3C/svg%3E">
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
     <style>
         :root {
-            --bg-color: #050505;
-            --text-primary: #ffffff;
-            --text-secondary: #94a3b8;
-            --text-tertiary: #64748b;
-            --disease-color: #ff5577;
-            --health-color: #34d399;
-            --neutral-color: #334155;
+            /* Muted, warm palette. Background sits between charcoal and ink;
+               text is warm cream like aged paper; accent is soft sage —
+               botanical, calm, never amber (so it doesn't echo BPB) and
+               never electric (so it doesn't read AI-startup). */
+            --bg: #0e0c12;
+            --bg-2: #14111a;
+            --text: #e8e2d4;
+            --text-2: #9b9486;
+            --text-3: #5e5850;
+            --line: rgba(232, 226, 212, 0.085);
+            --line-strong: rgba(232, 226, 212, 0.16);
+
+            --brand: #9bb098;
+            --brand-soft: rgba(155, 176, 152, 0.55);
+            --brand-faint: rgba(155, 176, 152, 0.18);
+            --brand-glow: rgba(155, 176, 152, 0.32);
+
+            --serif: 'Instrument Serif', 'Times New Roman', Georgia, serif;
+            --sans: 'Inter', system-ui, -apple-system, sans-serif;
+            --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: var(--sans);
+            font-size: 16px;
+            color: var(--text);
+            background: var(--bg);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            scroll-behavior: smooth;
         }
 
         body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-color);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            overflow: hidden;
-            color: var(--text-primary);
-        }
-
-        canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            opacity: 0.8;
-        }
-
-        .ui-layer {
-            position: relative;
-            z-index: 10;
+            background:
+                radial-gradient(ellipse 80% 50% at 50% 0%, rgba(155, 176, 152, 0.05) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 50% 100%, rgba(155, 176, 152, 0.025) 0%, transparent 60%),
+                var(--bg);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            padding: 3rem 4rem;
-            pointer-events: none;
+            overflow-x: hidden;
         }
 
+        /* ---- nav ---- */
         nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            padding: 1.4rem 2.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            width: 100%;
-            pointer-events: auto;
+            z-index: 100;
+            font-size: 0.85rem;
+            pointer-events: none;
         }
+        nav > * { pointer-events: auto; }
 
         .logo {
-            font-weight: 700;
-            font-size: 1.5rem;
+            font-family: var(--serif);
+            font-size: 1.35rem;
             letter-spacing: -0.02em;
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 10px;
-            white-space: nowrap;
+            gap: 0.55rem;
+            color: var(--text);
         }
 
         .logo-mark {
-            width: 12px;
-            height: 12px;
-            background: white;
+            width: 8px;
+            height: 8px;
+            background: var(--brand);
             border-radius: 50%;
-            flex-shrink: 0;
+            box-shadow: 0 0 16px var(--brand-glow);
         }
 
         .nav-meta {
-            font-size: 0.75rem;
+            font-family: var(--mono);
+            font-size: 0.7rem;
             text-transform: uppercase;
-            letter-spacing: 0.12em;
-            color: var(--text-secondary);
+            letter-spacing: 0.2em;
+            color: var(--text-2);
         }
 
-        .hero-content {
-            max-width: 1000px;
-            margin-top: 12vh;
-            pointer-events: auto;
+        /* ---- hero / scroll choreography ---- */
+        .scroll-stage {
+            position: relative;
+            min-height: 280vh;
         }
 
-        h1 {
-            letter-spacing: -0.03em;
+        .hero-pinned {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0 2rem;
+            text-align: center;
+            z-index: 10;
+            opacity: var(--hero-op, 1);
+            will-change: opacity;
         }
 
-        .sub-headline {
-            font-size: 1.2rem;
-            line-height: 1.6;
-            color: var(--text-secondary);
-            max-width: 720px;
+        .hero-wordmark {
+            font-family: var(--serif);
             font-weight: 400;
+            font-size: clamp(5.5rem, 16vw, 13rem);
+            letter-spacing: -0.045em;
+            line-height: 0.92;
+            margin: 0 0 1.5rem;
+            color: var(--text);
+            position: relative;
         }
 
-        .highlight {
-            color: #e2e8f0;
-            font-weight: 500;
+        .hero-wordmark::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -0.4rem;
+            transform: translateX(-50%);
+            width: 36px;
+            height: 1px;
+            background: var(--brand);
+            opacity: 0;
+            animation: revealRule 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
         }
 
-        .cta-row {
-            margin-top: 1.75rem;
+        @keyframes revealRule {
+            from { width: 0; opacity: 0; }
+            to { width: 36px; opacity: 1; }
+        }
+
+        .hero-tagline {
+            font-family: var(--serif);
+            font-style: italic;
+            font-weight: 400;
+            font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+            letter-spacing: -0.005em;
+            line-height: 1.2;
+            color: var(--text);
+            margin: 1.4rem 0 0;
+            max-width: 32ch;
+        }
+
+        .src-word {
             display: inline-block;
+            transition: opacity 0.18s ease;
+        }
+        .src-discovery {
+            color: var(--brand);
+        }
+        .src-period {
+            display: inline-block;
+            transition: opacity 0.18s ease;
         }
 
-        .cta {
+        .hero-meta {
+            margin-top: 2.5rem;
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            color: var(--text-2);
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: #ffffff;
-            border-bottom: 1px solid rgba(255,255,255,0.4);
-            padding-bottom: 2px;
-            transition: all 0.25s ease;
+            gap: 0.85rem;
         }
-
-        .cta .arrow {
-            transition: transform 0.25s ease;
+        .hero-meta::before, .hero-meta::after {
+            content: '';
+            width: 18px;
+            height: 1px;
+            background: var(--brand-soft);
             display: inline-block;
         }
 
-        .cta:hover {
-            border-color: white;
+        /* ---- figure ---- */
+        .figure-stage {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem 2rem;
+            z-index: 5;
+            margin-top: -100vh;
+            opacity: var(--fig-op, 0);
+            will-change: opacity;
         }
 
-        .cta:hover .arrow {
-            transform: translateX(3px);
+        /* Paper card — looks like a printed page from a journal:
+           warm cream stock, dark ink, subtle shadow, fixed page-like
+           proportions with a thin header/footer. */
+        .paper-card {
+            width: 100%;
+            max-width: 680px;
+            background:
+                radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.04) 0%, transparent 60%),
+                #ede4d2;
+            color: #1c1812;
+            border-radius: 6px;
+            box-shadow:
+                0 24px 60px -22px rgba(0, 0, 0, 0.55),
+                0 6px 20px -10px rgba(0, 0, 0, 0.35),
+                0 0 0 1px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            font-family: var(--serif);
+            position: relative;
         }
 
-        .pillars {
-            margin-top: 4rem;
+        .paper-card::before {
+            /* faint paper texture via blended noise pattern */
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(circle at 12% 8%, rgba(28, 24, 18, 0.04) 0%, transparent 1.2%),
+                radial-gradient(circle at 78% 32%, rgba(28, 24, 18, 0.03) 0%, transparent 1%),
+                radial-gradient(circle at 42% 78%, rgba(28, 24, 18, 0.03) 0%, transparent 0.9%);
+            pointer-events: none;
+            mix-blend-mode: multiply;
+            opacity: 0.6;
+        }
+
+        .paper-header,
+        .paper-footer {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.85rem 1.6rem;
+            font-family: var(--mono);
+            font-size: 0.6rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: rgba(28, 24, 18, 0.55);
+            border-bottom: 1px solid rgba(28, 24, 18, 0.12);
+        }
+        .paper-footer {
+            border-bottom: none;
+            border-top: 1px solid rgba(28, 24, 18, 0.12);
+        }
+
+        .paper-body {
+            padding: 1.4rem 2.2rem 1.8rem;
+            position: relative;
+        }
+
+        .paper-fig-num {
+            font-family: var(--mono);
+            font-size: 0.62rem;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            color: rgba(28, 24, 18, 0.55);
+            margin: 0 0 0.6rem;
+        }
+
+        .graph-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 600 / 400;
+            margin: 0 auto;
+        }
+
+        .graph-edges {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .g-edge { animation: edgeIn 1.4s ease 0.6s forwards; opacity: 0; }
+        @keyframes edgeIn { to { opacity: var(--end-edge, 0.55); } }
+        .g-nodes circle { animation: dotIn 1.0s ease forwards; opacity: 0; }
+        .g-halo { animation: haloPulse 4s ease-in-out 1.4s infinite; transform-origin: 300px 200px; transform-box: fill-box; }
+        @keyframes haloPulse {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.15); }
+        }
+
+        /* Word-as-node labels — positioned over the SVG at each node. */
+        .g-label {
+            position: absolute;
+            font-family: var(--serif);
+            font-style: italic;
+            color: #1c1812;
+            opacity: 0;
+            transition: opacity 0.18s ease;
+            white-space: nowrap;
+            font-size: 0.95rem;
+            line-height: 1;
+            transform: translate(-50%, -50%);
+        }
+        .g-label-discovery {
+            color: #4a5e48;
+            font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+            font-weight: 400;
+        }
+        /* Coordinates: graph viewBox is 600×400, label centred on each node
+           with small offsets so the word doesn't sit exactly on the dot. */
+        .g-label-discovery { top: 50%;   left: 50%;   transform: translate(-50%, calc(-50% + 1.4rem)); }
+        .g-label-you      { top: 23.75%; left: 70.83%; transform: translate(-50%, calc(-50% - 1.1rem)); }
+        .g-label-can      { top: 50%;    left: 79.66%; transform: translate(calc(-50% + 1.5rem), -50%); }
+        .g-label-trace    { top: 76.25%; left: 70.83%; transform: translate(-50%, calc(-50% + 1.1rem)); }
+        .g-label-to       { top: 76.25%; left: 29.17%; transform: translate(-50%, calc(-50% + 1.1rem)); }
+        .g-label-the      { top: 50%;    left: 20.34%; transform: translate(calc(-50% - 1.5rem), -50%); }
+        .g-label-figure   { top: 23.75%; left: 29.17%; transform: translate(-50%, calc(-50% - 1.1rem)); }
+
+        .paper-caption {
+            font-family: var(--serif);
+            font-size: 0.78rem;
+            line-height: 1.55;
+            color: rgba(28, 24, 18, 0.78);
+            margin: 1.6rem 0 0;
+            max-width: 540px;
+        }
+        .paper-caption strong {
+            font-weight: 400;
+            font-style: italic;
+        }
+        .paper-caption em {
+            font-style: italic;
+            color: #4a5e48;
+        }
+
+        /* ---- word ghosts (each tagline word travels into a node) ---- */
+        .word-ghost {
+            position: fixed;
+            top: 0;
+            left: 0;
+            font-family: var(--serif);
+            font-style: italic;
+            font-weight: 400;
+            color: var(--text);
+            pointer-events: none;
+            transform-origin: top left;
+            white-space: nowrap;
+            z-index: 50;
+            opacity: 0;
+            will-change: transform, font-size, opacity;
+        }
+        .word-ghost.ghost-discovery { color: var(--brand); }
+
+        /* ---- stats ---- */
+        .stats {
+            max-width: 760px;
+            margin: 6rem auto 0;
+            padding: 0 2.5rem;
             display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 2.5rem;
-            max-width: 1000px;
-            pointer-events: auto;
+            text-align: center;
+        }
+
+        .stat {
+            position: relative;
+        }
+
+        .stat + .stat::before {
+            content: '';
+            position: absolute;
+            left: -1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1px;
+            height: 60%;
+            background: var(--line);
+        }
+
+        .stat-value {
+            font-family: var(--serif);
+            font-style: italic;
+            font-size: clamp(2.4rem, 4.2vw, 3.2rem);
+            font-weight: 400;
+            line-height: 1;
+            letter-spacing: -0.02em;
+            color: var(--brand);
+            display: block;
+            margin-bottom: 0.55rem;
+        }
+
+        .stat-label {
+            font-family: var(--mono);
+            font-size: 0.66rem;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: var(--text-2);
+            line-height: 1.5;
+        }
+
+        /* ---- pillars ---- */
+        .pillars {
+            max-width: 1080px;
+            margin: 6rem auto 0;
+            padding: 0 2.5rem;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
         }
 
         .pillar {
-            border-left: 1px solid rgba(255,255,255,0.18);
-            padding-left: 1.1rem;
+            position: relative;
+            text-align: center;
+            padding: 0 0.5rem;
+        }
+
+        .pillar + .pillar::before {
+            content: '';
+            position: absolute;
+            left: -1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1px;
+            height: 70%;
+            background: var(--line);
         }
 
         .pillar h3 {
-            font-size: 0.78rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.14em;
-            color: #ffffff;
-            margin: 0 0 0.55rem 0;
+            font-family: var(--serif);
+            font-style: italic;
+            font-weight: 400;
+            font-size: 1.5rem;
+            color: var(--brand);
+            margin: 0 0 0.65rem;
+            letter-spacing: -0.01em;
         }
 
         .pillar p {
-            font-size: 0.95rem;
-            line-height: 1.55;
-            color: var(--text-secondary);
+            font-size: 0.93rem;
+            line-height: 1.6;
+            color: var(--text-2);
             margin: 0;
-            text-shadow: 0 0 12px rgba(0,0,0,0.85), 0 0 4px rgba(0,0,0,0.85);
         }
 
-        .pillar h3 {
-            text-shadow: 0 0 10px rgba(0,0,0,0.85);
+        /* ---- press band (Allen / Cell) ---- */
+        .press-band {
+            max-width: 760px;
+            margin: 4rem auto 0;
+            padding: 0 2.5rem;
+            text-align: center;
         }
-
-        .heartbeat {
-            margin-top: 2.25rem;
-            font-size: 0.95rem;
+        .press-line {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.6rem;
+            border-top: 1px solid var(--brand-faint);
+            border-bottom: 1px solid var(--brand-faint);
+            padding: 1.4rem 1.8rem;
+            max-width: 640px;
+        }
+        .press-tag {
+            font-family: var(--mono);
+            font-size: 0.66rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--brand);
+        }
+        .press-body {
+            font-family: var(--serif);
             font-style: italic;
-            color: var(--text-secondary);
-            pointer-events: auto;
-            text-shadow: 0 0 12px rgba(0,0,0,0.85), 0 0 4px rgba(0,0,0,0.85);
+            font-size: 1.05rem;
+            line-height: 1.55;
+            color: var(--text);
+            margin: 0;
+        }
+        .press-body strong {
+            font-weight: 400;
+            color: var(--brand);
+        }
+        .press-body em {
+            font-style: italic;
+            color: var(--text-2);
         }
 
-        .meta-footer {
-            margin-top: auto;
-            padding-top: 4rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4rem;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            pointer-events: auto;
+        /* ---- pipeline (5-step discovery flow with traveling highlight) ---- */
+        .pipeline {
+            max-width: 1240px;
+            margin: 8rem auto 0;
+            padding: 6rem 2.5rem 0;
+            text-align: center;
+            border-top: 1px solid var(--line);
         }
 
-        a {
-            color: white;
-            text-decoration: none;
-            border-bottom: 1px solid rgba(255,255,255,0.3);
-            transition: all 0.3s;
+        .pipeline-eyebrow {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--brand);
+            margin: 0 0 1rem;
         }
 
-        a:hover {
-            border-color: white;
+        .pipeline-heading {
+            font-family: var(--serif);
+            font-style: italic;
+            font-weight: 400;
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+            color: var(--text);
+            margin: 0 0 1.2rem;
         }
 
-        /* Soft frosted veil behind text blocks: dark + backdrop blur,
-           mask radial-fades the edges so it dissolves into the canvas. */
-        .veil {
+        .pipeline-intro {
+            max-width: 580px;
+            margin: 0 auto 4rem;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-2);
+        }
+
+        .pipeline-track {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0;
+            max-width: 1180px;
+            margin: 0 auto;
             position: relative;
-            z-index: 0; /* establish a local stacking context so ::before doesn't fall behind the canvas */
+            text-align: left;
         }
 
-        .veil::before {
+        .pipeline-rule {
+            position: absolute;
+            top: 38px;
+            left: 5%;
+            right: 5%;
+            height: 1px;
+            background: var(--line-strong);
+            z-index: 0;
+        }
+
+        .pipeline-rule::after {
             content: '';
             position: absolute;
-            inset: -1.4rem -2rem;
-            z-index: -1;
-            background: rgba(5, 5, 5, 0.6);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            border-radius: 22px;
-            -webkit-mask-image: radial-gradient(
-                ellipse at center,
-                black 60%,
-                transparent 100%
-            );
-                    mask-image: radial-gradient(
-                ellipse at center,
-                black 60%,
-                transparent 100%
-            );
-            pointer-events: none;
+            top: 0; left: 0;
+            width: 20%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--brand), transparent);
+            box-shadow: 0 0 8px var(--brand-glow);
+            animation: rulePulse 12s linear infinite;
+        }
+        @keyframes rulePulse {
+            0%   { left: -20%; }
+            100% { left: 100%; }
         }
 
-        .veil-tight::before {
-            inset: -0.9rem -1.4rem;
-            border-radius: 16px;
+        .pipeline-step {
+            position: relative;
+            padding: 0 1.1rem;
+            z-index: 1;
+            opacity: 0.5;
+            animation: stepPulse 12s ease-in-out infinite;
+            transition: none;
+        }
+        .pipeline-step:nth-child(1) { animation-delay: 0s; }
+        .pipeline-step:nth-child(2) { animation-delay: 2.4s; }
+        .pipeline-step:nth-child(3) { animation-delay: 4.8s; }
+        .pipeline-step:nth-child(4) { animation-delay: 7.2s; }
+        .pipeline-step:nth-child(5) { animation-delay: 9.6s; }
+
+        @keyframes stepPulse {
+            0%, 12%, 100% { opacity: 0.45; }
+            3%, 9%        { opacity: 1; }
         }
 
-        @media (max-width: 768px) {
-            body { overflow-y: auto; }
-            .ui-layer { padding: 1.5rem; }
-            .sub-headline { font-size: 1.02rem; }
-            h1 { line-height: 1.25 !important; font-size: 2rem !important; }
-            .pillars { grid-template-columns: 1fr; gap: 1.5rem; margin-top: 3rem; }
-            .meta-footer { gap: 2rem; padding-top: 2.5rem; }
-            .hero-content { margin-top: 7vh; }
-            .heartbeat { margin-top: 1.75rem; font-size: 0.9rem; }
+        .step-num {
+            font-family: var(--mono);
+            font-size: 0.66rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--brand);
+            display: inline-block;
+            width: 76px;
+            height: 76px;
+            line-height: 76px;
+            text-align: center;
+            border: 1px solid var(--line-strong);
+            border-radius: 50%;
+            background: var(--bg);
+            margin: 0 auto;
+            transition: border-color 0.4s, color 0.4s, box-shadow 0.4s;
+        }
+
+        .pipeline-step.is-active .step-num,
+        .pipeline-step:hover .step-num {
+            border-color: var(--brand);
+            box-shadow: 0 0 28px var(--brand-glow), inset 0 0 12px rgba(155, 176, 152, 0.08);
+        }
+
+        .step-label {
+            display: block;
+            text-align: center;
+            margin-top: 1.2rem;
+        }
+
+        .step-status {
+            font-family: var(--mono);
+            font-size: 0.58rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--text-3);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        .pipeline-step[data-status="live"] .step-status {
+            color: var(--brand);
+        }
+
+        .step-title {
+            font-family: var(--serif);
+            font-style: italic;
+            font-weight: 400;
+            font-size: 1.35rem;
+            color: var(--text);
+            margin: 0 0 0.5rem;
+            letter-spacing: -0.01em;
+        }
+
+        .step-desc {
+            font-size: 0.86rem;
+            line-height: 1.55;
+            color: var(--text-2);
+            margin: 0;
+        }
+
+        /* Old products section now retired — keep selectors for any leftovers */
+        .products {
+            max-width: 1100px;
+            margin: 8rem auto 0;
+            padding: 6rem 2.5rem 0;
+            text-align: center;
+            border-top: 1px solid var(--line);
+        }
+
+        .products-eyebrow {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--brand);
+            margin: 0 0 1rem;
+        }
+
+        .products-heading {
+            font-family: var(--serif);
+            font-style: italic;
+            font-weight: 400;
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+            color: var(--text);
+            margin: 0 0 1.2rem;
+        }
+
+        .products-intro {
+            max-width: 560px;
+            margin: 0 auto 3.5rem;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-2);
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.4rem;
+            text-align: left;
+            max-width: 980px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            background: rgba(232, 226, 212, 0.022);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 1.9rem 1.8rem 1.6rem;
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .product-card:hover {
+            border-color: var(--brand-soft);
+            transform: translateY(-3px);
+            background: rgba(232, 226, 212, 0.035);
+            box-shadow: 0 14px 38px -16px rgba(155, 176, 152, 0.22);
+        }
+
+        .product-tag {
+            font-family: var(--mono);
+            font-size: 0.66rem;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: var(--brand);
+            margin-bottom: 0.85rem;
+        }
+
+        .product-card h4 {
+            font-family: var(--serif);
+            font-style: italic;
+            font-weight: 400;
+            font-size: 1.55rem;
+            letter-spacing: -0.01em;
+            color: var(--text);
+            margin: 0 0 0.65rem;
+        }
+
+        .product-card p {
+            font-size: 0.93rem;
+            line-height: 1.6;
+            color: var(--text-2);
+            margin: 0 0 1.2rem;
+        }
+
+        .product-meta {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            color: var(--text-3);
+            border-top: 1px solid var(--line);
+            padding-top: 0.9rem;
+            letter-spacing: 0.04em;
+            line-height: 1.6;
+        }
+
+        .product-meta strong {
+            color: var(--text-2);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            font-size: 0.62rem;
+            margin-right: 0.4rem;
+        }
+
+        /* ---- footer ---- */
+        footer {
+            margin: 8rem auto 0;
+            padding: 4rem 2.5rem 4rem;
+            max-width: 1100px;
+            border-top: 1px solid var(--line);
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 3rem 4rem;
+            text-align: center;
+        }
+
+        .footer-block .label {
+            display: block;
+            font-family: var(--mono);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            color: var(--brand);
+            margin-bottom: 0.55rem;
+        }
+
+        .footer-block .value {
+            color: var(--text);
+            font-size: 0.92rem;
+            line-height: 1.5;
+        }
+
+        .footer-block a {
+            color: var(--text);
+            text-decoration: none;
+            border-bottom: 1px solid var(--brand-soft);
+            transition: all 0.3s;
+            padding-bottom: 1px;
+        }
+
+        .footer-block a:hover {
+            color: var(--brand);
+            border-color: var(--brand);
+        }
+
+        .footer-credit {
+            margin-top: 2rem;
+            text-align: center;
+            font-family: var(--mono);
+            font-size: 0.62rem;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            color: var(--text-3);
+            padding-bottom: 2.5rem;
+        }
+
+        /* ---- entrance fade ---- */
+        .fade-in {
+            animation: fadeIn 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(14px);
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* SVG figure animations */
+        .fig-axis, .fig-tick, .fig-label {
+            opacity: 0;
+            animation: fadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+        }
+        .fig-dot {
+            opacity: 0;
+            animation: dotIn 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes dotIn {
+            to { opacity: var(--end-opacity, 0.6); }
+        }
+        .fig-focal {
+            opacity: 0;
+            animation: focalIn 2s cubic-bezier(0.16, 1, 0.3, 1) 1.4s forwards;
+        }
+        @keyframes focalIn {
+            to { opacity: 1; }
+        }
+        .fig-pulse {
+            transform-origin: center;
+            transform-box: fill-box;
+            animation: pulse 3s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.15); }
+        }
+
+        /* ---- mobile ---- */
+        @media (max-width: 880px) {
+            .stats { grid-template-columns: 1fr; gap: 2rem; max-width: 360px; }
+            .stat + .stat::before { display: none; }
+            .pillars { grid-template-columns: 1fr; gap: 2.5rem; }
+            .pillar + .pillar::before { display: none; }
+            .product-grid { grid-template-columns: 1fr; }
         }
 
         @media (max-width: 640px) {
+            nav { padding: 1.2rem 1.4rem; }
             .nav-meta { display: none; }
-            .logo { font-size: 1.25rem; }
-            h1 br { display: none; }
+            .scroll-stage { min-height: 200vh; }
+            .figure-stage { top: 100vh; padding: 2rem 1.4rem 4rem; }
+            .stats, .pillars, .products, footer { padding-left: 1.4rem; padding-right: 1.4rem; }
+            .products { padding-top: 4rem; margin-top: 5rem; }
+            footer { gap: 2rem; padding: 3rem 1.4rem; margin-top: 5rem; }
+            .figure-title { min-height: 2em; }
         }
 
-        .fade-in {
-            animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        @keyframes fadeInUp {
-            to { opacity: 1; transform: translateY(0); }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+            .scroll-stage { min-height: auto; }
+            .hero-pinned { position: static; height: auto; padding: 6rem 2rem 4rem; }
+            .figure-stage { position: static; padding: 4rem 2rem; }
+            .source-discovery { opacity: 1 !important; }
+            .target-discovery { opacity: 1 !important; }
+            .discovery-ghost { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <canvas id="clusterCanvas"></canvas>
+    <nav>
+        <a href="/" class="logo">
+            <span class="logo-mark"></span>Elman
+        </a>
+        <span class="nav-meta">Incubated at Deep Science Ventures</span>
+    </nav>
 
-    <div class="ui-layer">
-        <nav class="fade-in" style="animation-delay: 0s;">
-            <div class="logo">
-                <div class="logo-mark"></div>
-                Elman Bio
-            </div>
-            <div class="nav-meta">A Deep Science Ventures spin-out</div>
-        </nav>
-
-        <div class="hero-content veil fade-in" style="animation-delay: 0.2s;">
-            <h1 class="text-4xl md:text-5xl lg:text-6xl font-semibold leading-[1.4] mb-5">
-                Discovery you can trace <br>to the figure.
-            </h1>
-            <p class="sub-headline">
-                Elman is an autonomous scientific discovery engine. We reason over a compounding knowledge graph of experimental facts to produce <span class="highlight">testable mechanistic hypotheses</span> &mdash; from raw biological data to candidate intervention points, with every finding traced to the experiment that produced it.
+    <section class="scroll-stage">
+        <div class="hero-pinned">
+            <h1 class="hero-wordmark fade-in">Elman</h1>
+            <p class="hero-tagline fade-in" style="animation-delay: 0.35s;">
+                <span class="src-word src-discovery" data-anchor="source-discovery">Discovery</span>
+                <span class="src-word" data-anchor="source-you">you</span>
+                <span class="src-word" data-anchor="source-can">can</span>
+                <span class="src-word" data-anchor="source-trace">trace</span>
+                <span class="src-word" data-anchor="source-to">to</span>
+                <span class="src-word" data-anchor="source-the">the</span>
+                <span class="src-word" data-anchor="source-figure">figure</span><span class="src-period">.</span>
             </p>
-            <div class="cta-row">
-                <a class="cta" href="mailto:moustafa@deepscienceventures.com">
-                    Get in touch <span class="arrow">→</span>
-                </a>
-            </div>
+            <span class="hero-meta fade-in" style="animation-delay: 0.7s;">An autonomous discovery engine for the life sciences</span>
         </div>
 
-        <div class="pillars fade-in" style="animation-delay: 0.5s;">
-            <div class="pillar veil veil-tight">
-                <h3>Full provenance</h3>
-                <p>Every finding is anchored to a specific experimental arm in a specific paper or in-silico run &mdash; never to a model's parametric memory. Auditable down to the figure.</p>
-            </div>
-            <div class="pillar veil veil-tight">
-                <h3>Rational pruning</h3>
-                <p>The reasoning agent chases specific questions through the graph one edge at a time, surfacing low-magnitude but statistically significant signal where the tractable biology lives.</p>
-            </div>
-            <div class="pillar veil veil-tight">
-                <h3>Compounding</h3>
-                <p>A single schema across literature, in-silico and wet-lab evidence. Every result sharpens the substrate every future run consumes &mdash; across indications, not just within one.</p>
+        <div class="figure-stage">
+            <div class="paper-card">
+                <div class="paper-header">
+                    <span class="paper-mark">Elman · Knowledge Graph Engine</span>
+                    <span class="paper-mark">Fig. 3 / 7</span>
+                </div>
+
+                <div class="paper-body">
+                    <p class="paper-fig-num">Figure 3</p>
+
+                    <div class="graph-wrap">
+                        <!-- Edges (drawn first so labels sit on top) -->
+                        <svg class="graph-edges" viewBox="0 0 600 400" preserveAspectRatio="none" aria-hidden="true">
+                            <defs>
+                                <radialGradient id="node-glow" cx="50%" cy="50%" r="50%">
+                                    <stop offset="0%" stop-color="#5a7359" stop-opacity="0.35"/>
+                                    <stop offset="100%" stop-color="#5a7359" stop-opacity="0"/>
+                                </radialGradient>
+                            </defs>
+                            <!-- spoke edges from Discovery (300, 200) to each surrounding node -->
+                            <g stroke="#3a3a3a" stroke-width="0.6" fill="none" opacity="0.55">
+                                <line class="g-edge" x1="300" y1="200" x2="425" y2="95"/>
+                                <line class="g-edge" x1="300" y1="200" x2="478" y2="200"/>
+                                <line class="g-edge" x1="300" y1="200" x2="425" y2="305"/>
+                                <line class="g-edge" x1="300" y1="200" x2="175" y2="305"/>
+                                <line class="g-edge" x1="300" y1="200" x2="122" y2="200"/>
+                                <line class="g-edge" x1="300" y1="200" x2="175" y2="95"/>
+                            </g>
+                            <!-- a couple of inter-node edges for graph density -->
+                            <g stroke="#3a3a3a" stroke-width="0.4" fill="none" opacity="0.3">
+                                <line class="g-edge" x1="425" y1="95" x2="478" y2="200"/>
+                                <line class="g-edge" x1="478" y1="200" x2="425" y2="305"/>
+                                <line class="g-edge" x1="175" y1="305" x2="122" y2="200"/>
+                                <line class="g-edge" x1="122" y1="200" x2="175" y2="95"/>
+                            </g>
+                            <!-- focal node halo -->
+                            <circle class="g-halo" cx="300" cy="200" r="44" fill="url(#node-glow)"/>
+                            <!-- node circles -->
+                            <g class="g-nodes">
+                                <circle cx="300" cy="200" r="6" fill="#5a7359"/>
+                                <circle cx="300" cy="200" r="2.5" fill="#f3ecdd"/>
+                                <circle cx="425" cy="95"  r="3.5" fill="#3a3a3a"/>
+                                <circle cx="478" cy="200" r="3.5" fill="#3a3a3a"/>
+                                <circle cx="425" cy="305" r="3.5" fill="#3a3a3a"/>
+                                <circle cx="175" cy="305" r="3.5" fill="#3a3a3a"/>
+                                <circle cx="122" cy="200" r="3.5" fill="#3a3a3a"/>
+                                <circle cx="175" cy="95"  r="3.5" fill="#3a3a3a"/>
+                            </g>
+                        </svg>
+
+                        <!-- Target slots: each word lands as a label next to its node. -->
+                        <span class="g-label g-label-discovery" data-anchor="target-discovery">Discovery</span>
+                        <span class="g-label g-label-you"    data-anchor="target-you">you</span>
+                        <span class="g-label g-label-can"    data-anchor="target-can">can</span>
+                        <span class="g-label g-label-trace"  data-anchor="target-trace">trace</span>
+                        <span class="g-label g-label-to"     data-anchor="target-to">to</span>
+                        <span class="g-label g-label-the"    data-anchor="target-the">the</span>
+                        <span class="g-label g-label-figure" data-anchor="target-figure">figure</span>
+                    </div>
+
+                    <p class="paper-caption"><strong>Fig. 3.</strong> A single concept node — <em>Discovery</em> — connected to its grammatical neighbours under the Elman knowledge graph. Edges denote co-occurrence in the substantive sentence; weight reflects semantic proximity to the focal node.</p>
+                </div>
+
+                <div class="paper-footer">
+                    <span class="paper-mark">elman.ai</span>
+                    <span class="paper-mark">3</span>
+                </div>
             </div>
         </div>
+    </section>
 
-        <p class="heartbeat veil veil-tight fade-in" style="animation-delay: 0.65s;">
-            Indication-agnostic by design.
-        </p>
+    <section class="press-band">
+        <div class="press-line">
+            <span class="press-tag">Forthcoming · Cell · 2026</span>
+            <p class="press-body">A collaboration with the <strong>Allen Institute for Brain Science</strong> — full architectural reveal of the discovery engine, validated against single-cell data in human <em>substantia nigra</em>.</p>
+        </div>
+    </section>
 
-        <div class="meta-footer veil fade-in" style="animation-delay: 0.8s;">
-            <div>
-                <span class="block text-xs uppercase tracking-wider text-slate-500 mb-1">Contact</span>
-                <a href="mailto:moustafa@deepscienceventures.com">moustafa@deepscienceventures.com</a>
-            </div>
-            <div>
-                <span class="block text-xs uppercase tracking-wider text-slate-500 mb-1">Location</span>
-                London
-            </div>
-            <div>
-                <span class="block text-xs uppercase tracking-wider text-slate-500 mb-1">Backed by</span>
-                Deep Science Ventures
-            </div>
+    <div class="stats fade-in">
+        <div class="stat">
+            <span class="stat-value">253</span>
+            <span class="stat-label">Public datasets<br>ingested</span>
+        </div>
+        <div class="stat">
+            <span class="stat-value">170,000</span>
+            <span class="stat-label">Experimental facts<br>in the graph</span>
+        </div>
+        <div class="stat">
+            <span class="stat-value">112</span>
+            <span class="stat-label">End-to-end<br>discovery cycles</span>
         </div>
     </div>
 
+    <div class="pillars">
+        <div class="pillar">
+            <h3>Full provenance</h3>
+            <p>Every finding anchored to a specific experimental arm in a specific paper or in-silico run — never to a model's parametric memory.</p>
+        </div>
+        <div class="pillar">
+            <h3>Rational pruning</h3>
+            <p>The reasoning agent chases specific questions through the graph one edge at a time, surfacing low-magnitude but significant signal where the tractable biology lives.</p>
+        </div>
+        <div class="pillar">
+            <h3>Compounding</h3>
+            <p>A single schema across literature, in-silico and wet-lab evidence. Every result sharpens the substrate every future run consumes — across indications, not within one.</p>
+        </div>
+    </div>
+
+    <section class="pipeline">
+        <p class="pipeline-eyebrow">The discovery flow</p>
+        <h2 class="pipeline-heading">Five steps, end-to-end.<br>Two production-grade today.</h2>
+        <p class="pipeline-intro">
+            Each step lives on the same compounding knowledge graph. Two are sold as standalone services right now; the rest run end-to-end in beta.
+        </p>
+
+        <div class="pipeline-track">
+            <div class="pipeline-rule"></div>
+
+            <div class="pipeline-step" data-status="live">
+                <div class="step-num">01</div>
+                <div class="step-label">
+                    <span class="step-status">Production</span>
+                    <h3 class="step-title">Ingest</h3>
+                    <p class="step-desc">Public datasets, literature, and in-silico runs land in a single Neo4j graph at arm-level resolution.</p>
+                </div>
+            </div>
+
+            <div class="pipeline-step" data-status="beta">
+                <div class="step-num">02</div>
+                <div class="step-label">
+                    <span class="step-status">Beta</span>
+                    <h3 class="step-title">Generate</h3>
+                    <p class="step-desc">Multi-agent traversal proposes mechanistic hypotheses, each verified concurrently against the literature.</p>
+                </div>
+            </div>
+
+            <div class="pipeline-step" data-status="live">
+                <div class="step-num">03</div>
+                <div class="step-label">
+                    <span class="step-status">Production</span>
+                    <h3 class="step-title">Identify</h3>
+                    <p class="step-desc">Rational pruning surfaces candidate intervention points at sub-population resolution &mdash; for any indication.</p>
+                </div>
+            </div>
+
+            <div class="pipeline-step" data-status="beta">
+                <div class="step-num">04</div>
+                <div class="step-label">
+                    <span class="step-status">Beta</span>
+                    <h3 class="step-title">Simulate</h3>
+                    <p class="step-desc">Project Ripple propagates the intervention through the graph to predict cohort and sub-population response.</p>
+                </div>
+            </div>
+
+            <div class="pipeline-step" data-status="live">
+                <div class="step-num">05</div>
+                <div class="step-label">
+                    <span class="step-status">Production</span>
+                    <h3 class="step-title">Engineer</h3>
+                    <p class="step-desc">Freedom-to-operate, patent landscape, and engineering mitigation on the target, asset, or technology area.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-block">
+            <span class="label">Founders</span>
+            <span class="value">Dr. Francesco Moramarco<br>Dr. Moustafa Khedr</span>
+        </div>
+        <div class="footer-block">
+            <span class="label">Contact</span>
+            <span class="value">
+                <a href="mailto:moustafa@deepscienceventures.com">moustafa@deepscienceventures.com</a><br>
+                <a href="mailto:francesco@deepscienceventures.com">francesco@deepscienceventures.com</a>
+            </span>
+        </div>
+        <div class="footer-block">
+            <span class="label">Location</span>
+            <span class="value">London</span>
+        </div>
+        <div class="footer-block">
+            <span class="label">Incubated at</span>
+            <span class="value">Deep Science Ventures</span>
+        </div>
+    </footer>
+    <p class="footer-credit">Indication-agnostic by design</p>
+
     <script>
-        const canvas = document.getElementById('clusterCanvas');
-        const ctx = canvas.getContext('2d');
+        (function () {
+            const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const stage = document.querySelector('.scroll-stage');
+            const hero = document.querySelector('.hero-pinned');
+            const figureStage = document.querySelector('.figure-stage');
+            const period = document.querySelector('.src-period');
+            if (!stage) return;
 
-        let width, height;
-        let clusters = [];
-        let agents = [];
+            const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+            const lerp = (a, b, t) => a + (b - a) * t;
+            const ease = t => t < 0.5
+                ? 4 * t * t * t
+                : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
-        const targetNames = [
-            "TP53", "KRAS", "EGFR", "MYC", "BRCA1", "PIK3CA", "PTEN", "HER2", "BRAF", "MEK", "ALK", "ROS1", "PARP", "CDK4/6",
-            "PD-1", "PD-L1", "CTLA4", "LAG3", "TIM3", "TIGIT", "OX40", "STING", "IL-6", "JAK1", "STAT3", "VEGF",
-            "BACE1", "MAPT", "SNCA", "LRRK2", "APOE4", "NMDA", "TREM2", "PINK1", "ACHE", "HTT"
-        ];
+            // Build one ghost per source word.
+            const sources = document.querySelectorAll('[data-anchor^="source-"]');
+            const pairs = [];
+            sources.forEach(source => {
+                const word = source.dataset.anchor.slice('source-'.length);
+                const target = document.querySelector(`[data-anchor="target-${word}"]`);
+                if (!target) return;
+                const ghost = document.createElement('span');
+                ghost.className = 'word-ghost ghost-' + word;
+                ghost.textContent = source.textContent;
+                ghost.setAttribute('aria-hidden', 'true');
+                document.body.appendChild(ghost);
+                pairs.push({ source, target, ghost, word });
+            });
 
-        const config = {
-            clusterCount: 6,
-            pointsPerCluster: 80,
-            clusterSpread: 130,
-            agentCount: 1,
-            influenceRadius: 160,
-            colors: {
-                disease: {r: 255, g: 85, b: 119},
-                health: {r: 52, g: 211, b: 153},
-                neutral: {r: 40, g: 45, b: 60}
-            }
-        };
-
-        // Density of floating target labels — much sparser on small screens
-        // so the canvas doesn't fight with the hero copy.
-        function labelThreshold() {
-            return window.innerWidth < 640 ? 0.94 : 0.75;
-        }
-
-        function resize() {
-            width = window.innerWidth;
-            height = window.innerHeight;
-            canvas.width = width;
-            canvas.height = height;
-            init();
-        }
-
-        function randomGaussian() {
-            let u = 0, v = 0;
-            while(u === 0) u = Math.random();
-            while(v === 0) v = Math.random();
-            return Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
-        }
-
-        class Point {
-            constructor(centerX, centerY, type) {
-                this.x = centerX + randomGaussian() * (config.clusterSpread * 0.7);
-                this.y = centerY + randomGaussian() * (config.clusterSpread * 0.7);
-
-                this.type = type;
-                this.size = Math.random() * 2 + 2.5;
-                this.healState = 0;
-
-                this.name = targetNames[Math.floor(Math.random() * targetNames.length)];
-                this.showLabel = Math.random() > labelThreshold();
-
-                this.vx = (Math.random() - 0.5) * 0.15;
-                this.vy = (Math.random() - 0.5) * 0.15;
+            if (reduced) {
+                pairs.forEach(({ target }) => { target.style.opacity = 1; });
+                return;
             }
 
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
+            let raf = null;
 
-                if (this.healing) {
-                    this.healState += 0.01;
-                    if (this.healState > 1) this.healState = 1;
-                }
-            }
+            function frame() {
+                raf = null;
+                const stageRect = stage.getBoundingClientRect();
+                const vh = window.innerHeight;
+                const stageTotal = stage.offsetHeight - vh;
+                const scrolled = -stageRect.top;
+                // Animation occupies the first 60% of stage scroll travel.
+                // The remaining 40% holds the figure on screen so it can rest
+                // and breathe before scrolling away.
+                const startAt = vh * 0.10;
+                const endAt = stageTotal * 0.60;
+                const raw = (scrolled - startAt) / Math.max(1, endAt - startAt);
+                const p = clamp(raw, 0, 1);
 
-            draw() {
-                let r, g, b, a;
+                // Cream-on-dark → ink-on-cream colour transition for ghosts
+                // mid-flight. Discovery is sage throughout (stays focal).
+                const lerpColor = (a, b, t) => `rgb(${[0,1,2].map(i=>Math.round(a[i]+(b[i]-a[i])*t)).join(',')})`;
+                const cream = [232, 226, 212];
+                const ink = [28, 24, 18];
+                const sage = [74, 94, 72];
 
-                if (this.type === 'neutral') {
-                    r = config.colors.neutral.r;
-                    g = config.colors.neutral.g;
-                    b = config.colors.neutral.b;
-                    a = 0.3;
-                } else {
-                    r = config.colors.disease.r + (config.colors.health.r - config.colors.disease.r) * this.healState;
-                    g = config.colors.disease.g + (config.colors.health.g - config.colors.disease.g) * this.healState;
-                    b = config.colors.disease.b + (config.colors.health.b - config.colors.disease.b) * this.healState;
-                    a = 0.8;
-                }
+                pairs.forEach(({ source, target, ghost, word }) => {
+                    // Stagger: Discovery flies first; the others lag slightly.
+                    // Each word's "local" progress is normalized so it still
+                    // reaches 1.0 by the end of the stage.
+                    const order = { discovery: 0, you: 1, can: 2, trace: 3, to: 4, the: 5, figure: 6 };
+                    const ix = order[word] ?? 0;
+                    const lag = ix * 0.035;
+                    const local = clamp((p - lag) / (1 - lag - 0.02), 0, 1);
+                    const eased = ease(local);
 
-                ctx.fillStyle = `rgba(${Math.floor(r)}, ${Math.floor(g)}, ${Math.floor(b)}, ${a})`;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
+                    const sRect = source.getBoundingClientRect();
+                    const tRect = target.getBoundingClientRect();
+                    const sFs = parseFloat(getComputedStyle(source).fontSize);
+                    const tFs = parseFloat(getComputedStyle(target).fontSize);
 
-                if (this.type === 'disease' && this.showLabel) {
-                    ctx.fillStyle = `rgba(255, 255, 255, ${0.7 + (this.healState * 0.3)})`;
-                    ctx.font = '12px "Plus Jakarta Sans"';
-                    ctx.fillText(this.name, this.x + 10, this.y + 4);
-                }
-            }
-        }
+                    const x = lerp(sRect.left, tRect.left, eased);
+                    const y = lerp(sRect.top, tRect.top, eased);
+                    const fs = lerp(sFs, tFs, eased);
 
-        class Agent {
-            constructor() {
-                this.reset();
-            }
+                    ghost.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+                    ghost.style.fontSize = `${fs}px`;
+                    ghost.style.opacity = (local > 0.001 && local < 0.999) ? '1' : '0';
 
-            reset() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                this.vx = (Math.random() - 0.5) * 1.8;
-                this.vy = (Math.random() - 0.5) * 1.8;
-            }
-
-            update(allPoints) {
-                const speed = Math.sqrt(this.vx*this.vx + this.vy*this.vy);
-                const maxSpeed = 1.0;
-                if (speed > maxSpeed) {
-                    this.vx = (this.vx / speed) * maxSpeed;
-                    this.vy = (this.vy / speed) * maxSpeed;
-                }
-
-                this.vx += (Math.random() - 0.5) * 0.05;
-                this.vy += (Math.random() - 0.5) * 0.05;
-
-                this.x += this.vx;
-                this.y += this.vy;
-
-                if (this.x < 0 || this.x > width) this.vx *= -1;
-                if (this.y < 0 || this.y > height) this.vy *= -1;
-
-                let connectedPoints = [];
-
-                allPoints.forEach(p => {
-                    if (p.type === 'neutral') return;
-
-                    const dx = this.x - p.x;
-                    const dy = this.y - p.y;
-                    const dist = Math.sqrt(dx*dx + dy*dy);
-
-                    if (p.type === 'disease' && p.healState < 1) {
-                        const force = 0.5 / Math.max(dist, 10);
-                        this.vx -= (dx / dist) * force;
-                        this.vy -= (dy / dist) * force;
+                    if (word === 'discovery') {
+                        ghost.style.color = lerpColor(sage, sage, eased);
+                    } else {
+                        ghost.style.color = lerpColor(cream, ink, eased);
                     }
 
-                    if (dist < config.influenceRadius) {
-                        connectedPoints.push({point: p, dist: dist});
-                    }
+                    source.style.opacity = local > 0.02 ? '0' : '1';
+                    target.style.opacity = local > 0.98 ? '1' : '0';
                 });
 
-                if (connectedPoints.length > 0) {
-                    ctx.beginPath();
-                    connectedPoints.forEach(item => {
-                        if (item.point.type === 'disease') {
-                            item.point.healing = true;
-                        }
-                        ctx.moveTo(this.x, this.y);
-                        ctx.lineTo(item.point.x, item.point.y);
-                    });
-                    ctx.lineWidth = 1.5;
-                    ctx.strokeStyle = `rgba(255, 255, 255, 0.2)`;
-                    ctx.stroke();
-                    ctx.lineWidth = 1;
-                }
+                if (period) period.style.opacity = p > 0.05 ? '0' : '1';
+
+                // Cross-fade hero / figure.
+                const heroOp = clamp(1 - (p - 0.20) / 0.35, 0, 1);
+                const figOp  = clamp((p - 0.35) / 0.35, 0, 1);
+                if (hero) hero.style.setProperty('--hero-op', heroOp.toFixed(3));
+                if (figureStage) figureStage.style.setProperty('--fig-op', figOp.toFixed(3));
             }
 
-            draw() {
-                ctx.fillStyle = 'white';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, 6, 0, Math.PI * 2);
-                ctx.fill();
-
-                ctx.fillStyle = 'white';
-                ctx.font = '600 14px "Plus Jakarta Sans"';
-                ctx.fillText("Elman", this.x + 10, this.y - 10);
-
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = 'rgba(255,255,255,0.6)';
-                ctx.fill();
-                ctx.shadowBlur = 0;
-            }
-        }
-
-        function init() {
-            clusters = [];
-            agents = [];
-
-            for (let i = 0; i < config.clusterCount; i++) {
-                let centerX = Math.random() * (width * 0.8) + (width * 0.1);
-                let centerY = Math.random() * (height * 0.8) + (height * 0.1);
-
-                let type = Math.random() > 0.5 ? 'disease' : 'neutral';
-
-                for (let j = 0; j < config.pointsPerCluster; j++) {
-                    clusters.push(new Point(centerX, centerY, type));
-                }
+            function schedule() {
+                if (raf == null) raf = requestAnimationFrame(frame);
             }
 
-            for (let i = 0; i < config.agentCount; i++) {
-                agents.push(new Agent());
+            const start = () => { schedule(); };
+            if (document.fonts && document.fonts.ready) {
+                document.fonts.ready.then(start);
+            } else {
+                window.addEventListener('load', start);
             }
-        }
 
-        function animate() {
-            ctx.clearRect(0, 0, width, height);
-
-            clusters.forEach(p => {
-                p.update();
-                p.draw();
-            });
-
-            agents.forEach(a => {
-                a.update(clusters);
-                a.draw();
-            });
-
-            requestAnimationFrame(animate);
-        }
-
-        window.addEventListener('resize', resize);
-        resize();
-        animate();
-
+            window.addEventListener('scroll', schedule, { passive: true });
+            window.addEventListener('resize', schedule);
+        })();
     </script>
 </body>
 </html>
