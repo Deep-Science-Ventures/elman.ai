@@ -1,1215 +1,1787 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elman — Discovery you can trace to the figure</title>
-    <meta name="description" content="An autonomous discovery engine for the life sciences. Every claim Elman makes is read directly from a specific experimental arm — never paraphrased from a model's memory.">
-
-    <meta property="og:title" content="Elman — Discovery you can trace to the figure">
-    <meta property="og:description" content="An autonomous discovery engine for the life sciences. Every claim is read directly from a specific experimental arm — never paraphrased from a model's memory.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://elman.ai/">
-    <meta property="og:site_name" content="Elman">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Elman — Discovery you can trace to the figure">
-    <meta name="twitter:description" content="An autonomous discovery engine for the life sciences. Every claim is read directly from a specific experimental arm — never paraphrased from a model's memory.">
-
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230e0c12'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%239bb098'/%3E%3C/svg%3E">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
-    <style>
-        :root {
-            /* Muted, warm palette. Background sits between charcoal and ink;
-               text is warm cream like aged paper; accent is soft sage —
-               botanical, calm, never amber (so it doesn't echo BPB) and
-               never electric (so it doesn't read AI-startup). */
-            --bg: #0e0c12;
-            --bg-2: #14111a;
-            --text: #e8e2d4;
-            --text-2: #9b9486;
-            --text-3: #5e5850;
-            --line: rgba(232, 226, 212, 0.085);
-            --line-strong: rgba(232, 226, 212, 0.16);
-
-            --brand: #9bb098;
-            --brand-soft: rgba(155, 176, 152, 0.55);
-            --brand-faint: rgba(155, 176, 152, 0.18);
-            --brand-glow: rgba(155, 176, 152, 0.32);
-
-            --serif: 'Instrument Serif', 'Times New Roman', Georgia, serif;
-            --sans: 'Inter', system-ui, -apple-system, sans-serif;
-            --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-        }
-
-        * { box-sizing: border-box; }
-
-        html, body {
-            margin: 0;
-            padding: 0;
-            font-family: var(--sans);
-            font-size: 16px;
-            color: var(--text);
-            background: var(--bg);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background:
-                radial-gradient(ellipse 80% 50% at 50% 0%, rgba(155, 176, 152, 0.05) 0%, transparent 60%),
-                radial-gradient(ellipse 60% 40% at 50% 100%, rgba(155, 176, 152, 0.025) 0%, transparent 60%),
-                var(--bg);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* ---- nav ---- */
-        nav {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            padding: 1.4rem 2.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 100;
-            font-size: 0.85rem;
-            pointer-events: none;
-        }
-        nav > * { pointer-events: auto; }
-
-        .logo {
-            font-family: var(--serif);
-            font-size: 1.35rem;
-            letter-spacing: -0.02em;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.55rem;
-            color: var(--text);
-        }
-
-        .logo-mark {
-            width: 8px;
-            height: 8px;
-            background: var(--brand);
-            border-radius: 50%;
-            box-shadow: 0 0 16px var(--brand-glow);
-        }
-
-        .nav-meta {
-            font-family: var(--mono);
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            color: var(--text-2);
-        }
-
-        /* ---- hero / scroll choreography ---- */
-        .scroll-stage {
-            position: relative;
-            min-height: 280vh;
-        }
-
-        .hero-pinned {
-            position: sticky;
-            top: 0;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 0 2rem;
-            text-align: center;
-            z-index: 10;
-            opacity: var(--hero-op, 1);
-            will-change: opacity;
-        }
-
-        .hero-wordmark {
-            font-family: var(--serif);
-            font-weight: 400;
-            font-size: clamp(5.5rem, 16vw, 13rem);
-            letter-spacing: -0.045em;
-            line-height: 0.92;
-            margin: 0 0 1.5rem;
-            color: var(--text);
-            position: relative;
-        }
-
-        .hero-wordmark::after {
-            content: '';
-            position: absolute;
-            left: 50%;
-            bottom: -0.4rem;
-            transform: translateX(-50%);
-            width: 36px;
-            height: 1px;
-            background: var(--brand);
-            opacity: 0;
-            animation: revealRule 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
-        }
-
-        @keyframes revealRule {
-            from { width: 0; opacity: 0; }
-            to { width: 36px; opacity: 1; }
-        }
-
-        .hero-tagline {
-            font-family: var(--serif);
-            font-style: italic;
-            font-weight: 400;
-            font-size: clamp(1.6rem, 3.2vw, 2.4rem);
-            letter-spacing: -0.005em;
-            line-height: 1.2;
-            color: var(--text);
-            margin: 1.4rem 0 0;
-            max-width: 32ch;
-        }
-
-        .src-word {
-            display: inline-block;
-            transition: opacity 0.18s ease;
-        }
-        .src-discovery {
-            color: var(--brand);
-        }
-        .src-period {
-            display: inline-block;
-            transition: opacity 0.18s ease;
-        }
-
-        .hero-meta {
-            margin-top: 2.5rem;
-            font-family: var(--mono);
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.22em;
-            color: var(--text-2);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.85rem;
-        }
-        .hero-meta::before, .hero-meta::after {
-            content: '';
-            width: 18px;
-            height: 1px;
-            background: var(--brand-soft);
-            display: inline-block;
-        }
-
-        /* ---- figure ---- */
-        .figure-stage {
-            position: sticky;
-            top: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 3rem 2rem;
-            z-index: 5;
-            margin-top: -100vh;
-            opacity: var(--fig-op, 0);
-            will-change: opacity;
-        }
-
-        /* Paper card — looks like a printed page from a journal:
-           warm cream stock, dark ink, subtle shadow, fixed page-like
-           proportions with a thin header/footer. */
-        .paper-card {
-            width: 100%;
-            max-width: 680px;
-            background:
-                radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.04) 0%, transparent 60%),
-                #ede4d2;
-            color: #1c1812;
-            border-radius: 6px;
-            box-shadow:
-                0 24px 60px -22px rgba(0, 0, 0, 0.55),
-                0 6px 20px -10px rgba(0, 0, 0, 0.35),
-                0 0 0 1px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
-            font-family: var(--serif);
-            position: relative;
-        }
-
-        .paper-card::before {
-            /* faint paper texture via blended noise pattern */
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image:
-                radial-gradient(circle at 12% 8%, rgba(28, 24, 18, 0.04) 0%, transparent 1.2%),
-                radial-gradient(circle at 78% 32%, rgba(28, 24, 18, 0.03) 0%, transparent 1%),
-                radial-gradient(circle at 42% 78%, rgba(28, 24, 18, 0.03) 0%, transparent 0.9%);
-            pointer-events: none;
-            mix-blend-mode: multiply;
-            opacity: 0.6;
-        }
-
-        .paper-header,
-        .paper-footer {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.85rem 1.6rem;
-            font-family: var(--mono);
-            font-size: 0.6rem;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-            color: rgba(28, 24, 18, 0.55);
-            border-bottom: 1px solid rgba(28, 24, 18, 0.12);
-        }
-        .paper-footer {
-            border-bottom: none;
-            border-top: 1px solid rgba(28, 24, 18, 0.12);
-        }
-
-        .paper-body {
-            padding: 1.4rem 2.2rem 1.8rem;
-            position: relative;
-        }
-
-        .paper-fig-num {
-            font-family: var(--mono);
-            font-size: 0.62rem;
-            text-transform: uppercase;
-            letter-spacing: 0.22em;
-            color: rgba(28, 24, 18, 0.55);
-            margin: 0 0 0.6rem;
-        }
-
-        .graph-wrap {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 600 / 400;
-            margin: 0 auto;
-        }
-
-        .graph-edges {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
-        .g-edge { animation: edgeIn 1.4s ease 0.6s forwards; opacity: 0; }
-        @keyframes edgeIn { to { opacity: var(--end-edge, 0.55); } }
-        .g-nodes circle { animation: dotIn 1.0s ease forwards; opacity: 0; }
-        .g-halo { animation: haloPulse 4s ease-in-out 1.4s infinite; transform-origin: 300px 200px; transform-box: fill-box; }
-        @keyframes haloPulse {
-            0%, 100% { opacity: 0.4; transform: scale(1); }
-            50% { opacity: 0.7; transform: scale(1.15); }
-        }
-
-        /* Word-as-node labels — positioned over the SVG at each node. */
-        .g-label {
-            position: absolute;
-            font-family: var(--serif);
-            font-style: italic;
-            color: #1c1812;
-            opacity: 0;
-            transition: opacity 0.18s ease;
-            white-space: nowrap;
-            font-size: 0.95rem;
-            line-height: 1;
-            transform: translate(-50%, -50%);
-        }
-        .g-label-discovery {
-            color: #4a5e48;
-            font-size: clamp(1.05rem, 1.5vw, 1.25rem);
-            font-weight: 400;
-        }
-        /* Coordinates: graph viewBox is 600×400, label centred on each node
-           with small offsets so the word doesn't sit exactly on the dot. */
-        .g-label-discovery { top: 50%;   left: 50%;   transform: translate(-50%, calc(-50% + 1.4rem)); }
-        .g-label-you      { top: 23.75%; left: 70.83%; transform: translate(-50%, calc(-50% - 1.1rem)); }
-        .g-label-can      { top: 50%;    left: 79.66%; transform: translate(calc(-50% + 1.5rem), -50%); }
-        .g-label-trace    { top: 76.25%; left: 70.83%; transform: translate(-50%, calc(-50% + 1.1rem)); }
-        .g-label-to       { top: 76.25%; left: 29.17%; transform: translate(-50%, calc(-50% + 1.1rem)); }
-        .g-label-the      { top: 50%;    left: 20.34%; transform: translate(calc(-50% - 1.5rem), -50%); }
-        .g-label-figure   { top: 23.75%; left: 29.17%; transform: translate(-50%, calc(-50% - 1.1rem)); }
-
-        .paper-caption {
-            font-family: var(--serif);
-            font-size: 0.78rem;
-            line-height: 1.55;
-            color: rgba(28, 24, 18, 0.78);
-            margin: 1.6rem 0 0;
-            max-width: 540px;
-        }
-        .paper-caption strong {
-            font-weight: 400;
-            font-style: italic;
-        }
-        .paper-caption em {
-            font-style: italic;
-            color: #4a5e48;
-        }
-
-        /* ---- word ghosts (each tagline word travels into a node) ---- */
-        .word-ghost {
-            position: fixed;
-            top: 0;
-            left: 0;
-            font-family: var(--serif);
-            font-style: italic;
-            font-weight: 400;
-            color: var(--text);
-            pointer-events: none;
-            transform-origin: top left;
-            white-space: nowrap;
-            z-index: 50;
-            opacity: 0;
-            will-change: transform, font-size, opacity;
-        }
-        .word-ghost.ghost-discovery { color: var(--brand); }
-
-        /* ---- stats ---- */
-        .stats {
-            max-width: 760px;
-            margin: 6rem auto 0;
-            padding: 0 2.5rem;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2.5rem;
-            text-align: center;
-        }
-
-        .stat {
-            position: relative;
-        }
-
-        .stat + .stat::before {
-            content: '';
-            position: absolute;
-            left: -1.25rem;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 1px;
-            height: 60%;
-            background: var(--line);
-        }
-
-        .stat-value {
-            font-family: var(--serif);
-            font-style: italic;
-            font-size: clamp(2.4rem, 4.2vw, 3.2rem);
-            font-weight: 400;
-            line-height: 1;
-            letter-spacing: -0.02em;
-            color: var(--brand);
-            display: block;
-            margin-bottom: 0.55rem;
-        }
-
-        .stat-label {
-            font-family: var(--mono);
-            font-size: 0.66rem;
-            text-transform: uppercase;
-            letter-spacing: 0.18em;
-            color: var(--text-2);
-            line-height: 1.5;
-        }
-
-        /* ---- pillars ---- */
-        .pillars {
-            max-width: 1080px;
-            margin: 6rem auto 0;
-            padding: 0 2.5rem;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 3rem;
-        }
-
-        .pillar {
-            position: relative;
-            text-align: center;
-            padding: 0 0.5rem;
-        }
-
-        .pillar + .pillar::before {
-            content: '';
-            position: absolute;
-            left: -1.5rem;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 1px;
-            height: 70%;
-            background: var(--line);
-        }
-
-        .pillar h3 {
-            font-family: var(--serif);
-            font-style: italic;
-            font-weight: 400;
-            font-size: 1.5rem;
-            color: var(--brand);
-            margin: 0 0 0.65rem;
-            letter-spacing: -0.01em;
-        }
-
-        .pillar p {
-            font-size: 0.93rem;
-            line-height: 1.6;
-            color: var(--text-2);
-            margin: 0;
-        }
-
-        /* ---- press band (Allen / Cell) ---- */
-        .press-band {
-            max-width: 760px;
-            margin: 4rem auto 0;
-            padding: 0 2.5rem;
-            text-align: center;
-        }
-        .press-line {
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.6rem;
-            border-top: 1px solid var(--brand-faint);
-            border-bottom: 1px solid var(--brand-faint);
-            padding: 1.4rem 1.8rem;
-            max-width: 640px;
-        }
-        .press-tag {
-            font-family: var(--mono);
-            font-size: 0.66rem;
-            letter-spacing: 0.22em;
-            text-transform: uppercase;
-            color: var(--brand);
-        }
-        .press-body {
-            font-family: var(--serif);
-            font-style: italic;
-            font-size: 1.05rem;
-            line-height: 1.55;
-            color: var(--text);
-            margin: 0;
-        }
-        .press-body strong {
-            font-weight: 400;
-            color: var(--brand);
-        }
-        .press-body em {
-            font-style: italic;
-            color: var(--text-2);
-        }
-
-        /* ---- pipeline (5-step discovery flow with traveling highlight) ---- */
-        .pipeline {
-            max-width: 1240px;
-            margin: 8rem auto 0;
-            padding: 6rem 2.5rem 0;
-            text-align: center;
-            border-top: 1px solid var(--line);
-        }
-
-        .pipeline-eyebrow {
-            font-family: var(--mono);
-            font-size: 0.7rem;
-            letter-spacing: 0.22em;
-            text-transform: uppercase;
-            color: var(--brand);
-            margin: 0 0 1rem;
-        }
-
-        .pipeline-heading {
-            font-family: var(--serif);
-            font-style: italic;
-            font-weight: 400;
-            font-size: clamp(2rem, 4vw, 2.8rem);
-            letter-spacing: -0.02em;
-            line-height: 1.15;
-            color: var(--text);
-            margin: 0 0 1.2rem;
-        }
-
-        .pipeline-intro {
-            max-width: 580px;
-            margin: 0 auto 4rem;
-            font-size: 1rem;
-            line-height: 1.6;
-            color: var(--text-2);
-        }
-
-        .pipeline-track {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 0;
-            max-width: 1180px;
-            margin: 0 auto;
-            position: relative;
-            text-align: left;
-        }
-
-        .pipeline-rule {
-            position: absolute;
-            top: 38px;
-            left: 5%;
-            right: 5%;
-            height: 1px;
-            background: var(--line-strong);
-            z-index: 0;
-        }
-
-        .pipeline-rule::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 20%;
-            height: 1px;
-            background: linear-gradient(to right, transparent, var(--brand), transparent);
-            box-shadow: 0 0 8px var(--brand-glow);
-            animation: rulePulse 12s linear infinite;
-        }
-        @keyframes rulePulse {
-            0%   { left: -20%; }
-            100% { left: 100%; }
-        }
-
-        .pipeline-step {
-            position: relative;
-            padding: 0 1.1rem;
-            z-index: 1;
-            opacity: 0.5;
-            animation: stepPulse 12s ease-in-out infinite;
-            transition: none;
-        }
-        .pipeline-step:nth-child(1) { animation-delay: 0s; }
-        .pipeline-step:nth-child(2) { animation-delay: 2.4s; }
-        .pipeline-step:nth-child(3) { animation-delay: 4.8s; }
-        .pipeline-step:nth-child(4) { animation-delay: 7.2s; }
-        .pipeline-step:nth-child(5) { animation-delay: 9.6s; }
-
-        @keyframes stepPulse {
-            0%, 12%, 100% { opacity: 0.45; }
-            3%, 9%        { opacity: 1; }
-        }
-
-        .step-num {
-            font-family: var(--mono);
-            font-size: 0.66rem;
-            letter-spacing: 0.22em;
-            text-transform: uppercase;
-            color: var(--brand);
-            display: inline-block;
-            width: 76px;
-            height: 76px;
-            line-height: 76px;
-            text-align: center;
-            border: 1px solid var(--line-strong);
-            border-radius: 50%;
-            background: var(--bg);
-            margin: 0 auto;
-            transition: border-color 0.4s, color 0.4s, box-shadow 0.4s;
-        }
-
-        .pipeline-step.is-active .step-num,
-        .pipeline-step:hover .step-num {
-            border-color: var(--brand);
-            box-shadow: 0 0 28px var(--brand-glow), inset 0 0 12px rgba(155, 176, 152, 0.08);
-        }
-
-        .step-label {
-            display: block;
-            text-align: center;
-            margin-top: 1.2rem;
-        }
-
-        .step-status {
-            font-family: var(--mono);
-            font-size: 0.58rem;
-            letter-spacing: 0.22em;
-            text-transform: uppercase;
-            color: var(--text-3);
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-        .pipeline-step[data-status="live"] .step-status {
-            color: var(--brand);
-        }
-
-        .step-title {
-            font-family: var(--serif);
-            font-style: italic;
-            font-weight: 400;
-            font-size: 1.35rem;
-            color: var(--text);
-            margin: 0 0 0.5rem;
-            letter-spacing: -0.01em;
-        }
-
-        .step-desc {
-            font-size: 0.86rem;
-            line-height: 1.55;
-            color: var(--text-2);
-            margin: 0;
-        }
-
-        /* Old products section now retired — keep selectors for any leftovers */
-        .products {
-            max-width: 1100px;
-            margin: 8rem auto 0;
-            padding: 6rem 2.5rem 0;
-            text-align: center;
-            border-top: 1px solid var(--line);
-        }
-
-        .products-eyebrow {
-            font-family: var(--mono);
-            font-size: 0.7rem;
-            letter-spacing: 0.22em;
-            text-transform: uppercase;
-            color: var(--brand);
-            margin: 0 0 1rem;
-        }
-
-        .products-heading {
-            font-family: var(--serif);
-            font-style: italic;
-            font-weight: 400;
-            font-size: clamp(2rem, 4vw, 2.8rem);
-            letter-spacing: -0.02em;
-            line-height: 1.15;
-            color: var(--text);
-            margin: 0 0 1.2rem;
-        }
-
-        .products-intro {
-            max-width: 560px;
-            margin: 0 auto 3.5rem;
-            font-size: 1rem;
-            line-height: 1.6;
-            color: var(--text-2);
-        }
-
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.4rem;
-            text-align: left;
-            max-width: 980px;
-            margin: 0 auto;
-        }
-
-        .product-card {
-            background: rgba(232, 226, 212, 0.022);
-            border: 1px solid var(--line);
-            border-radius: 14px;
-            padding: 1.9rem 1.8rem 1.6rem;
-            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .product-card:hover {
-            border-color: var(--brand-soft);
-            transform: translateY(-3px);
-            background: rgba(232, 226, 212, 0.035);
-            box-shadow: 0 14px 38px -16px rgba(155, 176, 152, 0.22);
-        }
-
-        .product-tag {
-            font-family: var(--mono);
-            font-size: 0.66rem;
-            text-transform: uppercase;
-            letter-spacing: 0.18em;
-            color: var(--brand);
-            margin-bottom: 0.85rem;
-        }
-
-        .product-card h4 {
-            font-family: var(--serif);
-            font-style: italic;
-            font-weight: 400;
-            font-size: 1.55rem;
-            letter-spacing: -0.01em;
-            color: var(--text);
-            margin: 0 0 0.65rem;
-        }
-
-        .product-card p {
-            font-size: 0.93rem;
-            line-height: 1.6;
-            color: var(--text-2);
-            margin: 0 0 1.2rem;
-        }
-
-        .product-meta {
-            font-family: var(--mono);
-            font-size: 0.7rem;
-            color: var(--text-3);
-            border-top: 1px solid var(--line);
-            padding-top: 0.9rem;
-            letter-spacing: 0.04em;
-            line-height: 1.6;
-        }
-
-        .product-meta strong {
-            color: var(--text-2);
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.16em;
-            font-size: 0.62rem;
-            margin-right: 0.4rem;
-        }
-
-        /* ---- footer ---- */
-        footer {
-            margin: 8rem auto 0;
-            padding: 4rem 2.5rem 4rem;
-            max-width: 1100px;
-            border-top: 1px solid var(--line);
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 3rem 4rem;
-            text-align: center;
-        }
-
-        .footer-block .label {
-            display: block;
-            font-family: var(--mono);
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 0.22em;
-            color: var(--brand);
-            margin-bottom: 0.55rem;
-        }
-
-        .footer-block .value {
-            color: var(--text);
-            font-size: 0.92rem;
-            line-height: 1.5;
-        }
-
-        .footer-block a {
-            color: var(--text);
-            text-decoration: none;
-            border-bottom: 1px solid var(--brand-soft);
-            transition: all 0.3s;
-            padding-bottom: 1px;
-        }
-
-        .footer-block a:hover {
-            color: var(--brand);
-            border-color: var(--brand);
-        }
-
-        .footer-credit {
-            margin-top: 2rem;
-            text-align: center;
-            font-family: var(--mono);
-            font-size: 0.62rem;
-            text-transform: uppercase;
-            letter-spacing: 0.22em;
-            color: var(--text-3);
-            padding-bottom: 2.5rem;
-        }
-
-        /* ---- entrance fade ---- */
-        .fade-in {
-            animation: fadeIn 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            opacity: 0;
-            transform: translateY(14px);
-        }
-
-        @keyframes fadeIn {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* SVG figure animations */
-        .fig-axis, .fig-tick, .fig-label {
-            opacity: 0;
-            animation: fadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
-        }
-        .fig-dot {
-            opacity: 0;
-            animation: dotIn 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        @keyframes dotIn {
-            to { opacity: var(--end-opacity, 0.6); }
-        }
-        .fig-focal {
-            opacity: 0;
-            animation: focalIn 2s cubic-bezier(0.16, 1, 0.3, 1) 1.4s forwards;
-        }
-        @keyframes focalIn {
-            to { opacity: 1; }
-        }
-        .fig-pulse {
-            transform-origin: center;
-            transform-box: fill-box;
-            animation: pulse 3s ease-in-out infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 0.4; transform: scale(1); }
-            50% { opacity: 0.7; transform: scale(1.15); }
-        }
-
-        /* ---- mobile ---- */
-        @media (max-width: 880px) {
-            .stats { grid-template-columns: 1fr; gap: 2rem; max-width: 360px; }
-            .stat + .stat::before { display: none; }
-            .pillars { grid-template-columns: 1fr; gap: 2.5rem; }
-            .pillar + .pillar::before { display: none; }
-            .product-grid { grid-template-columns: 1fr; }
-        }
-
-        @media (max-width: 640px) {
-            nav { padding: 1.2rem 1.4rem; }
-            .nav-meta { display: none; }
-            .scroll-stage { min-height: 200vh; }
-            .figure-stage { top: 100vh; padding: 2rem 1.4rem 4rem; }
-            .stats, .pillars, .products, footer { padding-left: 1.4rem; padding-right: 1.4rem; }
-            .products { padding-top: 4rem; margin-top: 5rem; }
-            footer { gap: 2rem; padding: 3rem 1.4rem; margin-top: 5rem; }
-            .figure-title { min-height: 2em; }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                transition-duration: 0.01ms !important;
-            }
-            .scroll-stage { min-height: auto; }
-            .hero-pinned { position: static; height: auto; padding: 6rem 2rem 4rem; }
-            .figure-stage { position: static; padding: 4rem 2rem; }
-            .source-discovery { opacity: 1 !important; }
-            .target-discovery { opacity: 1 !important; }
-            .discovery-ghost { display: none; }
-        }
-    </style>
+<meta charset="utf-8">
+<title>Elman — Drug development AI you can audit, end to end</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Drug development AI where every claim resolves to a paper sentence, trial arm, or figure. No memorised priors, no averaged-out signal, no black-box verdicts.">
+
+<meta property="og:title" content="Elman — Drug development AI you can audit, end to end">
+<meta property="og:description" content="Drug development AI where every claim resolves to a paper sentence, trial arm, or figure. No memorised priors, no averaged-out signal, no black-box verdicts.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://elman.ai/">
+<meta property="og:site_name" content="Elman">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231D1D1D'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23F76233'/%3E%3C/svg%3E">
+
+<style>
+/* ───────── Fonts ───────── */
+@font-face { font-family: 'BWGradualMedium';
+  src: url('fonts/BwGradual-Medium.otf') format('opentype');
+  font-display: swap; }
+@font-face { font-family: 'BWGradualRegular';
+  src: url('fonts/BwGradual-Regular.otf') format('opentype');
+  font-display: swap; }
+@font-face { font-family: 'InterLight';
+  src: url('fonts/Inter-Light.ttf') format('truetype');
+  font-display: swap; }
+@font-face { font-family: 'InterRegular';
+  src: url('fonts/Inter-Regular.ttf') format('truetype');
+  font-display: swap; }
+@font-face { font-family: 'InterMedium';
+  src: url('fonts/Inter-Medium.ttf') format('truetype');
+  font-display: swap; }
+
+/* ───────── Tokens ───────── */
+:root {
+  --brand-black:  #1D1D1D;
+  --brand-white:  #FBFBFB;
+  --brand-orange: #F76233;
+  --brand-yellow: #FDD02B;
+  --brand-coral:  #E97248;
+
+  --orange-deep:  #D74D12;
+  --peach-soft:   #FBE8E2;
+  --yellow-light: #FFE173;
+
+  --magenta:      #AC0CB9;
+  --blue:         #2388FF;
+  --navy:         #19213D;
+  --slate:        #666F8D;
+
+  --cream:        #E5E5D9;
+  --cream-off:    #EDEDE3;
+  --white-warm:   #F4F4EF;
+  --white-near:   #F8F8F6;
+  --white-pure:   #FEFEFF;
+  --grey-cool:    #E3E6EA;
+  --grey-mid:     #ABABAB;
+
+  --font-display:         'BWGradualMedium', 'BW Gradual', system-ui, sans-serif;
+  --font-display-regular: 'BWGradualRegular', 'BW Gradual', system-ui, sans-serif;
+  --font-body:            'InterRegular', 'Inter', system-ui, sans-serif;
+  --font-body-medium:     'InterMedium', 'Inter', system-ui, sans-serif;
+  --font-body-light:      'InterLight', 'Inter', system-ui, sans-serif;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-pill: 999px;
+
+  --shadow-card:     0 1px 2px rgba(29,29,29,.05), 0 4px 12px rgba(29,29,29,.06);
+  --shadow-floating: 0 8px 28px rgba(29,29,29,.12);
+
+  --maxw: 1180px;
+  --pad-x: clamp(20px, 4vw, 56px);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--white-warm); }
+body {
+  font-family: var(--font-body);
+  color: var(--brand-black);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  line-height: 1.55;
+}
+a { color: inherit; }
+img { max-width: 100%; display: block; }
+
+/* ───────── Nav ───────── */
+nav.top {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 50;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px var(--pad-x);
+  background: rgba(29,29,29,0);
+  border-bottom: 1px solid rgba(255,255,255,0);
+  transition: background .3s ease, border-color .3s ease, padding .3s ease, backdrop-filter .3s ease;
+}
+/* Nav wordmark hidden over the hero (canonical wordmark lives in the hero); revealed on scroll */
+nav.top .wm-link {
+  opacity: 0;
+  transition: opacity .3s ease;
+  pointer-events: none;
+}
+nav.top.scrolled .wm-link { opacity: 1; pointer-events: auto; }
+nav.top .wm-link svg.wordmark-nav { transition: fill .3s ease; fill: var(--brand-black); }
+nav.top .links a:not(.cta) { color: rgba(255,255,255,.75); }
+nav.top .links a:not(.cta):hover { color: var(--brand-white); opacity: 1; }
+nav.top .links .cta { background: var(--brand-orange); color: var(--brand-white); }
+nav.top .links .cta:hover { background: var(--orange-deep); }
+
+nav.top.scrolled {
+  background: rgba(244,244,239,.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--cream);
+  padding: 12px var(--pad-x);
+}
+nav.top.scrolled .wm-link svg.wordmark-nav { fill: var(--brand-black); }
+nav.top.scrolled .links a:not(.cta) { color: var(--brand-black); }
+nav.top.scrolled .links a:not(.cta):hover { color: var(--brand-orange); }
+nav.top.scrolled .links .cta { background: var(--brand-black); }
+nav.top.scrolled .links .cta:hover { background: var(--brand-orange); }
+nav.top .wm-link { display: inline-flex; align-items: center; text-decoration: none; }
+nav.top .wm-link svg.wordmark-nav { height: 26px; width: auto; display: block; }
+nav.top .links {
+  display: flex; gap: 28px; align-items: center;
+  font-family: var(--font-body-medium); font-size: 13px;
+  letter-spacing: .02em;
+}
+nav.top .links a {
+  text-decoration: none;
+  transition: color .2s ease, opacity .2s ease;
+}
+nav.top .links .cta {
+  padding: 8px 16px; border-radius: var(--radius-pill);
+}
+@media (max-width: 720px) {
+  nav.top .links a:not(.cta) { display: none; }
+}
+
+/* ───────── Section primitives ───────── */
+section { position: relative; }
+.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--pad-x); }
+
+.section-pad { padding: 120px 0 100px; }
+.section-pad.tight { padding: 88px 0 72px; }
+@media (max-width: 720px) { .section-pad { padding: 72px 0 64px; } .section-pad.tight { padding: 56px 0; } }
+
+/* Section eyebrow — uppercase orange tag, no bar (brand-spec aligned, matches deck .slide-tag) */
+.eyebrow-row {
+  display: block;
+  margin-bottom: 14px;
+}
+.eyebrow-row .tag {
+  font-family: var(--font-body-medium); font-size: 12px;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--brand-orange);
+}
+
+.s-title {
+  font-family: var(--font-display);
+  font-size: clamp(34px, 5vw, 56px);
+  line-height: 1.04;
+  letter-spacing: -.015em;
+  color: var(--brand-black);
+  margin: 0;
+}
+.s-title em { font-style: normal; color: var(--brand-orange); }
+
+.s-sub {
+  font-family: var(--font-body-light);
+  font-size: clamp(15px, 1.4vw, 18px);
+  line-height: 1.55;
+  color: var(--slate);
+  margin: 14px 0 0;
+  max-width: 880px;
+}
+
+.kicker {
+  font-family: var(--font-body-medium); font-size: 11px;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--slate);
+}
+
+/* ───────── Hero (dark cover) ───────── */
+.hero {
+  background: var(--brand-black); color: var(--brand-white);
+  position: relative; overflow: hidden;
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+}
+.hero .glow-y, .hero .glow-o {
+  position: absolute; pointer-events: none;
+}
+.hero .glow-y { left: -260px; top: -180px; width: 1100px; opacity: .45; }
+.hero .glow-o { right: -300px; bottom: -260px; width: 1000px; opacity: .85; }
+
+.hero-inner {
+  position: relative; z-index: 2;
+  flex: 1; display: flex; flex-direction: column; justify-content: space-between;
+  padding: 120px var(--pad-x) 96px;
+  max-width: var(--maxw);
+  width: 100%;
+  margin: 0 auto;
+}
+/* Desktop padding-top centers the lockup between nav links and the H1; mobile needs far less */
+@media (max-width: 820px) {
+  .hero-inner { padding-top: 110px; }
+}
+.hero .eyebrow {
+  font-family: var(--font-body-medium); font-size: 13px;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--brand-yellow);
+  margin-bottom: 22px;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(44px, 7vw, 100px);
+  line-height: 1.02;
+  letter-spacing: -.015em;
+  margin: 0;
+  color: var(--brand-white);
+}
+.hero h1 em { font-style: normal; color: var(--brand-orange); }
+
+.hero-lead {
+  font-family: var(--font-body-light);
+  font-size: clamp(15px, 1.35vw, 18px);
+  color: rgba(255,255,255,.78);
+  line-height: 1.5;
+  letter-spacing: 0;
+  max-width: 760px;
+  margin: 56px 0 0;
+}
+.hero-lead strong { font-family: var(--font-body-medium); font-weight: normal; color: var(--brand-white); }
+
+/* Hero is a 3-zone cover (deck-cover pattern): wordmark top · H1 middle · meta bottom, via space-between */
+.btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 22px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-body-medium); font-size: 14px;
+  text-decoration: none;
+  letter-spacing: .01em;
+  transition: transform .15s ease, background .15s ease, color .15s ease;
+}
+.btn-primary { background: var(--brand-orange); color: var(--brand-white); }
+.btn-primary:hover { background: var(--orange-deep); transform: translateY(-1px); }
+.btn-ghost { background: transparent; color: var(--brand-white); border: 1px solid rgba(255,255,255,.28); }
+.btn-ghost:hover { background: rgba(255,255,255,.06); }
+.btn .arrow { font-size: 18px; line-height: 1; }
+
+.hero-meta {
+  display: flex; gap: 18px; align-items: center; flex-wrap: wrap;
+  font-family: var(--font-body-light); font-size: 13px;
+  color: rgba(255,255,255,.55); letter-spacing: .04em;
+}
+.hero-meta .dot { width: 4px; height: 4px; background: rgba(255,255,255,.4); border-radius: 50%; }
+.hero-meta strong { color: rgba(255,255,255,.85); font-family: var(--font-body-medium); font-weight: normal; }
+
+/* Cover wordmark in hero — 64px to match brand cover spec.
+   align-self + explicit width stop the SVG stretching to full column width
+   (which would centre the glyph via preserveAspectRatio); pins it top-left. */
+.hero .wordmark { height: 64px; width: 258px; align-self: flex-start; fill: var(--brand-white); }
+
+/* ───────── Problem ───────── */
+.bg-warm-white { background: var(--white-warm); }
+.bg-near-white { background: var(--white-near); }
+.bg-cream      { background: var(--cream-off); }
+
+.fm-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 40px;
+}
+@media (max-width: 820px) { .fm-grid { grid-template-columns: 1fr; } }
+
+.fm-panel {
+  background: var(--white-pure);
+  border: 1px solid var(--cream);
+  border-radius: var(--radius-md);
+  padding: 26px 24px 22px;
+  display: flex; flex-direction: column;
+}
+.fm-head {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 14px; margin-bottom: 12px;
+}
+.fm-panel .icon { width: 22px; height: 22px; color: var(--brand-orange); flex: 0 0 auto; margin: 2px 0 0; }
+.fm-panel .headline {
+  font-family: var(--font-display); font-size: 21px;
+  color: var(--brand-black); line-height: 1.2;
+  margin: 0;
+}
+.fm-panel .body {
+  font-family: var(--font-body); font-size: 15px;
+  color: var(--brand-black); line-height: 1.55;
+  margin: 0;
+}
+.fm-panel .body strong { font-family: var(--font-body-medium); font-weight: normal; }
+/* Footer pinned to card bottom. Order: citation → hairline → resolution.
+   Resolution is the bottom-most line (with the hairline on top); the citation
+   sits just above the hairline. Resolutions/hairlines align across cards. */
+.fm-foot {
+  margin-top: auto;
+}
+.fm-panel .anchor {
+  font-family: var(--font-body-light);
+  font-size: 11.5px; color: var(--grey-mid); line-height: 1.5;
+  margin: 0 0 12px;
+}
+.fm-panel .anchor a { color: var(--grey-mid); text-decoration: underline; }
+.fm-panel .anchor a:hover { color: var(--orange-deep); }
+.fm-resolution {
+  padding-top: 16px;
+  border-top: 1px solid var(--cream);
+  font-family: var(--font-body); font-size: 13px;
+  color: var(--slate); line-height: 1.5;
+}
+.fm-resolution .lbl { font-family: var(--font-body-medium); color: var(--orange-deep); }
+.fm-resolution .arr { color: var(--brand-orange); margin: 0 5px; }
+
+/* ───────── Substrate (5 L1 cards) ───────── */
+.l1-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+  margin-top: 40px;
+}
+@media (max-width: 1024px) { .l1-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px)  { .l1-grid { grid-template-columns: 1fr; } }
+
+.l1-card {
+  background: var(--white-pure);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--cream);
+  padding: 18px 18px 18px;
+  display: flex; flex-direction: column; gap: 10px;
+  min-height: 240px;
+}
+.num-circle {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--brand-orange); color: var(--brand-white);
+  font-family: var(--font-display); font-size: 15px; line-height: 1;
+  display: inline-flex; align-items: center; justify-content: center;
+  flex: 0 0 auto;
+}
+.l1-card h3 {
+  font-family: var(--font-display);
+  font-size: 19px; line-height: 1.2;
+  color: var(--brand-black);
+  margin: 0;
+}
+.l1-card .desc {
+  font-family: var(--font-body);
+  font-size: 13.5px; line-height: 1.55;
+  color: var(--brand-black);
+  margin: 0;
+  flex: 1;
+}
+.l1-card .addresses .chips {
+  display: flex; flex-wrap: wrap; gap: 4px;
+  margin-top: 8px;
+}
+.fm-chip {
+  display: inline-flex; align-items: center;
+  font-family: var(--font-body-medium);
+  font-size: 10.5px;
+  padding: 3px 8px; border-radius: var(--radius-pill);
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+.fm-chip.priors         { background: var(--navy);         color: var(--brand-white); }
+.fm-chip.memorisation   { background: var(--magenta);      color: var(--brand-white); }
+.fm-chip.throughput     { background: var(--brand-yellow); color: var(--brand-black); }
+.fm-chip.subpopulation  { background: var(--blue);         color: var(--brand-white); }
+
+/* ───────── Products (4 tiles) ───────── */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-top: 40px;
+}
+@media (max-width: 1024px) { .products-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px)  { .products-grid { grid-template-columns: 1fr; } }
+
+.tile {
+  border-radius: var(--radius-md);
+  padding: 22px 18px;
+  display: flex; flex-direction: column;
+  position: relative;
+  min-height: 220px;
+}
+.tile h3 {
+  font-family: var(--font-display);
+  font-size: 22px; margin: 0 0 12px; line-height: 1.2;
+  letter-spacing: -.01em;
+}
+.tile p {
+  font-family: var(--font-body); font-size: 14px;
+  margin: 0; line-height: 1.55;
+}
+.tile .indev-pill {
+  margin-top: auto;
+  align-self: flex-start;
+  font-family: var(--font-body-medium); font-size: 11px;
+  padding: 5px 12px; border-radius: var(--radius-pill);
+  background: var(--peach-soft); color: var(--orange-deep);
+}
+.tile.showcased { background: var(--peach-soft); border: 1.5px solid var(--brand-orange); }
+.tile.showcased h3 { color: var(--brand-orange); }
+.tile.showcased p { color: var(--brand-black); }
+.tile.faded { background: var(--white-pure); border: 1.5px solid var(--cream); }
+.tile.faded h3 { color: var(--brand-black); }
+.tile.faded p { color: var(--slate); }
+.tile.indev { background: var(--grey-cool); border: 1.5px solid var(--grey-mid); }
+.tile.indev h3 { color: var(--slate); }
+.tile.indev p { color: var(--slate); }
+
+/* ───────── Use-cases ───────── */
+.uc-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
+  margin-top: 40px;
+}
+@media (max-width: 820px) { .uc-grid { grid-template-columns: 1fr; gap: 32px; } }
+.uc-col h3 {
+  font-family: var(--font-display); font-size: 22px;
+  margin: 0 0 16px; line-height: 1.2;
+}
+.uc-col.left  h3 { color: var(--brand-orange); }
+.uc-col.right h3 { color: var(--slate); }
+.uc-row {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--cream);
+}
+.uc-row:last-child { border-bottom: 1px solid var(--cream); }
+.uc-marker { width: 10px; height: 10px; margin-top: 7px; flex: 0 0 auto; }
+.uc-marker.filled  { background: var(--brand-orange); }
+.uc-marker.outline { border: 1.5px solid var(--slate); background: transparent; }
+.uc-row .name {
+  font-family: var(--font-body-medium); font-size: 15px;
+  color: var(--brand-black);
+}
+.uc-row .map {
+  font-family: var(--font-body-light); font-size: 12.5px;
+  color: var(--slate); margin-top: 2px;
+}
+
+/* ───────── Product detail (flow + cards) ───────── */
+.flow-row {
+  display: flex; align-items: stretch; gap: 8px;
+  flex-wrap: nowrap;
+  margin-top: 36px;
+}
+.flow-node {
+  background: var(--white-pure);
+  border: 1px solid var(--brand-black);
+  border-radius: var(--radius-md);
+  padding: 14px 12px;
+  font-family: var(--font-body-medium); font-size: 13px;
+  text-align: center; line-height: 1.3;
+  position: relative;
+  min-height: 64px;
+  display: flex; align-items: center; justify-content: center;
+  flex: 1 1 0;
+}
+.flow-node.diff {
+  background: var(--peach-soft);
+  border-color: var(--orange-deep);
+  color: var(--orange-deep);
+}
+.flow-arrow {
+  color: var(--brand-orange);
+  font-family: var(--font-body); font-size: 22px;
+  line-height: 1; align-self: center; flex: 0 0 auto;
+}
+@media (max-width: 820px) {
+  .flow-row { flex-wrap: wrap; }
+  .flow-node { flex: 1 1 45%; }
+  .flow-arrow { display: none; }
+}
+
+.detail-cards {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-top: 32px;
+}
+@media (max-width: 900px) { .detail-cards { grid-template-columns: 1fr; } }
+
+.card {
+  background: var(--white-pure);
+  border: 1px solid var(--cream);
+  border-radius: var(--radius-md);
+  padding: 20px 22px;
+  position: relative;
+  overflow: hidden;
+}
+.card.peach-stripe::before {
+  content: ''; position: absolute;
+  left: 0; top: 0; bottom: 0; width: 4px;
+  background: var(--brand-orange);
+}
+.card .kicker-orange { color: var(--orange-deep); font-family: var(--font-body-medium); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; }
+.card p {
+  font-family: var(--font-body); font-size: 14px;
+  line-height: 1.6; margin: 8px 0 0;
+}
+.card strong { font-family: var(--font-body-medium); font-weight: normal; }
+
+.enrich-strip {
+  display: flex; gap: 14px; align-items: flex-start;
+  margin-top: 24px;
+}
+.enrich-strip .kicker { color: var(--orange-deep); padding-top: 2px; white-space: nowrap; }
+.enrich-strip p {
+  font-family: var(--font-body); font-size: 13px;
+  line-height: 1.6; color: var(--slate); margin: 0;
+}
+.enrich-strip p strong { color: var(--brand-black); font-family: var(--font-body-medium); font-weight: normal; }
+
+/* ───────── Worked example ───────── */
+.example-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+  margin-top: 32px; align-items: start;
+}
+@media (max-width: 900px) { .example-grid { grid-template-columns: 1fr; } }
+
+.figure-frame {
+  position: relative;
+  border-radius: var(--radius-md); overflow: hidden;
+  border: 1px solid var(--cream); background: var(--white-pure);
+}
+.figure-frame img { width: 100%; height: auto; display: block; }
+.figure-frame .badge {
+  position: absolute; top: 14px; left: 14px;
+  background: var(--brand-orange); color: var(--brand-white);
+  font-family: var(--font-body-medium); font-size: 11px;
+  letter-spacing: .16em; text-transform: uppercase;
+  padding: 6px 12px; border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-card);
+}
+.figure-cap {
+  font-family: var(--font-body-light); font-size: 12px;
+  color: var(--slate); line-height: 1.5; margin: 10px 0 0;
+}
+
+.question-bar {
+  background: var(--peach-soft);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  font-family: var(--font-body); font-size: 15px;
+  line-height: 1.55; color: var(--brand-black);
+}
+.question-bar em { font-style: normal; color: var(--brand-orange); font-family: var(--font-body-medium); }
+.example-grid .lead {
+  font-family: var(--font-body-medium); font-size: 16px;
+  color: var(--brand-black); line-height: 1.5; margin: 18px 0 0;
+}
+.example-grid .body-p {
+  font-family: var(--font-body); font-size: 13.5px;
+  color: var(--slate); line-height: 1.6; margin: 12px 0 0;
+}
+.example-grid .body-p strong { color: var(--brand-black); font-family: var(--font-body-medium); font-weight: normal; }
+.persist-card {
+  margin-top: 16px;
+  padding: 14px 16px;
+  background: var(--peach-soft);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--orange-deep);
+}
+.persist-card p {
+  font-family: var(--font-body); font-size: 13px;
+  color: var(--brand-black); line-height: 1.5; margin: 0;
+}
+.persist-card p + p { margin-top: 6px; }
+.persist-card strong { font-family: var(--font-body-medium); font-weight: normal; color: var(--orange-deep); }
+
+/* ───────── Traction (stat cards) ───────── */
+.stat-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 22px; margin-top: 40px;
+}
+@media (max-width: 900px) { .stat-grid { grid-template-columns: 1fr; } }
+.stat-card {
+  background: var(--white-pure);
+  border: 1px solid var(--cream);
+  border-radius: var(--radius-lg);
+  padding: 28px 26px;
+  min-height: 208px;
+  display: flex; flex-direction: column;
+}
+.stat-card .eyebrow {
+  font-family: var(--font-body-medium); font-size: 11px;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--brand-orange);
+}
+.stat-card .big {
+  font-family: var(--font-display);
+  font-size: 64px; line-height: 1;
+  color: var(--brand-black);
+  margin: 18px 0 12px;
+}
+.stat-card .big.smaller { font-size: 44px; line-height: 1.05; }
+.stat-card .big .uline {
+  position: relative;
+  display: inline-block;
+  padding: 0 4px;
+  isolation: isolate;
+}
+.stat-card .big .uline::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 4px;
+  height: 0.22em;
+  background: var(--yellow-light);
+  z-index: -1;
+}
+.stat-card .lead {
+  font-family: var(--font-body-medium); font-size: 14px;
+  color: var(--brand-black); line-height: 1.4;
+}
+.stat-card .body {
+  font-family: var(--font-body-light); font-size: 13px;
+  color: var(--slate); line-height: 1.6;
+  margin-top: 10px;
+}
+
+/* ───────── Engagement ───────── */
+.engage-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 18px; margin-top: 32px;
+}
+@media (max-width: 900px) { .engage-grid { grid-template-columns: 1fr; } }
+.engage-card {
+  background: var(--white-pure);
+  border: 1px solid var(--cream);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  display: flex; flex-direction: column;
+}
+.engage-card .tag-small {
+  font-family: var(--font-body-medium); font-size: 11px;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--brand-orange); margin-bottom: 10px;
+}
+.engage-card h3 {
+  font-family: var(--font-display); font-size: 24px;
+  line-height: 1.2; margin: 0 0 10px;
+}
+.engage-card p {
+  font-family: var(--font-body); font-size: 14px;
+  line-height: 1.55; margin: 0;
+}
+.engage-card .fits {
+  margin: 16px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--cream);
+  font-family: var(--font-body-light); font-size: 13px;
+  color: var(--slate); line-height: 1.55;
+}
+.engage-card .fits span {
+  font-family: var(--font-body-medium); color: var(--brand-orange);
+}
+
+.expanded-banner {
+  margin-top: 22px;
+  background: var(--peach-soft);
+  border-radius: var(--radius-lg);
+  padding: 22px 26px;
+}
+.expanded-banner .kicker { color: var(--orange-deep); margin-bottom: 6px; display: block; }
+.expanded-banner p {
+  font-family: var(--font-body); font-size: 15px;
+  line-height: 1.55; margin: 0; color: var(--brand-black);
+}
+.expanded-banner p .muted { color: var(--slate); }
+
+/* ───────── Team ───────── */
+.team-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 24px; margin-top: 36px;
+}
+@media (max-width: 820px) { .team-grid { grid-template-columns: 1fr; } }
+.team-card {
+  background: var(--white-pure);
+  border: 1px solid var(--cream);
+  border-radius: var(--radius-md);
+  padding: 26px;
+}
+.team-card .row-head {
+  display: flex; gap: 18px; align-items: flex-start;
+}
+.headshot {
+  width: 88px; height: 88px; border-radius: 50%;
+  border: 3px solid var(--brand-white);
+  box-shadow: 0 0 0 1px var(--cream);
+  flex: 0 0 auto; overflow: hidden;
+  background: var(--white-pure);
+}
+.headshot img { width: 100%; height: 100%; object-fit: cover; }
+.team-card h3 {
+  font-family: var(--font-display); font-size: 22px;
+  line-height: 1.2; margin: 0;
+}
+.team-card .sub {
+  font-family: var(--font-body-light); font-size: 13px;
+  color: var(--slate); margin-top: 4px;
+}
+.team-card .mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11.5px; color: var(--slate); margin-top: 4px;
+}
+.team-card .mono a { color: inherit; text-decoration: none; transition: color .2s ease; }
+.team-card .mono a:hover { color: var(--orange-deep); }
+.team-card ul {
+  font-family: var(--font-body); font-size: 13.5px;
+  line-height: 1.6; color: var(--brand-black);
+  margin: 18px 0 0; padding-left: 18px;
+}
+.team-card ul li { margin-bottom: 6px; }
+.team-card ul strong { font-family: var(--font-body-medium); font-weight: normal; }
+
+.team-band {
+  margin-top: 22px;
+  background: var(--brand-black); color: var(--brand-white);
+  border-radius: var(--radius-md);
+  padding: 18px 22px;
+}
+.team-band .eb {
+  font-family: var(--font-body-medium); font-size: 11px;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--brand-yellow);
+}
+.team-band .ln {
+  font-family: var(--font-body-light); font-size: 14px;
+  color: var(--brand-white); margin-top: 4px;
+}
+
+/* ───────── Closing (hero-scale cover) ───────── */
+.closing {
+  background: var(--brand-black); color: var(--brand-white);
+  position: relative; overflow: hidden;
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+}
+.closing .glow-y {
+  position: absolute; left: -260px; top: -180px;
+  width: 900px; opacity: .4; pointer-events: none;
+}
+.closing-inner {
+  position: relative; z-index: 2;
+  flex: 1;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 120px var(--pad-x);
+  max-width: var(--maxw); width: 100%; margin: 0 auto;
+}
+.closing .eyebrow {
+  font-family: var(--font-body-medium); font-size: 13px;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--brand-yellow);
+}
+.closing h2 {
+  font-family: var(--font-display);
+  font-size: clamp(40px, 6vw, 88px); line-height: 1.02;
+  letter-spacing: -.015em;
+  margin: 18px 0 0;
+  color: var(--brand-white);
+}
+.closing h2 em { font-style: normal; color: var(--brand-orange); }
+.closing .row-bottom {
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  gap: 24px; margin-top: 48px; flex-wrap: wrap;
+}
+.closing .contact {
+  font-family: var(--font-body-light); font-size: 13.5px;
+  color: rgba(255,255,255,.7); line-height: 1.7;
+}
+.closing .contact a { color: rgba(255,255,255,.7); text-decoration: none; }
+.closing .contact a:hover { color: var(--brand-orange); }
+.closing .contact .email {
+  color: var(--brand-white); font-family: var(--font-body-medium); font-size: 16px;
+  display: block; margin-bottom: 4px;
+}
+.closing .closing-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 16px 24px;
+  border-radius: var(--radius-pill);
+  background: var(--brand-orange); color: var(--brand-white);
+  font-family: var(--font-body-medium); font-size: 14.5px;
+  text-decoration: none;
+  letter-spacing: .01em;
+  transition: background .15s ease, transform .15s ease;
+}
+.closing .closing-cta:hover { background: var(--orange-deep); transform: translateY(-1px); }
+.closing .wm-foot {
+  position: absolute; z-index: 2;
+  left: var(--pad-x); bottom: 64px;
+  height: 40px; width: auto; fill: var(--brand-white); opacity: .55;
+}
+
+/* ───────── Scroll reveal animations ───────── */
+/* Gated on .anim-on (set by JS) so content stays visible if JS/IO doesn't fire */
+@media (prefers-reduced-motion: no-preference) {
+  html.anim-on .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity .9s cubic-bezier(.2,.7,.2,1), transform .9s cubic-bezier(.2,.7,.2,1);
+    will-change: opacity, transform;
+  }
+  html.anim-on .reveal.in-view { opacity: 1; transform: none; }
+
+  /* Stagger children when a parent is .stagger */
+  html.anim-on .stagger > .reveal { transition-delay: calc(var(--i, 0) * 80ms); }
+
+  /* Hero glow ambient drift */
+  @keyframes glow-drift-y {
+    0%   { transform: translate(0, 0) scale(1); }
+    50%  { transform: translate(60px, 40px) scale(1.06); }
+    100% { transform: translate(0, 0) scale(1); }
+  }
+  @keyframes glow-drift-o {
+    0%   { transform: translate(0, 0) scale(1); }
+    50%  { transform: translate(-50px, -30px) scale(1.04); }
+    100% { transform: translate(0, 0) scale(1); }
+  }
+  .hero .glow-y { animation: glow-drift-y 22s ease-in-out infinite; }
+  .hero .glow-o { animation: glow-drift-o 28s ease-in-out infinite; }
+
+  /* Hero headline pop-in */
+  @keyframes hero-fade-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: none; }
+  }
+  .hero h1       { animation: hero-fade-up 1.1s .2s both cubic-bezier(.2,.7,.2,1); }
+  .hero-lead     { animation: hero-fade-up 1.1s .4s both cubic-bezier(.2,.7,.2,1); }
+  .hero-meta     { animation: hero-fade-up 1.1s .6s both cubic-bezier(.2,.7,.2,1); }
+  .hero .wordmark{ animation: hero-fade-up .9s .05s both cubic-bezier(.2,.7,.2,1); }
+
+  /* Stat-card underline grows in */
+  .stat-card .uline::after {
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 1.2s cubic-bezier(.2,.7,.2,1);
+  }
+  .stat-card.in-view .uline::after { transform: scaleX(1); }
+
+}
+
+/* ───────── Hover/interactivity ───────── */
+.fm-panel, .tile, .card, .stat-card, .moat-card, .wedge-card, .team-card {
+  transition: transform .35s cubic-bezier(.2,.7,.2,1),
+              border-color .35s cubic-bezier(.2,.7,.2,1),
+              box-shadow .35s cubic-bezier(.2,.7,.2,1);
+}
+.fm-panel:hover, .card:hover, .stat-card:hover, .moat-card:hover, .wedge-card:hover, .team-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--brand-orange);
+  box-shadow: var(--shadow-card);
+}
+.tile.faded:hover, .tile.indev:hover { transform: translateY(-3px); border-color: var(--brand-orange); box-shadow: var(--shadow-card); }
+.tile.showcased:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(247,98,51,.18); }
+
+.flow-node { transition: background .35s ease, border-color .35s ease, color .35s ease, transform .35s ease; }
+.flow-node:hover { transform: translateY(-2px); }
+
+.uc-row { transition: padding-left .25s ease, background .25s ease; }
+.uc-row:hover { padding-left: 6px; }
+.uc-row:hover .name { color: var(--brand-orange); }
+
+.fm-chip { transition: transform .25s ease; }
+.fm-chip:hover { transform: translateY(-1px); }
+
+.nav-anchor { position: relative; }
+.nav-anchor::after {
+  content: ''; position: absolute;
+  left: 0; right: 0; bottom: -4px;
+  height: 1.5px; background: var(--brand-orange);
+  transform: scaleX(0); transform-origin: left center;
+  transition: transform .3s cubic-bezier(.2,.7,.2,1);
+}
+.nav-anchor:hover::after { transform: scaleX(1); }
+
+/* ───────── End-to-end network — cards + bidirectional connectors + wet-lab feed (JS-drawn) ───────── */
+.pipeline-graph {
+  position: relative;
+  margin-top: 40px;
+  padding: 58px 0 118px;
+}
+.pipe-edges {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  z-index: 0; pointer-events: none; overflow: visible;
+}
+.step-flow {
+  display: flex; align-items: stretch; gap: 44px;
+  position: relative; z-index: 1;
+}
+.step {
+  flex: 1 1 0; min-width: 150px;
+  background: var(--white-pure);
+  border: 1px solid var(--cream);
+  border-radius: var(--radius-md);
+  padding: 18px 18px;
+  display: flex; flex-direction: column;
+  gap: 8px;
+  min-height: 86px;
+}
+.wetlab-node {
+  position: absolute; left: 50%; bottom: 30px;
+  transform: translateX(-50%);
+  z-index: 1;
+  background: var(--peach-soft);
+  border: 1px solid var(--orange-deep);
+  border-radius: var(--radius-pill);
+  padding: 9px 20px;
+  font-family: var(--font-body-medium); font-size: 13px;
+  color: var(--orange-deep);
+  white-space: nowrap;
+}
+@media (max-width: 900px) {
+  .pipeline-graph { padding: 0; }
+  .pipe-edges, .wetlab-node { display: none; }
+  .step-flow { flex-wrap: wrap; gap: 12px; }
+  .step { flex: 1 1 42%; }
+}
+.step .step-num {
+  font-family: var(--font-body-medium);
+  font-size: 11px; letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--slate);
+}
+.step .step-name {
+  font-family: var(--font-display);
+  font-size: 17px; line-height: 1.2;
+  color: var(--brand-black);
+  letter-spacing: -.005em;
+  margin: 0;
+}
+/* The last two steps (where verifiable AI is the frontier) get an orange step-num */
+.step.frontier .step-num { color: var(--brand-orange); }
+
+/* Sub-section break inside approach */
+.subsection {
+  margin-top: 72px;
+}
+.subsection .sub-title {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 3.5vw, 36px);
+  line-height: 1.1;
+  letter-spacing: -.01em;
+  color: var(--brand-black);
+  margin: 0;
+}
+
+/* ───────── Moat pillars (3-up) ───────── */
+.moat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-top: 32px;
+}
+@media (max-width: 900px) { .moat-grid { grid-template-columns: 1fr; } }
+.moat-card {
+  background: var(--white-pure);
+  border: 1px solid var(--cream);
+  border-radius: var(--radius-md);
+  padding: 24px 22px;
+  position: relative;
+  display: flex; flex-direction: column;
+}
+.moat-card::before {
+  content: ''; position: absolute;
+  left: 0; top: 0; bottom: 0; width: 4px;
+  background: var(--brand-orange);
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+.moat-card .num {
+  font-family: var(--font-display);
+  font-size: 12px; letter-spacing: .18em;
+  color: var(--brand-orange);
+  text-transform: uppercase;
+}
+.moat-card h4 {
+  font-family: var(--font-display);
+  font-size: 22px; line-height: 1.2;
+  color: var(--brand-black);
+  margin: 8px 0 10px;
+}
+.moat-card p {
+  font-family: var(--font-body); font-size: 14px;
+  line-height: 1.6; color: var(--brand-black);
+  margin: 0;
+}
+.moat-card strong { font-family: var(--font-body-medium); font-weight: normal; }
+
+/* ───────── Wedge (FTO + Verification side-by-side) ───────── */
+.wedge-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 24px; margin-top: 40px;
+}
+@media (max-width: 900px) { .wedge-grid { grid-template-columns: 1fr; } }
+.wedge-card {
+  background: var(--white-pure);
+  border: 1px solid var(--cream);
+  border-radius: var(--radius-md);
+  padding: 28px 26px;
+  display: flex; flex-direction: column;
+}
+.wedge-head {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 8px;
+}
+.wedge-card h3 {
+  font-family: var(--font-display); font-size: 28px;
+  line-height: 1.1; margin: 0;
+  color: var(--brand-black);
+}
+.wedge-status {
+  font-family: var(--font-body-medium); font-size: 10.5px;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--orange-deep); background: var(--peach-soft);
+  padding: 4px 10px; border-radius: var(--radius-pill);
+}
+.wedge-card .wedge-desc {
+  font-family: var(--font-body-medium); font-size: 15px;
+  color: var(--slate); line-height: 1.5;
+  margin: 0 0 16px;
+}
+.wedge-card .one-line {
+  font-family: var(--font-body-medium); font-size: 15px;
+  color: var(--brand-black); line-height: 1.5;
+  margin: 0 0 18px;
+}
+.wedge-card .flow-mini {
+  display: flex; align-items: center; flex-wrap: wrap;
+  gap: 6px 8px;
+  font-family: var(--font-body-medium); font-size: 12px;
+  color: var(--slate); line-height: 1.3;
+  margin-bottom: 22px;
+}
+.wedge-card .flow-mini .n {
+  background: var(--white-warm);
+  border: 1px solid var(--cream);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  white-space: nowrap;
+}
+.wedge-card .flow-mini .n.last {
+  background: var(--peach-soft);
+  border-color: var(--orange-deep);
+  color: var(--orange-deep);
+}
+.wedge-card .flow-mini .sep {
+  color: var(--brand-orange); font-size: 14px;
+}
+.wedge-card ul {
+  font-family: var(--font-body); font-size: 13.5px;
+  line-height: 1.6; color: var(--brand-black);
+  margin: 0; padding-left: 18px;
+}
+.wedge-card ul li { margin-bottom: 8px; }
+.wedge-card ul li:last-child { margin-bottom: 0; }
+.wedge-card ul strong { font-family: var(--font-body-medium); font-weight: normal; }
+
+/* Setup (cited McKinsey stat, quiet) → payoff (our claim, the hero). Emphasis flip. */
+.wedge-takeaway { margin-top: 48px; }
+.wt-cite {
+  font-family: var(--font-body); font-size: 13px;
+  color: var(--slate); line-height: 1.55; margin: 0;
+}
+.wt-cite .kk {
+  font-family: var(--font-body-medium); font-size: 11px;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--orange-deep); margin-right: 10px;
+}
+.wt-cite strong { font-family: var(--font-body-medium); font-weight: normal; color: var(--brand-black); }
+.wt-tag {
+  display: block;
+  font-family: var(--font-body-medium); font-size: 11px;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--orange-deep); margin: 20px 0 8px;
+}
+.wt-claim {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 2.6vw, 32px); line-height: 1.18;
+  letter-spacing: -.01em; color: var(--brand-black);
+  margin: 14px 0 0; max-width: 780px;
+}
+.wt-claim .hl {
+  background: var(--yellow-light);
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  padding: 0 4px;
+}
+
+/* Subgroup label — BW Gradual sub-heading, distinct from the orange section eyebrow */
+.subgroup-label {
+  font-family: var(--font-display);
+  font-size: 20px; line-height: 1.2;
+  letter-spacing: -.005em;
+  color: var(--brand-black);
+  margin: 0 0 24px;
+}
+
+/* ───────── Workflow strip (compact one-liner) ───────── */
+.workflow-strip {
+  margin-top: 40px;
+  padding: 18px 22px;
+  background: var(--white-pure);
+  border: 1px solid var(--cream);
+  border-left: 3px solid var(--brand-orange);
+  border-radius: var(--radius-md);
+}
+.workflow-strip .kicker {
+  display: block;
+  font-family: var(--font-body-medium); font-size: 11px;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--orange-deep);
+  margin-bottom: 6px;
+}
+.workflow-strip p {
+  font-family: var(--font-body); font-size: 14.5px;
+  color: var(--brand-black); line-height: 1.55;
+  margin: 0;
+}
+
+/* Why-now band */
+.team-band.alt {
+  background: var(--white-pure);
+  color: var(--brand-black);
+  border: 1px solid var(--cream);
+}
+.team-band.alt .eb { color: var(--brand-orange); }
+.team-band.alt .ln { color: var(--brand-black); }
+
+/* ───────── Footer ───────── */
+.foot {
+  background: var(--brand-black);
+  color: rgba(255,255,255,.5);
+  font-family: var(--font-body-light); font-size: 12px;
+  padding: 18px var(--pad-x) 36px;
+  border-top: 1px solid rgba(255,255,255,.08);
+  text-align: center;
+  letter-spacing: .04em;
+}
+</style>
 </head>
 <body>
 
-    <nav>
-        <a href="/" class="logo">
-            <span class="logo-mark"></span>Elman
-        </a>
-        <span class="nav-meta">Incubated at Deep Science Ventures</span>
-    </nav>
+<!-- ───────── Inline SVG defs (mark + wordmark + glows) ───────── -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="elman-mark" viewBox="0 0 96 106">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M14.3232 0C6.4127 0 0 6.4127 0 14.3232C0 22.2336 6.4127 28.6463 14.3232 28.6463C17.3575 28.6463 20.1714 27.7028 22.4876 26.0931L34.0446 39.1457L25.6695 43.8752C23.0504 40.4809 18.9421 38.2946 14.3232 38.2946C6.4127 38.2946 0 44.7073 0 52.6178C0 60.5282 6.4127 66.9409 14.3232 66.9409C19.2672 66.9409 23.6262 64.436 26.2001 60.626C26.1602 60.685 26.1199 60.7438 26.0791 60.8023L34.0446 65.3004L22.0484 78.849C19.8195 77.4187 17.1682 76.5892 14.3232 76.5892C6.4127 76.5892 0 83.0019 0 90.9124C0 98.8228 6.4127 105.236 14.3232 105.236C21.6618 105.236 27.7115 99.7163 28.5477 92.6023L67.2129 92.6023C68.0491 99.7163 74.0987 105.236 81.4374 105.236C89.3479 105.236 95.7606 98.8228 95.7606 90.9124C95.7606 83.0019 89.3479 76.5892 81.4374 76.5892C78.5925 76.5892 75.9414 77.4186 73.7126 78.8488L50.1377 52.2231L73.2734 26.0934C75.5895 27.7029 78.4033 28.6463 81.4374 28.6463C89.3479 28.6463 95.7606 22.2336 95.7606 14.3232C95.7606 6.4127 89.3479 0 81.4374 0C74.0986 0 68.049 5.51927 67.2129 12.6334L28.5477 12.6334C27.7116 5.51927 21.6619 0 14.3232 0ZM3.37978 14.3232C3.37979 8.2793 8.2793 3.37978 14.3232 3.37978C20.367 3.37979 25.2665 8.2793 25.2665 14.3232C25.2665 20.367 20.367 25.2665 14.3232 25.2665C8.2793 25.2665 3.37978 20.367 3.37978 14.3232ZM28.5477 16.0131C28.1959 19.0055 26.9218 21.7157 25.0173 23.8517L37.0541 37.4462L68.2184 19.8475C67.7149 18.644 67.3709 17.357 67.2129 16.0131L28.5477 16.0131ZM69.8828 22.7891L39.3452 40.0339L47.8806 49.6739L70.7437 23.8521C70.4403 23.5119 70.153 23.1572 69.8828 22.7891ZM71.1008 80.9974L47.8806 54.7723L39.3452 64.4122L70.3071 81.8966C70.5592 81.5858 70.824 81.2858 71.1008 80.9974ZM68.5003 84.7577L37.0541 66.9999L24.6602 80.9977C26.7622 83.1888 28.1744 86.0468 28.5477 89.2226H67.2129C67.3987 87.6411 67.8422 86.1385 68.5003 84.7577ZM27.6721 57.8204L36.3358 62.7128L45.6235 52.2231L36.3358 41.7333L27.405 46.7766C27.3971 46.7588 27.3891 46.741 27.3811 46.7233C28.1939 48.521 28.6463 50.5165 28.6463 52.6178C28.6463 54.4531 28.3011 56.2077 27.6721 57.8204ZM70.494 14.3232C70.494 8.2793 75.3935 3.37978 81.4374 3.37978C87.4813 3.37979 92.3808 8.2793 92.3808 14.3232C92.3808 20.367 87.4813 25.2665 81.4374 25.2665C75.3935 25.2665 70.494 20.367 70.494 14.3232ZM3.37978 52.6178C3.37979 46.5739 8.2793 41.6744 14.3232 41.6744C20.367 41.6744 25.2665 46.5739 25.2665 52.6178C25.2665 58.6616 20.367 63.5611 14.3232 63.5611C8.2793 63.5611 3.37978 58.6616 3.37978 52.6178ZM3.37978 90.9124C3.37979 84.8685 8.2793 79.969 14.3232 79.969C20.367 79.969 25.2665 84.8685 25.2665 90.9124C25.2665 96.9562 20.367 101.856 14.3232 101.856C8.2793 101.856 3.37978 96.9562 3.37978 90.9124ZM70.494 90.9124C70.494 84.8685 75.3935 79.969 81.4374 79.969C87.4813 79.969 92.3808 84.8685 92.3808 90.9124C92.3808 96.9562 87.4813 101.856 81.4374 101.856C75.3935 101.856 70.494 96.9562 70.494 90.9124Z"/>
+    </symbol>
+    <symbol id="elman-wordmark" viewBox="0 0 427 106">
+      <path d="M187.659 88.178H143.641V18.7797H186.37V26.711H152.266V48.9184H180.918V56.8496H152.266V80.2468H187.659V88.178Z"/>
+      <path d="M222.998 80.7425H238.365V88.178H199.601V80.7425H214.869V26.2153H199.601V18.7797H222.998V80.7425Z"/>
+      <path d="M296.074 37.0216C306.087 37.0216 312.531 44.0605 312.531 55.5608V88.178H304.401V55.8582C304.401 49.1167 301.229 44.6554 294.983 44.6554C288.341 44.6554 284.474 49.7115 284.474 56.3539V88.178H276.345V55.8582C276.345 49.6124 273.767 44.6554 266.629 44.6554C260.086 44.6554 256.418 49.8107 256.418 57.0479V88.178H248.288V37.6164H255.129L255.823 42.97C258.4 39.3018 262.763 37.0216 268.513 37.0216C274.56 37.0216 279.319 40.0949 281.599 44.7545C284.573 40.0949 289.431 37.0216 296.074 37.0216Z"/>
+      <path d="M369.348 80.7425H371.926V88.178H367.465C360.723 88.178 358.443 85.3029 358.344 80.3459C355.171 84.9064 350.115 88.7728 341.391 88.7728C330.287 88.7728 322.752 83.221 322.752 74.0009C322.752 63.8886 329.791 58.2376 343.076 58.2376H357.947V54.7677C357.947 48.2244 353.288 44.2588 345.356 44.2588C338.218 44.2588 333.46 47.6296 332.468 52.7849H324.339C325.528 42.8708 333.559 37.0216 345.753 37.0216C358.641 37.0216 366.077 43.4657 366.077 55.2634V77.3717C366.077 80.0485 367.068 80.7425 369.348 80.7425ZM357.947 67.5568V65.0783H342.283C335.046 65.0783 330.981 67.7551 330.981 73.5052C330.981 78.4622 335.244 81.833 341.986 81.833C352.098 81.833 357.947 75.9837 357.947 67.5568Z"/>
+      <path d="M407.124 37.0216C418.029 37.0216 426.952 42.97 426.952 59.0307V88.178H418.823V59.5264C418.823 49.7115 414.064 44.4571 405.736 44.4571C396.813 44.4571 391.063 51.0995 391.063 61.9058V88.178H382.934V37.6164H389.973L391.063 44.4571C394.037 40.5906 399.094 37.0216 407.124 37.0216Z"/>
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M14.3232 0C6.4127 0 0 6.4127 0 14.3232C0 22.2336 6.4127 28.6463 14.3232 28.6463C17.3575 28.6463 20.1714 27.7028 22.4876 26.0931L34.0446 39.1457L25.6695 43.8752C23.0504 40.4809 18.9421 38.2946 14.3232 38.2946C6.4127 38.2946 0 44.7073 0 52.6178C0 60.5282 6.4127 66.9409 14.3232 66.9409C19.2672 66.9409 23.6262 64.436 26.2001 60.626C26.1602 60.685 26.1199 60.7438 26.0791 60.8023L34.0446 65.3004L22.0484 78.849C19.8195 77.4187 17.1682 76.5892 14.3232 76.5892C6.4127 76.5892 0 83.0019 0 90.9124C0 98.8228 6.4127 105.236 14.3232 105.236C21.6618 105.236 27.7115 99.7163 28.5477 92.6023L67.2129 92.6023C68.0491 99.7163 74.0987 105.236 81.4374 105.236C89.3479 105.236 95.7606 98.8228 95.7606 90.9124C95.7606 83.0019 89.3479 76.5892 81.4374 76.5892C78.5925 76.5892 75.9414 77.4186 73.7126 78.8488L50.1377 52.2231L73.2734 26.0934C75.5895 27.7029 78.4033 28.6463 81.4374 28.6463C89.3479 28.6463 95.7606 22.2336 95.7606 14.3232C95.7606 6.4127 89.3479 0 81.4374 0C74.0986 0 68.049 5.51927 67.2129 12.6334L28.5477 12.6334C27.7116 5.51927 21.6619 0 14.3232 0ZM3.37978 14.3232C3.37979 8.2793 8.2793 3.37978 14.3232 3.37978C20.367 3.37979 25.2665 8.2793 25.2665 14.3232C25.2665 20.367 20.367 25.2665 14.3232 25.2665C8.2793 25.2665 3.37978 20.367 3.37978 14.3232ZM28.5477 16.0131C28.1959 19.0055 26.9218 21.7157 25.0173 23.8517L37.0541 37.4462L68.2184 19.8475C67.7149 18.644 67.3709 17.357 67.2129 16.0131L28.5477 16.0131ZM69.8828 22.7891L39.3452 40.0339L47.8806 49.6739L70.7437 23.8521C70.4403 23.5119 70.153 23.1572 69.8828 22.7891ZM71.1008 80.9974L47.8806 54.7723L39.3452 64.4122L70.3071 81.8966C70.5592 81.5858 70.824 81.2858 71.1008 80.9974ZM68.5003 84.7577L37.0541 66.9999L24.6602 80.9977C26.7622 83.1888 28.1744 86.0468 28.5477 89.2226H67.2129C67.3987 87.6411 67.8422 86.1385 68.5003 84.7577ZM27.6721 57.8204L36.3358 62.7128L45.6235 52.2231L36.3358 41.7333L27.405 46.7766C27.3971 46.7588 27.3891 46.741 27.3811 46.7233C28.1939 48.521 28.6463 50.5165 28.6463 52.6178C28.6463 54.4531 28.3011 56.2077 27.6721 57.8204ZM70.494 14.3232C70.494 8.2793 75.3935 3.37978 81.4374 3.37978C87.4813 3.37979 92.3808 8.2793 92.3808 14.3232C92.3808 20.367 87.4813 25.2665 81.4374 25.2665C75.3935 25.2665 70.494 20.367 70.494 14.3232ZM3.37978 52.6178C3.37979 46.5739 8.2793 41.6744 14.3232 41.6744C20.367 41.6744 25.2665 46.5739 25.2665 52.6178C25.2665 58.6616 20.367 63.5611 14.3232 63.5611C8.2793 63.5611 3.37978 58.6616 3.37978 52.6178ZM3.37978 90.9124C3.37979 84.8685 8.2793 79.969 14.3232 79.969C20.367 79.969 25.2665 84.8685 25.2665 90.9124C25.2665 96.9562 20.367 101.856 14.3232 101.856C8.2793 101.856 3.37978 96.9562 3.37978 90.9124ZM70.494 90.9124C70.494 84.8685 75.3935 79.969 81.4374 79.969C87.4813 79.969 92.3808 84.8685 92.3808 90.9124C92.3808 96.9562 87.4813 101.856 81.4374 101.856C75.3935 101.856 70.494 96.9562 70.494 90.9124Z"/>
+    </symbol>
 
-    <section class="scroll-stage">
-        <div class="hero-pinned">
-            <h1 class="hero-wordmark fade-in">Elman</h1>
-            <p class="hero-tagline fade-in" style="animation-delay: 0.35s;">
-                <span class="src-word src-discovery" data-anchor="source-discovery">Discovery</span>
-                <span class="src-word" data-anchor="source-you">you</span>
-                <span class="src-word" data-anchor="source-can">can</span>
-                <span class="src-word" data-anchor="source-trace">trace</span>
-                <span class="src-word" data-anchor="source-to">to</span>
-                <span class="src-word" data-anchor="source-the">the</span>
-                <span class="src-word" data-anchor="source-figure">figure</span><span class="src-period">.</span>
-            </p>
-            <span class="hero-meta fade-in" style="animation-delay: 0.7s;">An autonomous discovery engine for the life sciences</span>
-        </div>
+    <!-- Icons -->
+    <symbol id="ic-split-mask" viewBox="0 0 24 24">
+      <path d="M12 3v18M5 7a7 7 0 0 0 0 10M19 7a7 7 0 0 1 0 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      <circle cx="8" cy="12" r="1.4" fill="currentColor"/>
+      <circle cx="16" cy="12" r="1.4" fill="currentColor"/>
+    </symbol>
+    <symbol id="ic-loop" viewBox="0 0 24 24">
+      <path d="M4 12a8 8 0 0 1 13.5-5.7L20 4M20 4v5h-5M20 12a8 8 0 0 1-13.5 5.7L4 20M4 20v-5h5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="ic-funnel" viewBox="0 0 24 24">
+      <path d="M4 5h16l-6 8v6l-4-2v-4L4 5Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="ic-cluster" viewBox="0 0 24 24">
+      <circle cx="9" cy="9" r="5" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <circle cx="15.5" cy="9" r="1.4" fill="currentColor"/>
+      <circle cx="13" cy="6" r="1" fill="currentColor"/>
+      <path d="m13 13 7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+    </symbol>
+  </defs>
+</svg>
 
-        <div class="figure-stage">
-            <div class="paper-card">
-                <div class="paper-header">
-                    <span class="paper-mark">Elman · Knowledge Graph Engine</span>
-                    <span class="paper-mark">Fig. 3 / 7</span>
-                </div>
+<!-- ───────── Top nav ───────── -->
+<nav class="top">
+  <a class="wm-link" href="#top" aria-label="Elman home">
+    <svg class="wordmark-nav" viewBox="0 0 427 106"><use href="#elman-wordmark"/></svg>
+  </a>
+  <div class="links">
+    <a class="nav-anchor" href="#problem">Problem</a>
+    <a class="nav-anchor" href="#approach">Approach</a>
+    <a class="nav-anchor" href="#products">Products</a>
+    <a class="nav-anchor" href="#use-cases">Use-cases</a>
+    <a class="nav-anchor" href="#pipeline">Pipeline</a>
+    <a class="nav-anchor" href="#traction">Traction</a>
+    <a class="nav-anchor" href="#team">Team</a>
+    <a class="cta" href="mailto:moustafa@deepscienceventures.com">Get in touch →</a>
+  </div>
+</nav>
 
-                <div class="paper-body">
-                    <p class="paper-fig-num">Figure 3</p>
+<!-- ───────── Hero ───────── -->
+<section class="hero" id="top">
+  <svg class="glow-y" viewBox="0 0 1277 1221" aria-hidden="true">
+    <defs>
+      <filter id="hero-fy" x="0" y="0" width="1276" height="1220" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+        <feGaussianBlur stdDeviation="69"/>
+      </filter>
+    </defs>
+    <g opacity=".5" filter="url(#hero-fy)">
+      <path d="M185.123 434.825c-3.617-.923-7.378-1.124-11.064-.594-3.686.531-7.224 1.783-10.407 3.685-3.183 1.901-5.947 4.414-8.132 7.392-2.185 2.977-3.746 6.358-4.593 9.948C122.146 581.114 142.691 713.414 208.422 825.49c65.731 112.076 171.76 195.6 296.718 233.73 124.962 38.12 259.56 28.03 376.665-28.26 117.105-56.294 208.015-154.59 254.395-275.079 1.3-3.451 1.9-7.128 1.75-10.818-.15-3.689-1.05-7.317-2.62-10.672-1.58-3.355-3.82-6.369-6.58-8.867-2.76-2.498-6-4.43-9.51-5.683-115.38-42.111-212.104-123.464-272.803-229.457-60.698-105.993-81.4-229.687-58.39-348.879.13-.665.007-1.355-.347-1.938-.353-.584-.912-1.017-1.568-1.218-.656-.2-1.362-.153-1.981.133-.619.287-1.107.792-1.369 1.417-47.452 111.737-133.684 202.804-243.219 256.856-109.535 54.052-235.2 67.55-354.44 38.07Z" fill="#FDD02B"/>
+    </g>
+  </svg>
+  <svg class="glow-o" viewBox="0 0 1123 1090" aria-hidden="true">
+    <defs>
+      <filter id="hero-fo" x="0" y="0" width="1122" height="1089" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+        <feGaussianBlur stdDeviation="132"/>
+      </filter>
+    </defs>
+    <g filter="url(#hero-fo)">
+      <path d="M292.587 440.678c-2.145-.547-4.375-.667-6.562-.352-2.186.315-4.284 1.057-6.172 2.185-1.887 1.128-3.527 2.618-4.823 4.384-1.295 1.766-2.221 3.771-2.724 5.9-17.069 74.643-4.884 153.106 34.099 219.575 38.983 66.469 101.866 116.003 175.975 138.617 74.111 22.612 153.937 16.623 223.389-16.761 69.452-33.384 123.365-91.681 150.875-163.139.772-2.047 1.123-4.227 1.034-6.416-.089-2.188-.617-4.339-1.553-6.329-.937-1.99-2.263-3.777-3.901-5.259-1.638-1.481-3.555-2.627-5.64-3.37-68.43-24.975-125.792-73.223-161.791-136.085-35.998-62.861-48.276-136.22-34.629-206.909.077-.395.004-.804-.206-1.15-.21-.346-.541-.603-.93-.722-.389-.119-.808-.091-1.175.079-.367.17-.656.469-.812.84-28.142 66.268-79.284 120.277-144.246 152.334-64.962 32.057-139.49 40.062-210.208 22.578Z" fill="#F76233"/>
+    </g>
+  </svg>
 
-                    <div class="graph-wrap">
-                        <!-- Edges (drawn first so labels sit on top) -->
-                        <svg class="graph-edges" viewBox="0 0 600 400" preserveAspectRatio="none" aria-hidden="true">
-                            <defs>
-                                <radialGradient id="node-glow" cx="50%" cy="50%" r="50%">
-                                    <stop offset="0%" stop-color="#5a7359" stop-opacity="0.35"/>
-                                    <stop offset="100%" stop-color="#5a7359" stop-opacity="0"/>
-                                </radialGradient>
-                            </defs>
-                            <!-- spoke edges from Discovery (300, 200) to each surrounding node -->
-                            <g stroke="#3a3a3a" stroke-width="0.6" fill="none" opacity="0.55">
-                                <line class="g-edge" x1="300" y1="200" x2="425" y2="95"/>
-                                <line class="g-edge" x1="300" y1="200" x2="478" y2="200"/>
-                                <line class="g-edge" x1="300" y1="200" x2="425" y2="305"/>
-                                <line class="g-edge" x1="300" y1="200" x2="175" y2="305"/>
-                                <line class="g-edge" x1="300" y1="200" x2="122" y2="200"/>
-                                <line class="g-edge" x1="300" y1="200" x2="175" y2="95"/>
-                            </g>
-                            <!-- a couple of inter-node edges for graph density -->
-                            <g stroke="#3a3a3a" stroke-width="0.4" fill="none" opacity="0.3">
-                                <line class="g-edge" x1="425" y1="95" x2="478" y2="200"/>
-                                <line class="g-edge" x1="478" y1="200" x2="425" y2="305"/>
-                                <line class="g-edge" x1="175" y1="305" x2="122" y2="200"/>
-                                <line class="g-edge" x1="122" y1="200" x2="175" y2="95"/>
-                            </g>
-                            <!-- focal node halo -->
-                            <circle class="g-halo" cx="300" cy="200" r="44" fill="url(#node-glow)"/>
-                            <!-- node circles -->
-                            <g class="g-nodes">
-                                <circle cx="300" cy="200" r="6" fill="#5a7359"/>
-                                <circle cx="300" cy="200" r="2.5" fill="#f3ecdd"/>
-                                <circle cx="425" cy="95"  r="3.5" fill="#3a3a3a"/>
-                                <circle cx="478" cy="200" r="3.5" fill="#3a3a3a"/>
-                                <circle cx="425" cy="305" r="3.5" fill="#3a3a3a"/>
-                                <circle cx="175" cy="305" r="3.5" fill="#3a3a3a"/>
-                                <circle cx="122" cy="200" r="3.5" fill="#3a3a3a"/>
-                                <circle cx="175" cy="95"  r="3.5" fill="#3a3a3a"/>
-                            </g>
-                        </svg>
+  <div class="hero-inner">
+    <svg class="wordmark" viewBox="0 0 427 106"><use href="#elman-wordmark"/></svg>
 
-                        <!-- Target slots: each word lands as a label next to its node. -->
-                        <span class="g-label g-label-discovery" data-anchor="target-discovery">Discovery</span>
-                        <span class="g-label g-label-you"    data-anchor="target-you">you</span>
-                        <span class="g-label g-label-can"    data-anchor="target-can">can</span>
-                        <span class="g-label g-label-trace"  data-anchor="target-trace">trace</span>
-                        <span class="g-label g-label-to"     data-anchor="target-to">to</span>
-                        <span class="g-label g-label-the"    data-anchor="target-the">the</span>
-                        <span class="g-label g-label-figure" data-anchor="target-figure">figure</span>
-                    </div>
-
-                    <p class="paper-caption"><strong>Fig. 3.</strong> A single concept node — <em>Discovery</em> — connected to its grammatical neighbours under the Elman knowledge graph. Edges denote co-occurrence in the substantive sentence; weight reflects semantic proximity to the focal node.</p>
-                </div>
-
-                <div class="paper-footer">
-                    <span class="paper-mark">elman.ai</span>
-                    <span class="paper-mark">3</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="press-band">
-        <div class="press-line">
-            <span class="press-tag">Forthcoming · Cell · 2026</span>
-            <p class="press-body">A collaboration with the <strong>Allen Institute for Brain Science</strong> — full architectural reveal of the discovery engine, validated against single-cell data in human <em>substantia nigra</em>.</p>
-        </div>
-    </section>
-
-    <div class="stats fade-in">
-        <div class="stat">
-            <span class="stat-value">253</span>
-            <span class="stat-label">Public datasets<br>ingested</span>
-        </div>
-        <div class="stat">
-            <span class="stat-value">170,000</span>
-            <span class="stat-label">Experimental facts<br>in the graph</span>
-        </div>
-        <div class="stat">
-            <span class="stat-value">112</span>
-            <span class="stat-label">End-to-end<br>discovery cycles</span>
-        </div>
+    <div class="hero-content">
+      <h1>Drug development AI<br>you can fully <em>audit</em>.</h1>
     </div>
 
-    <div class="pillars">
-        <div class="pillar">
-            <h3>Full provenance</h3>
-            <p>Every finding anchored to a specific experimental arm in a specific paper or in-silico run — never to a model's parametric memory.</p>
+    <div class="hero-meta">
+      <span>Allen Institute paper submitted to <strong>Cell</strong></span>
+      <span class="dot"></span>
+      <span><strong>~170k</strong> arm-level facts in the graph</span>
+      <span class="dot"></span>
+      <span><strong>FTO</strong> live with paying customers</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ───────── Problem ───────── -->
+<section class="bg-warm-white section-pad" id="problem">
+  <div class="wrap">
+    <div class="eyebrow-row">
+      <span class="tag">The problem</span>
+    </div>
+    <h2 class="s-title">AI for drug development has four<br>compounding failure modes</h2>
+    <p class="s-sub">Each failure compounds the next. Stitched together, they produce predictions that look credible and aren't.</p>
+
+    <div class="fm-grid">
+
+      <div class="fm-panel">
+        <div class="fm-head">
+          <h3 class="headline">Priors bias predictions</h3>
+          <svg class="icon"><use href="#ic-split-mask"/></svg>
         </div>
-        <div class="pillar">
-            <h3>Rational pruning</h3>
-            <p>The reasoning agent chases specific questions through the graph one edge at a time, surfacing low-magnitude but significant signal where the tractable biology lives.</p>
+        <p class="body"><strong>16% of top-20 oncology targets flip when names are revealed.</strong></p>
+        <div class="fm-foot">
+          <p class="anchor">Cuccarese (Recursion VP), 2026 · <a href="https://www.linkedin.com/posts/michael-cuccarese_ai-llm-machinelearning-share-7447656197920337920-tjqz/" target="_blank" rel="noopener">public disclosure</a></p>
+          <div class="fm-resolution"><span class="lbl">Elman</span><span class="arr">→</span>grounded in extracted features, not priors</div>
         </div>
-        <div class="pillar">
-            <h3>Compounding</h3>
-            <p>A single schema across literature, in-silico and wet-lab evidence. Every result sharpens the substrate every future run consumes — across indications, not within one.</p>
+      </div>
+
+      <div class="fm-panel">
+        <div class="fm-head">
+          <h3 class="headline">Memorisation hides as reasoning</h3>
+          <svg class="icon"><use href="#ic-loop"/></svg>
         </div>
+        <p class="body"><strong>Up to 87% of medical pre-training content persists through fine-tuning.</strong></p>
+        <div class="fm-foot">
+          <p class="anchor"><a href="https://arxiv.org/abs/2509.08604" target="_blank" rel="noopener">Memorization in LLMs in Medicine</a>, 2025.</p>
+          <div class="fm-resolution"><span class="lbl">Elman</span><span class="arr">→</span>claims trace to source arm + figure / table / sentence</div>
+        </div>
+      </div>
+
+      <div class="fm-panel">
+        <div class="fm-head">
+          <h3 class="headline">Brute-force averages bury the signal</h3>
+          <svg class="icon"><use href="#ic-cluster"/></svg>
+        </div>
+        <p class="body">Phenotype-driving cells: <strong>&lt;1% of a sample.</strong> Bulk -omics averages them out.</p>
+        <div class="fm-foot">
+          <p class="anchor">Van de Sande et al., <em style="font-style:normal;">Nature Reviews Drug Discovery</em>, 2023.</p>
+          <div class="fm-resolution"><span class="lbl">Elman</span><span class="arr">→</span>resolves signal at cell, tissue, sub-population level</div>
+        </div>
+      </div>
+
+      <div class="fm-panel">
+        <div class="fm-head">
+          <h3 class="headline">Depth doesn't scale</h3>
+          <svg class="icon"><use href="#ic-funnel"/></svg>
+        </div>
+        <p class="body">Reading thousands of papers at depth breaks on <strong>cost, time, and orchestration debt</strong>.</p>
+        <div class="fm-foot">
+          <div class="fm-resolution"><span class="lbl">Elman</span><span class="arr">→</span>hundreds-to-thousands of papers and in-silico runs, at depth</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ───────── How it holds: the assembled intersection ───────── -->
+<section class="bg-near-white section-pad" id="approach">
+  <div class="wrap">
+    <div class="eyebrow-row">
+      <span class="tag">Approach</span>
+    </div>
+    <h2 class="s-title">Three properties.<br>One assembled intersection.</h2>
+    <p class="s-sub">Each component is replicable. The intersection is what holds.</p>
+
+    <div class="moat-grid">
+      <div class="moat-card">
+        <span class="num">01 — Full provenance</span>
+        <h4>Every edge resolves to a source</h4>
+        <p>Every claim points to a <strong>paper figure, in-silico run, or experiment ID</strong>. The model never paraphrases from memory — it reads what it cites.</p>
+      </div>
+      <div class="moat-card">
+        <span class="num">02 — Rational pruning</span>
+        <h4>Edge-by-edge, not bulk-average</h4>
+        <p>Reasoning agents chase specific questions through the graph — surfacing the low-magnitude signals at <strong>cell and sub-population</strong> scale where disease-driving biology sits.</p>
+      </div>
+      <div class="moat-card">
+        <span class="num">03 — Compounding</span>
+        <h4>One schema. Every domain.</h4>
+        <p>A fact extracted in cancer is reusable in autoimmune, neuro, ageing. Graph grows <strong>~88 arm-level facts per discovery cycle</strong>.</p>
+      </div>
     </div>
 
-    <section class="pipeline">
-        <p class="pipeline-eyebrow">The discovery flow</p>
-        <h2 class="pipeline-heading">Five steps, end-to-end.<br>Two production-grade today.</h2>
-        <p class="pipeline-intro">
-            Each step lives on the same compounding knowledge graph. Two are sold as standalone services right now; the rest run end-to-end in beta.
-        </p>
+    <div class="wedge-takeaway">
+      <p class="wt-cite"><span class="kk">McKinsey · 2024</span> ~32% of pharma have scaled gen AI; <strong>~5% report consistent differentiation</strong>.</p>
+      <p class="wt-claim">Verifiable output at scale is what unblocks the <span class="hl">95%</span>.</p>
+    </div>
+  </div>
+</section>
 
-        <div class="pipeline-track">
-            <div class="pipeline-rule"></div>
 
-            <div class="pipeline-step" data-status="live">
-                <div class="step-num">01</div>
-                <div class="step-label">
-                    <span class="step-status">Production</span>
-                    <h3 class="step-title">Ingest</h3>
-                    <p class="step-desc">Public datasets, literature, and in-silico runs land in a single Neo4j graph at arm-level resolution.</p>
-                </div>
-            </div>
+<!-- ───────── The product suite (in-production wedge + the rest, combined) ───────── -->
+<section class="bg-warm-white section-pad" id="products">
+  <div class="wrap">
+    <div class="eyebrow-row">
+      <span class="tag">The product suite</span>
+    </div>
+    <h2 class="s-title">Six products. One platform.</h2>
 
-            <div class="pipeline-step" data-status="beta">
-                <div class="step-num">02</div>
-                <div class="step-label">
-                    <span class="step-status">Beta</span>
-                    <h3 class="step-title">Generate</h3>
-                    <p class="step-desc">Multi-agent traversal proposes mechanistic hypotheses, each verified concurrently against the literature.</p>
-                </div>
-            </div>
+    <div class="subsection">
+      <h3 class="subgroup-label">In production today</h3>
 
-            <div class="pipeline-step" data-status="live">
-                <div class="step-num">03</div>
-                <div class="step-label">
-                    <span class="step-status">Production</span>
-                    <h3 class="step-title">Identify</h3>
-                    <p class="step-desc">Rational pruning surfaces candidate intervention points at sub-population resolution &mdash; for any indication.</p>
-                </div>
-            </div>
+      <div class="wedge-grid">
 
-            <div class="pipeline-step" data-status="beta">
-                <div class="step-num">04</div>
-                <div class="step-label">
-                    <span class="step-status">Beta</span>
-                    <h3 class="step-title">Simulate</h3>
-                    <p class="step-desc">Propagate the intervention through the graph to predict cohort and sub-population response.</p>
-                </div>
-            </div>
-
-            <div class="pipeline-step" data-status="live">
-                <div class="step-num">05</div>
-                <div class="step-label">
-                    <span class="step-status">Production</span>
-                    <h3 class="step-title">Engineer</h3>
-                    <p class="step-desc">Freedom-to-operate, patent landscape, and engineering mitigation on the target, asset, or technology area.</p>
-                </div>
-            </div>
+      <div class="wedge-card">
+        <div class="wedge-head">
+          <h3>FTO</h3>
+          <span class="wedge-status">Live</span>
         </div>
-    </section>
+        <p class="wedge-desc">Claim-level freedom-to-operate.</p>
+        <ul>
+          <li><strong>Per-component decomposition</strong> with a claim-level evidence trail on every verdict — not a similarity score on the whole filing.</li>
+          <li><strong>Defensible under IP-committee review</strong> — one isolated agent per patent, no cross-contamination.</li>
+        </ul>
+      </div>
 
-    <footer>
-        <div class="footer-block">
-            <span class="label">Founders</span>
-            <span class="value">Dr. Moustafa Khedr<br>Dr. Francesco Moramarco</span>
+      <div class="wedge-card">
+        <div class="wedge-head">
+          <h3>Verification</h3>
+          <span class="wedge-status">Live</span>
         </div>
-        <div class="footer-block">
-            <span class="label">Contact</span>
-            <span class="value">
-                <a href="mailto:moustafa@deepscienceventures.com">moustafa@deepscienceventures.com</a><br>
-                <a href="mailto:francesco@deepscienceventures.com">francesco@deepscienceventures.com</a>
-            </span>
+        <p class="wedge-desc">Auditable claim validation.</p>
+        <ul>
+          <li><strong>Source-span resolution on every claim</strong> — paper sentence, trial arm, or figure.</li>
+          <li><strong>Audit-grade depth</strong> across hundreds-to-thousands of papers and in-silico runs per claim, with pharma-specific provenance.</li>
+        </ul>
+      </div>
+
+    </div>
+    </div>
+
+    <div class="subsection">
+      <h3 class="subgroup-label">The rest of the suite</h3>
+
+      <div class="products-grid">
+      <div class="tile faded">
+        <h3>Hypothesis Generation</h3>
+        <p>What testable hypotheses fall out of this dataset?</p>
+      </div>
+      <div class="tile faded">
+        <h3>Patentability</h3>
+        <p>What in here is novel and defendable?</p>
+      </div>
+      <div class="tile faded">
+        <h3>Bioinformatics-at-scale</h3>
+        <p>What does the raw cohort data reveal at single-cell resolution?</p>
+      </div>
+      <div class="tile indev">
+        <h3>Effect Simulation</h3>
+        <p>If I modify a target — add, inhibit, or combine — what happens downstream?</p>
+        <span class="indev-pill">In active development</span>
+      </div>
+    </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ───────── Applied use-cases (independent section) ───────── -->
+<section class="bg-near-white section-pad" id="use-cases">
+  <div class="wrap">
+    <div class="eyebrow-row">
+      <span class="tag">Applied use-cases</span>
+    </div>
+    <h2 class="s-title">Nine use-cases.<br>Composed from the suite.</h2>
+
+    <div class="uc-grid">
+        <div class="uc-col left">
+          <h3>Available today</h3>
+          <div class="uc-row">
+            <span class="uc-marker filled"></span>
+            <div><div class="name">FTO assessment</div><div class="map">↳ FTO</div></div>
+          </div>
+          <div class="uc-row">
+            <span class="uc-marker filled"></span>
+            <div><div class="name">Patentability assessment</div><div class="map">↳ Patentability</div></div>
+          </div>
+          <div class="uc-row">
+            <span class="uc-marker filled"></span>
+            <div><div class="name">Verification audit</div><div class="map">↳ Verification + Bioinformatics-at-scale</div></div>
+          </div>
+          <div class="uc-row">
+            <span class="uc-marker filled"></span>
+            <div><div class="name">Target identification</div><div class="map">↳ Hypothesis Generation + Verification + Bioinformatics-at-scale</div></div>
+          </div>
+          <div class="uc-row">
+            <span class="uc-marker filled"></span>
+            <div><div class="name">Drug-drug interactions</div><div class="map">↳ Hypothesis Generation + Verification + Bioinformatics-at-scale</div></div>
+          </div>
         </div>
-        <div class="footer-block">
-            <span class="label">Location</span>
-            <span class="value">London</span>
+
+        <div class="uc-col right">
+          <h3>Via scoped pilots</h3>
+          <div class="uc-row">
+            <span class="uc-marker outline"></span>
+            <div><div class="name">Biomarker discovery</div><div class="map">↳ Hypothesis Generation + Verification + Effect Simulation + Bioinformatics-at-scale</div></div>
+          </div>
+          <div class="uc-row">
+            <span class="uc-marker outline"></span>
+            <div><div class="name">Drug repurposing</div><div class="map">↳ Hypothesis Generation + Verification + Effect Simulation + Bioinformatics-at-scale</div></div>
+          </div>
+          <div class="uc-row">
+            <span class="uc-marker outline"></span>
+            <div><div class="name">Trial cohort selection</div><div class="map">↳ Hypothesis Generation + Verification + Effect Simulation + Bioinformatics-at-scale</div></div>
+          </div>
+          <div class="uc-row">
+            <span class="uc-marker outline"></span>
+            <div><div class="name">Combination design</div><div class="map">↳ Effect Simulation + Bioinformatics-at-scale</div></div>
+          </div>
         </div>
-        <div class="footer-block">
-            <span class="label">Incubated at</span>
-            <span class="value">Deep Science Ventures</span>
+      </div>
+  </div>
+</section>
+
+
+<!-- ───────── The full picture: end-to-end pipeline ───────── -->
+<section class="bg-warm-white section-pad" id="pipeline">
+  <div class="wrap">
+    <div class="eyebrow-row">
+      <span class="tag">The full picture</span>
+    </div>
+    <h2 class="s-title">Drug development, <em>end to end</em>.</h2>
+    <p class="s-sub">Five iterative steps from data to therapy. We push verifiable AI into every step of the way.</p>
+
+    <div class="pipeline-graph">
+      <svg class="pipe-edges" aria-hidden="true">
+        <defs>
+          <marker id="pipe-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+            <path d="M1,1 L9,5 L1,9" fill="none" stroke="#D74D12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+        <g class="pipe-paths" fill="none" stroke="#D74D12" stroke-width="1.5" stroke-opacity="0.45" marker-start="url(#pipe-arrow)" marker-end="url(#pipe-arrow)"></g>
+      </svg>
+
+      <div class="step-flow">
+        <div class="step">
+          <span class="step-num">Step 1</span>
+          <h4 class="step-name">Collect datasets</h4>
         </div>
-    </footer>
-    <p class="footer-credit">Indication-agnostic by design</p>
+        <div class="step">
+          <span class="step-num">Step 2</span>
+          <h4 class="step-name">Produce hypotheses</h4>
+        </div>
+        <div class="step">
+          <span class="step-num">Step 3</span>
+          <h4 class="step-name">Find targets</h4>
+        </div>
+        <div class="step">
+          <span class="step-num">Step 4</span>
+          <h4 class="step-name">Model effects</h4>
+        </div>
+        <div class="step">
+          <span class="step-num">Step 5</span>
+          <h4 class="step-name">Engineer mitigation</h4>
+        </div>
+      </div>
 
-    <script>
-        (function () {
-            const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            const stage = document.querySelector('.scroll-stage');
-            const hero = document.querySelector('.hero-pinned');
-            const figureStage = document.querySelector('.figure-stage');
-            const period = document.querySelector('.src-period');
-            if (!stage) return;
+      <div class="wetlab-node">Wet-lab data</div>
+    </div>
+  </div>
+</section>
 
-            const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-            const lerp = (a, b, t) => a + (b - a) * t;
-            const ease = t => t < 0.5
-                ? 4 * t * t * t
-                : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
-            // Build one ghost per source word.
-            const sources = document.querySelectorAll('[data-anchor^="source-"]');
-            const pairs = [];
-            sources.forEach(source => {
-                const word = source.dataset.anchor.slice('source-'.length);
-                const target = document.querySelector(`[data-anchor="target-${word}"]`);
-                if (!target) return;
-                const ghost = document.createElement('span');
-                ghost.className = 'word-ghost ghost-' + word;
-                ghost.textContent = source.textContent;
-                ghost.setAttribute('aria-hidden', 'true');
-                document.body.appendChild(ghost);
-                pairs.push({ source, target, ghost, word });
-            });
+<!-- ───────── Traction ───────── -->
+<section class="bg-near-white section-pad" id="traction">
+  <div class="wrap">
+    <div class="eyebrow-row">
+      <span class="tag">Traction</span>
+    </div>
+    <h2 class="s-title">Paper. Platform. Product.</h2>
+    <p class="s-sub">Three live proof points — already in customers' hands.</p>
 
-            if (reduced) {
-                pairs.forEach(({ target }) => { target.style.opacity = 1; });
-                return;
-            }
+    <div class="stat-grid">
 
-            let raf = null;
+      <div class="stat-card">
+        <div class="eyebrow">Paper · submitted</div>
+        <div class="big smaller"><span class="uline">Allen</span><br><span class="uline">Institute</span></div>
+        <div class="lead">Collaboration with the Allen Institute — paper submitted to Cell.</div>
+      </div>
 
-            function frame() {
-                raf = null;
-                const stageRect = stage.getBoundingClientRect();
-                const vh = window.innerHeight;
-                const stageTotal = stage.offsetHeight - vh;
-                const scrolled = -stageRect.top;
-                // Animation occupies the first 60% of stage scroll travel.
-                // The remaining 40% holds the figure on screen so it can rest
-                // and breathe before scrolling away.
-                const startAt = vh * 0.10;
-                const endAt = stageTotal * 0.60;
-                const raw = (scrolled - startAt) / Math.max(1, endAt - startAt);
-                const p = clamp(raw, 0, 1);
+      <div class="stat-card">
+        <div class="eyebrow">Platform · today</div>
+        <div class="big"><span class="uline">~170k</span></div>
+        <div class="lead">Arm-level experimental facts in the graph — reusable across cancer, autoimmune, neuro, ageing.</div>
+      </div>
 
-                // Cream-on-dark → ink-on-cream colour transition for ghosts
-                // mid-flight. Discovery is sage throughout (stays focal).
-                const lerpColor = (a, b, t) => `rgb(${[0,1,2].map(i=>Math.round(a[i]+(b[i]-a[i])*t)).join(',')})`;
-                const cream = [232, 226, 212];
-                const ink = [28, 24, 18];
-                const sage = [74, 94, 72];
+      <div class="stat-card">
+        <div class="eyebrow">Product · live</div>
+        <div class="big"><span class="uline">Live</span></div>
+        <div class="lead">FTO in live IP-committee decisions — claim-level evidence per verdict.</div>
+      </div>
 
-                pairs.forEach(({ source, target, ghost, word }) => {
-                    // Stagger: Discovery flies first; the others lag slightly.
-                    // Each word's "local" progress is normalized so it still
-                    // reaches 1.0 by the end of the stage.
-                    const order = { discovery: 0, you: 1, can: 2, trace: 3, to: 4, the: 5, figure: 6 };
-                    const ix = order[word] ?? 0;
-                    const lag = ix * 0.035;
-                    const local = clamp((p - lag) / (1 - lag - 0.02), 0, 1);
-                    const eased = ease(local);
+    </div>
 
-                    const sRect = source.getBoundingClientRect();
-                    const tRect = target.getBoundingClientRect();
-                    const sFs = parseFloat(getComputedStyle(source).fontSize);
-                    const tFs = parseFloat(getComputedStyle(target).fontSize);
+    <div class="expanded-banner">
+      <span class="kicker">Where we're headed</span>
+      <p>Full-stack discovery partnerships with pharma — taking a named indication end to end, and sharing in the therapeutics we create together.</p>
+    </div>
+  </div>
+</section>
 
-                    const x = lerp(sRect.left, tRect.left, eased);
-                    const y = lerp(sRect.top, tRect.top, eased);
-                    const fs = lerp(sFs, tFs, eased);
 
-                    ghost.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-                    ghost.style.fontSize = `${fs}px`;
-                    ghost.style.opacity = (local > 0.001 && local < 0.999) ? '1' : '0';
+<!-- ───────── Team ───────── -->
+<section class="bg-warm-white section-pad" id="team">
+  <div class="wrap">
+    <div class="eyebrow-row">
+      <span class="tag">Founders</span>
+    </div>
+    <h2 class="s-title">Two senior technical co-founders.</h2>
+    <p class="s-sub">Working at the intersection of biology, AI, and architecture.</p>
 
-                    if (word === 'discovery') {
-                        ghost.style.color = lerpColor(sage, sage, eased);
-                    } else {
-                        ghost.style.color = lerpColor(cream, ink, eased);
-                    }
+    <div class="team-grid">
 
-                    source.style.opacity = local > 0.02 ? '0' : '1';
-                    target.style.opacity = local > 0.98 ? '1' : '0';
-                });
+      <div class="team-card">
+        <div class="row-head">
+          <div class="headshot"><img src="assets/moustafa_headshot.jpeg" alt="Moustafa Khedr"></div>
+          <div>
+            <h3>Dr. Moustafa Khedr</h3>
+            <div class="sub">Co-founder · biology + architecture</div>
+            <div class="mono"><a href="https://linkedin.com/in/khedrm" target="_blank" rel="noopener">linkedin.com/in/khedrm</a></div>
+          </div>
+        </div>
+        <ul>
+          <li><strong>PhD</strong> — Crick / UCL: 3D iPSC skeletal-muscle constructs for Duchenne muscular dystrophy modelling and ASO drug testing.</li>
+          <li><strong>Buy-side biological-DD</strong> on gene-therapy assets — mechanism-risk and animal-model interpretation.</li>
+        </ul>
+      </div>
 
-                if (period) period.style.opacity = p > 0.05 ? '0' : '1';
+      <div class="team-card">
+        <div class="row-head">
+          <div class="headshot"><img src="assets/francesco_headshot.jpeg" alt="Francesco Moramarco"></div>
+          <div>
+            <h3>Dr. Francesco Moramarco</h3>
+            <div class="sub">Co-founder · AI / engineering + architecture</div>
+            <div class="mono"><a href="https://linkedin.com/in/fm2g11" target="_blank" rel="noopener">linkedin.com/in/fm2g11</a></div>
+          </div>
+        </div>
+        <ul>
+          <li><strong>PhD</strong> in medical-text generation with large language models — University of Aberdeen.</li>
+          <li><strong>Research Scientist (NLP)</strong> — UK clinical-AI scale-up; live medical-note generation from inception to production deployment.</li>
+        </ul>
+      </div>
 
-                // Cross-fade hero / figure.
-                const heroOp = clamp(1 - (p - 0.20) / 0.35, 0, 1);
-                const figOp  = clamp((p - 0.35) / 0.35, 0, 1);
-                if (hero) hero.style.setProperty('--hero-op', heroOp.toFixed(3));
-                if (figureStage) figureStage.style.setProperty('--fig-op', figOp.toFixed(3));
-            }
+    </div>
 
-            function schedule() {
-                if (raf == null) raf = requestAnimationFrame(frame);
-            }
+    <div class="team-band">
+      <div class="eb">Together at Deep Science Ventures</div>
+      <div class="ln">Co-architects of Elman — the platform behind the Allen Institute collaboration and the FTO products in production today.</div>
+    </div>
+  </div>
+</section>
 
-            const start = () => { schedule(); };
-            if (document.fonts && document.fonts.ready) {
-                document.fonts.ready.then(start);
-            } else {
-                window.addEventListener('load', start);
-            }
 
-            window.addEventListener('scroll', schedule, { passive: true });
-            window.addEventListener('resize', schedule);
-        })();
-    </script>
+<!-- ───────── Closing ───────── -->
+<section class="closing">
+  <svg class="glow-y" viewBox="0 0 1277 1221" aria-hidden="true">
+    <defs>
+      <filter id="closing-fy" x="0" y="0" width="1276" height="1220" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+        <feGaussianBlur stdDeviation="69"/>
+      </filter>
+    </defs>
+    <g opacity=".5" filter="url(#closing-fy)">
+      <path d="M185.123 434.825c-3.617-.923-7.378-1.124-11.064-.594-3.686.531-7.224 1.783-10.407 3.685-3.183 1.901-5.947 4.414-8.132 7.392-2.185 2.977-3.746 6.358-4.593 9.948C122.146 581.114 142.691 713.414 208.422 825.49c65.731 112.076 171.76 195.6 296.718 233.73 124.962 38.12 259.56 28.03 376.665-28.26 117.105-56.294 208.015-154.59 254.395-275.079 1.3-3.451 1.9-7.128 1.75-10.818-.15-3.689-1.05-7.317-2.62-10.672-1.58-3.355-3.82-6.369-6.58-8.867-2.76-2.498-6-4.43-9.51-5.683-115.38-42.111-212.104-123.464-272.803-229.457-60.698-105.993-81.4-229.687-58.39-348.879.13-.665.007-1.355-.347-1.938-.353-.584-.912-1.017-1.568-1.218-.656-.2-1.362-.153-1.981.133-.619.287-1.107.792-1.369 1.417-47.452 111.737-133.684 202.804-243.219 256.856-109.535 54.052-235.2 67.55-354.44 38.07Z" fill="#FDD02B"/>
+    </g>
+  </svg>
+  <div class="closing-inner">
+    <div class="eyebrow">Get started</div>
+    <h2>Let's build <em>verifiable AI</em><br>for drug development — together.</h2>
+    <svg class="wm-foot" viewBox="0 0 427 106"><use href="#elman-wordmark"/></svg>
+  </div>
+</section>
+
+<div class="foot">© Elman · 2026 · A Deep Science Ventures spin-out</div>
+
+<script>
+(() => {
+  // Respect reduced motion
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const nav = document.querySelector('nav.top');
+  const hero = document.querySelector('.hero');
+
+  // ───── Nav: reveal background + wordmark only once the hero has scrolled out ─────
+  // (Always runs — state toggle, not an animation; CSS transition handles reduced-motion.)
+  const closing = document.querySelector('.closing');
+  const onScroll = () => {
+    const navH = nav.offsetHeight;
+    const heroBottom = hero ? hero.getBoundingClientRect().bottom : 0;
+    const closingTop = closing ? closing.getBoundingClientRect().top : Infinity;
+    // Dark-mode nav (transparent bg, white text, orange pill) over the dark sections — hero and closing.
+    // Scrolled nav (light bg) only over the light sections in between.
+    const overDark = heroBottom > navH || closingTop <= navH;
+    nav.classList.toggle('scrolled', !overDark);
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
+  onScroll();
+
+  // ───── Smooth in-page scroll for anchor links ─────
+  // Easing matches the site's reveal curve: cubic-bezier(.2,.7,.2,1)
+  const cubicBezier = (p1x, p1y, p2x, p2y) => {
+    const cx = 3 * p1x, bx = 3 * (p2x - p1x) - cx, ax = 1 - cx - bx;
+    const cy = 3 * p1y, by = 3 * (p2y - p1y) - cy, ay = 1 - cy - by;
+    const sx = t => ((ax * t + bx) * t + cx) * t;
+    const sy = t => ((ay * t + by) * t + cy) * t;
+    const dx = t => (3 * ax * t + 2 * bx) * t + cx;
+    return x => {
+      let t = x;
+      for (let i = 0; i < 6; i++) { const e = sx(t) - x, d = dx(t); if (Math.abs(e) < 1e-4 || d === 0) break; t -= e / d; }
+      return sy(t);
+    };
+  };
+  const ease = cubicBezier(.2, .7, .2, 1);
+
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const href = a.getAttribute('href');
+      if (!href || href.length < 2) return;
+      const target = document.querySelector(href);
+      if (!target) return;
+      e.preventDefault();
+      const startY = window.scrollY;
+      // Align the section's top edge with the top of the page (the section's own top padding clears the fixed nav)
+      const targetY = Math.max(0, target.getBoundingClientRect().top + startY);
+      const dist = targetY - startY;
+      if (reduced || Math.abs(dist) < 4) { window.scrollTo(0, targetY); return; }
+      // Distance-scaled duration, clamped 1000–1400ms — slow and measured, per brand feel
+      const duration = Math.min(1400, Math.max(1000, Math.abs(dist) * 0.8));
+      let start;
+      const stepFrame = (ts) => {
+        if (start === undefined) start = ts;
+        const t = Math.min(1, (ts - start) / duration);
+        window.scrollTo(0, startY + dist * ease(t));
+        if (t < 1) requestAnimationFrame(stepFrame);
+      };
+      requestAnimationFrame(stepFrame);
+    });
+  });
+
+  // ───── Pipeline network: bidirectional connectors between cards + wet-lab feed ─────
+  const pipeGraph = document.querySelector('.pipeline-graph');
+  const drawPipe = () => {
+    if (!pipeGraph) return;
+    const svg = pipeGraph.querySelector('.pipe-edges');
+    const g = svg.querySelector('.pipe-paths');
+    const steps = [...pipeGraph.querySelectorAll('.step')];
+    const wet = pipeGraph.querySelector('.wetlab-node');
+    if (steps.length < 5 || !wet || window.innerWidth <= 900) { g.innerHTML = ''; return; }
+    const gr = pipeGraph.getBoundingClientRect();
+    svg.setAttribute('viewBox', `0 0 ${gr.width} ${gr.height}`);
+    const N = steps.map(s => { const r = s.getBoundingClientRect(); return { cx: r.left - gr.left + r.width / 2, left: r.left - gr.left, right: r.right - gr.left, top: r.top - gr.top, bottom: r.bottom - gr.top, midY: (r.top + r.bottom) / 2 - gr.top }; });
+    const wr = wet.getBoundingClientRect();
+    const Wn = { cx: wr.left - gr.left + wr.width / 2, top: wr.top - gr.top };
+    const arc = (x1, y1, x2, y2, bend) => `<path d="M ${x1.toFixed(1)} ${y1.toFixed(1)} Q ${((x1 + x2) / 2).toFixed(1)} ${((y1 + y2) / 2 + bend).toFixed(1)} ${x2.toFixed(1)} ${y2.toFixed(1)}"/>`;
+    const line = (x1, y1, x2, y2) => `<path d="M ${x1.toFixed(1)} ${y1.toFixed(1)} L ${x2.toFixed(1)} ${y2.toFixed(1)}"/>`;
+    let d = '';
+    // adjacent links — bidirectional connectors in the gaps, right-edge-centre ↔ left-edge-centre (arrowheads sit clear of the cards)
+    for (let i = 0; i < 4; i++) d += line(N[i].right + 4, N[i].midY, N[i + 1].left - 4, N[i + 1].midY);
+    // non-adjacent links — arcs above, top-edge-centres (offset above so arrowheads show) — any card to any card
+    [[0, 2], [1, 4]].forEach(([a, b]) => d += arc(N[a].cx, N[a].top - 6, N[b].cx, N[b].top - 6, -46));
+    // wet-lab feeds into steps 2 & 4 — bottom-edge-centres (offset below)
+    [1, 3].forEach(i => d += arc(Wn.cx, Wn.top - 2, N[i].cx, N[i].bottom + 6, i < 2 ? -14 : 14));
+    g.innerHTML = d;
+  };
+  drawPipe();
+  window.addEventListener('resize', drawPipe, { passive: true });
+  window.addEventListener('load', drawPipe);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawPipe);
+
+  // ───── Reveal animations (motion — skip entirely for reduced-motion) ─────
+  if (reduced) return;
+
+  // Mark html as animation-enabled so reveal CSS kicks in
+  document.documentElement.classList.add('anim-on');
+
+  // Apply .reveal to section headings + cards + flow rows
+  const revealSelectors = [
+    '.eyebrow-row',
+    '.s-title',
+    '.s-sub',
+    '.sub-title',
+    '.fm-panel',
+    '.step',
+    '.moat-card',
+    '.wedge-card',
+    '.wedge-note',
+    '.figure-frame',
+    '.tile',
+    '.uc-col',
+    '.flow-node',
+    '.detail-cards .card',
+    '.enrich-strip',
+    '.stat-card',
+    '.expanded-banner',
+    '.team-card',
+    '.team-band',
+    '.closing-inner > .eyebrow',
+    '.closing-inner > h2'
+  ];
+  document.querySelectorAll(revealSelectors.join(',')).forEach(el => {
+    el.classList.add('reveal');
+  });
+
+  // Stagger children inside grids by setting --i index
+  document.querySelectorAll('.fm-grid, .moat-grid, .wedge-grid, .products-grid, .stat-grid, .detail-cards, .flow-row, .step-flow').forEach(parent => {
+    parent.classList.add('stagger');
+    [...parent.children].forEach((child, i) => {
+      child.style.setProperty('--i', i);
+    });
+  });
+
+  // IntersectionObserver
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Stat cards: also need .in-view on the card itself for the underline animation
+  document.querySelectorAll('.stat-card').forEach(el => io.observe(el));
+})();
+</script>
+
 </body>
 </html>
