@@ -1063,6 +1063,14 @@ section { position: relative; }
   color: var(--slate); line-height: 1.5;
   margin: 0 0 16px;
 }
+.wedge-link {
+  font-family: var(--font-body-medium); font-size: 14px;
+  color: var(--orange-deep); text-decoration: none;
+  margin-top: auto; padding-top: 18px;
+  display: inline-flex; align-items: center; gap: 5px;
+  transition: gap .2s ease, color .2s ease;
+}
+.wedge-link:hover { color: var(--brand-orange); gap: 9px; }
 .wedge-card .one-line {
   font-family: var(--font-body-medium); font-size: 15px;
   color: var(--brand-black); line-height: 1.5;
@@ -1398,6 +1406,7 @@ section { position: relative; }
           <li><strong>Per-component decomposition</strong> with a claim-level evidence trail on every verdict — not a similarity score on the whole filing.</li>
           <li><strong>Defensible under IP-committee review</strong> — one isolated agent per patent, no cross-contamination.</li>
         </ul>
+        <a class="wedge-link" href="/fto/">Learn more about FTO →</a>
       </div>
 
       <div class="wedge-card">
@@ -1410,6 +1419,7 @@ section { position: relative; }
           <li><strong>Source-span resolution on every claim</strong> — paper sentence, trial arm, or figure.</li>
           <li><strong>Audit-grade depth</strong> across hundreds-to-thousands of papers and in-silico runs per claim, with pharma-specific provenance.</li>
         </ul>
+        <a class="wedge-link" href="/verification/">Learn more about Verification →</a>
       </div>
 
     </div>

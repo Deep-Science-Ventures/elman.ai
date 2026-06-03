@@ -1,0 +1,76 @@
+/* Shared stylesheet for Elman product sub-pages (/fto/, /verification/). Brand tokens mirror index.html. */
+@font-face { font-family:'BWGradualMedium'; src:url('/fonts/BwGradual-Medium.otf') format('opentype'); font-display:swap; }
+@font-face { font-family:'InterRegular'; src:url('/fonts/Inter-Regular.ttf') format('truetype'); font-display:swap; }
+@font-face { font-family:'InterMedium'; src:url('/fonts/Inter-Medium.ttf') format('truetype'); font-display:swap; }
+@font-face { font-family:'InterLight'; src:url('/fonts/Inter-Light.ttf') format('truetype'); font-display:swap; }
+
+:root{
+  --black:#1D1D1D; --white:#FBFBFB; --orange:#F76233; --orange-deep:#D74D12;
+  --yellow:#FDD02B; --slate:#666F8D; --warm:#F4F4EF; --near:#F8F8F6;
+  --pure:#FEFEFF; --cream:#E5E5D9;
+  --disp:'BWGradualMedium',system-ui,sans-serif;
+  --body:'InterRegular',system-ui,sans-serif;
+  --med:'InterMedium',system-ui,sans-serif;
+  --light:'InterLight',system-ui,sans-serif;
+  --radius:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--body);color:var(--black);background:var(--warm);line-height:1.5;-webkit-font-smoothing:antialiased;}
+a{color:inherit;}
+.wrap{max-width:1080px;margin:0 auto;padding:0 28px;}
+
+/* nav */
+nav.top{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+  padding:16px 28px;background:rgba(244,244,239,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--cream);}
+nav.top .wm{height:24px;width:auto;fill:var(--black);display:block;}
+nav.top .links{display:flex;align-items:center;gap:22px;font-family:var(--med);font-size:14px;}
+nav.top .links a{text-decoration:none;color:var(--black);opacity:.7;}
+nav.top .links a:hover{opacity:1;color:var(--orange);}
+nav.top .links .cta{opacity:1;background:var(--black);color:var(--white);padding:9px 16px;border-radius:999px;}
+nav.top .links .cta:hover{background:var(--orange);color:var(--white);}
+@media(max-width:640px){nav.top .links a.back{display:none;}}
+
+/* hero */
+.hero{background:var(--black);color:var(--white);padding:84px 0 76px;}
+.hero .eyebrow{font-family:var(--med);font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--yellow);}
+.hero h1{font-family:var(--disp);font-size:clamp(38px,6vw,66px);line-height:1.03;letter-spacing:-.02em;margin:18px 0 0;max-width:16ch;}
+.hero h1 em{font-style:normal;color:var(--orange);}
+.hero .lead{font-family:var(--light);font-size:clamp(18px,2.3vw,23px);color:rgba(255,255,255,.82);margin-top:24px;max-width:60ch;}
+.hero .lead strong{font-family:var(--med);font-weight:normal;color:var(--white);}
+.hero .actions{margin-top:34px;display:flex;gap:14px;flex-wrap:wrap;}
+.btn{font-family:var(--med);font-size:15px;text-decoration:none;padding:13px 24px;border-radius:999px;display:inline-block;transition:.2s;}
+.btn-primary{background:var(--orange);color:var(--white);}
+.btn-primary:hover{background:var(--orange-deep);transform:translateY(-1px);}
+.btn-ghost{background:transparent;color:var(--white);border:1px solid rgba(255,255,255,.28);}
+.btn-ghost:hover{border-color:var(--white);}
+
+/* sections */
+section.band{padding:72px 0;}
+.band.warm{background:var(--warm);} .band.near{background:var(--near);}
+.tag{display:inline-block;font-family:var(--med);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--orange);border:1px solid var(--orange);border-radius:999px;padding:5px 12px;margin-bottom:18px;}
+h2.s-title{font-family:var(--disp);font-size:clamp(28px,4vw,42px);line-height:1.08;letter-spacing:-.015em;max-width:20ch;}
+h2.s-title em{font-style:normal;color:var(--orange);}
+.s-sub{font-family:var(--light);font-size:18px;color:var(--slate);margin-top:14px;max-width:64ch;}
+.prose p{font-size:17px;margin-top:18px;max-width:68ch;color:#2a2a2a;}
+.prose p strong{font-family:var(--med);font-weight:normal;}
+
+/* feature cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:32px;}
+.card{background:var(--pure);border:1px solid var(--cream);border-radius:var(--radius);padding:26px 24px;}
+.card h3{font-family:var(--disp);font-size:20px;letter-spacing:-.01em;margin-bottom:10px;}
+.card p{font-size:15px;color:#33373f;}
+
+/* suite cross-links */
+.suite{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;}
+.suite a,.suite span{font-family:var(--med);font-size:14px;padding:9px 15px;border-radius:999px;border:1px solid var(--cream);background:var(--pure);text-decoration:none;}
+.suite a:hover{border-color:var(--orange);color:var(--orange);}
+.suite .here{background:var(--black);color:var(--white);border-color:var(--black);}
+
+/* closing */
+.closing{background:var(--black);color:var(--white);padding:84px 0;text-align:center;}
+.closing .eyebrow{font-family:var(--med);font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--yellow);}
+.closing h2{font-family:var(--disp);font-size:clamp(28px,4.4vw,46px);line-height:1.08;letter-spacing:-.015em;margin:16px auto 30px;max-width:18ch;}
+.closing h2 em{font-style:normal;color:var(--orange);}
+.foot{padding:26px 28px;text-align:center;font-size:13px;color:var(--slate);background:var(--black);}
