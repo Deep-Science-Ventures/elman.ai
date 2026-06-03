@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+@font-face { font-family:'BWGradualMedium'; src:url('../fonts/BwGradual-Medium.otf') format('opentype'); }
+@font-face { font-family:'BWGradualRegular'; src:url('../fonts/BwGradual-Regular.otf') format('opentype'); }
+@font-face { font-family:'InterMedium'; src:url('../fonts/Inter-Medium.ttf') format('truetype'); }
+@font-face { font-family:'InterLight'; src:url('../fonts/Inter-Light.ttf') format('truetype'); }
+
+:root{
+  --brand-black:#1D1D1D; --brand-orange:#F76233; --orange-deep:#D74D12;
+  --slate:#666F8D; --white-warm:#F4F4EF; --white-pure:#FEFEFF; --cream:#E5E5D9;
+  --disp:'BWGradualMedium',sans-serif; --med:'InterMedium',sans-serif; --light:'InterLight',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:1200px;height:630px;}
+body{
+  background:var(--white-warm); color:var(--brand-black);
+  font-family:var(--light);
+  padding:64px 70px;
+  display:flex; flex-direction:column; justify-content:space-between;
+}
+.wm{height:38px;width:auto;fill:var(--brand-black);display:block;}
+.eyebrow{font-family:var(--med);font-size:16px;letter-spacing:.22em;text-transform:uppercase;color:var(--brand-orange);margin-bottom:18px;}
+h1{font-family:var(--disp);font-size:74px;line-height:1.02;letter-spacing:-.02em;}
+h1 em{font-style:normal;color:var(--brand-orange);}
+.sub{font-size:24px;line-height:1.4;color:var(--slate);margin-top:20px;max-width:900px;}
+
+.flow{display:flex;align-items:stretch;gap:14px;}
+.step{
+  flex:1 1 0; background:var(--white-pure); border:1px solid var(--cream);
+  border-radius:14px; padding:20px 18px; display:flex; flex-direction:column; gap:10px;
+  min-height:118px;
+}
+.step .num{font-family:var(--med);font-size:13px;letter-spacing:.20em;text-transform:uppercase;color:var(--slate);}
+.step.frontier .num{color:var(--brand-orange);}
+.step .name{font-family:var(--disp);font-size:23px;line-height:1.12;letter-spacing:-.01em;}
+.conn{display:flex;align-items:center;color:var(--brand-orange);flex:0 0 auto;}
+.conn svg{width:26px;height:14px;}
+</style>
+</head>
+<body>
+
+  <svg class="wm" viewBox="0 0 427 106" aria-label="Elman">
+    <path d="M187.659 88.178H143.641V18.7797H186.37V26.711H152.266V48.9184H180.918V56.8496H152.266V80.2468H187.659V88.178Z"/>
+    <path d="M222.998 80.7425H238.365V88.178H199.601V80.7425H214.869V26.2153H199.601V18.7797H222.998V80.7425Z"/>
+    <path d="M296.074 37.0216C306.087 37.0216 312.531 44.0605 312.531 55.5608V88.178H304.401V55.8582C304.401 49.1167 301.229 44.6554 294.983 44.6554C288.341 44.6554 284.474 49.7115 284.474 56.3539V88.178H276.345V55.8582C276.345 49.6124 273.767 44.6554 266.629 44.6554C260.086 44.6554 256.418 49.8107 256.418 57.0479V88.178H248.288V37.6164H255.129L255.823 42.97C258.4 39.3018 262.763 37.0216 268.513 37.0216C274.56 37.0216 279.319 40.0949 281.599 44.7545C284.573 40.0949 289.431 37.0216 296.074 37.0216Z"/>
+    <path d="M369.348 80.7425H371.926V88.178H367.465C360.723 88.178 358.443 85.3029 358.344 80.3459C355.171 84.9064 350.115 88.7728 341.391 88.7728C330.287 88.7728 322.752 83.221 322.752 74.0009C322.752 63.8886 329.791 58.2376 343.076 58.2376H357.947V54.7677C357.947 48.2244 353.288 44.2588 345.356 44.2588C338.218 44.2588 333.46 47.6296 332.468 52.7849H324.339C325.528 42.8708 333.559 37.0216 345.753 37.0216C358.641 37.0216 366.077 43.4657 366.077 55.2634V77.3717C366.077 80.0485 367.068 80.7425 369.348 80.7425ZM357.947 67.5568V65.0783H342.283C335.046 65.0783 330.981 67.7551 330.981 73.5052C330.981 78.4622 335.244 81.833 341.986 81.833C352.098 81.833 357.947 75.9837 357.947 67.5568Z"/>
+    <path d="M407.124 37.0216C418.029 37.0216 426.952 42.97 426.952 59.0307V88.178H418.823V59.5264C418.823 49.7115 414.064 44.4571 405.736 44.4571C396.813 44.4571 391.063 51.0995 391.063 61.9058V88.178H382.934V37.6164H389.973L391.063 44.4571C394.037 40.5906 399.094 37.0216 407.124 37.0216Z"/>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M14.3232 0C6.4127 0 0 6.4127 0 14.3232C0 22.2336 6.4127 28.6463 14.3232 28.6463C17.3575 28.6463 20.1714 27.7028 22.4876 26.0931L34.0446 39.1457L25.6695 43.8752C23.0504 40.4809 18.9421 38.2946 14.3232 38.2946C6.4127 38.2946 0 44.7073 0 52.6178C0 60.5282 6.4127 66.9409 14.3232 66.9409C19.2672 66.9409 23.6262 64.436 26.2001 60.626C26.1602 60.685 26.1199 60.7438 26.0791 60.8023L34.0446 65.3004L22.0484 78.849C19.8195 77.4187 17.1682 76.5892 14.3232 76.5892C6.4127 76.5892 0 83.0019 0 90.9124C0 98.8228 6.4127 105.236 14.3232 105.236C21.6618 105.236 27.7115 99.7163 28.5477 92.6023L67.2129 92.6023C68.0491 99.7163 74.0987 105.236 81.4374 105.236C89.3479 105.236 95.7606 98.8228 95.7606 90.9124C95.7606 83.0019 89.3479 76.5892 81.4374 76.5892C78.5925 76.5892 75.9414 77.4186 73.7126 78.8488L50.1377 52.2231L73.2734 26.0934C75.5895 27.7029 78.4033 28.6463 81.4374 28.6463C89.3479 28.6463 95.7606 22.2336 95.7606 14.3232C95.7606 6.4127 89.3479 0 81.4374 0C74.0986 0 68.049 5.51927 67.2129 12.6334L28.5477 12.6334C27.7116 5.51927 21.6619 0 14.3232 0ZM3.37978 14.3232C3.37979 8.2793 8.2793 3.37978 14.3232 3.37978C20.367 3.37979 25.2665 8.2793 25.2665 14.3232C25.2665 20.367 20.367 25.2665 14.3232 25.2665C8.2793 25.2665 3.37978 20.367 3.37978 14.3232ZM28.5477 16.0131C28.1959 19.0055 26.9218 21.7157 25.0173 23.8517L37.0541 37.4462L68.2184 19.8475C67.7149 18.644 67.3709 17.357 67.2129 16.0131L28.5477 16.0131ZM69.8828 22.7891L39.3452 40.0339L47.8806 49.6739L70.7437 23.8521C70.4403 23.5119 70.153 23.1572 69.8828 22.7891ZM71.1008 80.9974L47.8806 54.7723L39.3452 64.4122L70.3071 81.8966C70.5592 81.5858 70.824 81.2858 71.1008 80.9974ZM68.5003 84.7577L37.0541 66.9999L24.6602 80.9977C26.7622 83.1888 28.1744 86.0468 28.5477 89.2226H67.2129C67.3987 87.6411 67.8422 86.1385 68.5003 84.7577ZM27.6721 57.8204L36.3358 62.7128L45.6235 52.2231L36.3358 41.7333L27.405 46.7766C27.3971 46.7588 27.3891 46.741 27.3811 46.7233C28.1939 48.521 28.6463 50.5165 28.6463 52.6178C28.6463 54.4531 28.3011 56.2077 27.6721 57.8204ZM70.494 14.3232C70.494 8.2793 75.3935 3.37978 81.4374 3.37978C87.4813 3.37979 92.3808 8.2793 92.3808 14.3232C92.3808 20.367 87.4813 25.2665 81.4374 25.2665C75.3935 25.2665 70.494 20.367 70.494 14.3232ZM3.37978 52.6178C3.37979 46.5739 8.2793 41.6744 14.3232 41.6744C20.367 41.6744 25.2665 46.5739 25.2665 52.6178C25.2665 58.6616 20.367 63.5611 14.3232 63.5611C8.2793 63.5611 3.37978 58.6616 3.37978 52.6178ZM3.37978 90.9124C3.37979 84.8685 8.2793 79.969 14.3232 79.969C20.367 79.969 25.2665 84.8685 25.2665 90.9124C25.2665 96.9562 20.367 101.856 14.3232 101.856C8.2793 101.856 3.37978 96.9562 3.37978 90.9124ZM70.494 90.9124C70.494 84.8685 75.3935 79.969 81.4374 79.969C87.4813 79.969 92.3808 84.8685 92.3808 90.9124C92.3808 96.9562 87.4813 101.856 81.4374 101.856C75.3935 101.856 70.494 96.9562 70.494 90.9124Z"/>
+  </svg>
+
+  <div>
+    <div class="eyebrow">The full picture</div>
+    <h1>Drug development, <em>end&nbsp;to&nbsp;end</em>.</h1>
+    <p class="sub">Verifiable AI pushed into every step from data to therapy — where every claim resolves to a paper sentence, trial arm, or figure.</p>
+  </div>
+
+  <div class="flow">
+    <div class="step"><span class="num">Step 1</span><span class="name">Collect datasets</span></div>
+    <div class="conn"><svg viewBox="0 0 26 14"><path d="M2 7h22M19 2l5 5-5 5M7 12L2 7l5-5" fill="none" stroke="#F76233" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="step"><span class="num">Step 2</span><span class="name">Produce hypotheses</span></div>
+    <div class="conn"><svg viewBox="0 0 26 14"><path d="M2 7h22M19 2l5 5-5 5M7 12L2 7l5-5" fill="none" stroke="#F76233" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="step"><span class="num">Step 3</span><span class="name">Find targets</span></div>
+    <div class="conn"><svg viewBox="0 0 26 14"><path d="M2 7h22M19 2l5 5-5 5M7 12L2 7l5-5" fill="none" stroke="#F76233" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="step frontier"><span class="num">Step 4</span><span class="name">Model effects</span></div>
+    <div class="conn"><svg viewBox="0 0 26 14"><path d="M2 7h22M19 2l5 5-5 5M7 12L2 7l5-5" fill="none" stroke="#F76233" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="step frontier"><span class="num">Step 5</span><span class="name">Engineer mitigation</span></div>
+  </div>
+
+</body>
+</html>
