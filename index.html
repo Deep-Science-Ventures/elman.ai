@@ -446,6 +446,7 @@ section { position: relative; }
 .tile.showcased { background: var(--peach-soft); border: 1.5px solid var(--brand-orange); }
 .tile.showcased h3 { color: var(--brand-orange); }
 .tile.showcased p { color: var(--brand-black); }
+a.tile { text-decoration: none; color: inherit; }
 .tile.faded { background: var(--white-pure); border: 1.5px solid var(--cream); }
 .tile.faded h3 { color: var(--brand-black); }
 .tile.faded p { color: var(--slate); }
@@ -1429,18 +1430,18 @@ section { position: relative; }
       <h3 class="subgroup-label">The rest of the suite</h3>
 
       <div class="products-grid">
-      <div class="tile faded">
+      <a class="tile faded" href="/hypothesis-generation/">
         <h3>Hypothesis Generation</h3>
         <p>What testable hypotheses fall out of this dataset?</p>
-      </div>
-      <div class="tile faded">
+      </a>
+      <a class="tile faded" href="/patentability/">
         <h3>Patentability</h3>
         <p>What in here is novel and defendable?</p>
-      </div>
-      <div class="tile faded">
+      </a>
+      <a class="tile faded" href="/bioinformatics/">
         <h3>Bioinformatics-at-scale</h3>
         <p>What does the raw cohort data reveal at single-cell resolution?</p>
-      </div>
+      </a>
       <div class="tile indev">
         <h3>Effect Simulation</h3>
         <p>If I modify a target — add, inhibit, or combine — what happens downstream?</p>
