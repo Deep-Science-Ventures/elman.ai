@@ -446,7 +446,6 @@ section { position: relative; }
 .tile.showcased { background: var(--peach-soft); border: 1.5px solid var(--brand-orange); }
 .tile.showcased h3 { color: var(--brand-orange); }
 .tile.showcased p { color: var(--brand-black); }
-a.tile { text-decoration: none; color: inherit; }
 .tile.faded { background: var(--white-pure); border: 1.5px solid var(--cream); }
 .tile.faded h3 { color: var(--brand-black); }
 .tile.faded p { color: var(--slate); }
@@ -1064,14 +1063,6 @@ a.tile { text-decoration: none; color: inherit; }
   color: var(--slate); line-height: 1.5;
   margin: 0 0 16px;
 }
-.wedge-link {
-  font-family: var(--font-body-medium); font-size: 14px;
-  color: var(--orange-deep); text-decoration: none;
-  margin-top: auto; padding-top: 18px;
-  display: inline-flex; align-items: center; gap: 5px;
-  transition: gap .2s ease, color .2s ease;
-}
-.wedge-link:hover { color: var(--brand-orange); gap: 9px; }
 .wedge-card .one-line {
   font-family: var(--font-body-medium); font-size: 15px;
   color: var(--brand-black); line-height: 1.5;
@@ -1407,7 +1398,6 @@ a.tile { text-decoration: none; color: inherit; }
           <li><strong>Per-component decomposition</strong> with a claim-level evidence trail on every verdict — not a similarity score on the whole filing.</li>
           <li><strong>Defensible under IP-committee review</strong> — one isolated agent per patent, no cross-contamination.</li>
         </ul>
-        <a class="wedge-link" href="/fto/">Learn more about FTO →</a>
       </div>
 
       <div class="wedge-card">
@@ -1420,7 +1410,6 @@ a.tile { text-decoration: none; color: inherit; }
           <li><strong>Source-span resolution on every claim</strong> — paper sentence, trial arm, or figure.</li>
           <li><strong>Audit-grade depth</strong> across hundreds-to-thousands of papers and in-silico runs per claim, with pharma-specific provenance.</li>
         </ul>
-        <a class="wedge-link" href="/verification/">Learn more about Verification →</a>
       </div>
 
     </div>
@@ -1430,18 +1419,18 @@ a.tile { text-decoration: none; color: inherit; }
       <h3 class="subgroup-label">The rest of the suite</h3>
 
       <div class="products-grid">
-      <a class="tile faded" href="/hypothesis-generation/">
+      <div class="tile faded">
         <h3>Hypothesis Generation</h3>
         <p>What testable hypotheses fall out of this dataset?</p>
-      </a>
-      <a class="tile faded" href="/patentability/">
+      </div>
+      <div class="tile faded">
         <h3>Patentability</h3>
         <p>What in here is novel and defendable?</p>
-      </a>
-      <a class="tile faded" href="/bioinformatics/">
+      </div>
+      <div class="tile faded">
         <h3>Bioinformatics-at-scale</h3>
         <p>What does the raw cohort data reveal at single-cell resolution?</p>
-      </a>
+      </div>
       <div class="tile indev">
         <h3>Effect Simulation</h3>
         <p>If I modify a target — add, inhibit, or combine — what happens downstream?</p>
