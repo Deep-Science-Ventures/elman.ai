@@ -1179,6 +1179,79 @@ section { position: relative; }
   text-align: center;
   letter-spacing: .04em;
 }
+/* ───────── Live product preview (hover-reveal + lightbox) ───────── */
+.live-cards .wedge-card { cursor: pointer; }
+.live-cards .wedge-card:focus-visible { outline: 2px solid var(--brand-orange); outline-offset: 3px; }
+.live-cards .wedge-card.is-active { border-color: var(--brand-orange); box-shadow: 0 8px 28px rgba(247,98,51,.14); }
+.wedge-peek {
+  margin-top: auto; padding-top: 18px;
+  font-family: var(--font-body-medium); font-size: 11px;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--slate); opacity: 0; transform: translateY(4px);
+  transition: opacity .3s ease, transform .3s ease, color .3s ease;
+}
+.live-cards .wedge-card:hover .wedge-peek,
+.live-cards .wedge-card:focus-visible .wedge-peek,
+.live-cards .wedge-card.is-active .wedge-peek { opacity: 1; transform: none; color: var(--brand-orange); }
+
+.live-stage { margin: 22px 0 0; }
+.live-stage-frame {
+  position: relative; width: 100%; aspect-ratio: 16 / 9;
+  border-radius: var(--radius-lg); overflow: hidden;
+  border: 1px solid var(--cream); background: var(--brand-black);
+  box-shadow: 0 30px 60px -28px rgba(29,24,18,.45), 0 10px 26px -16px rgba(29,24,18,.28);
+}
+.live-shot {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: top center;
+  opacity: 0; transform: scale(1.035);
+  transition: opacity .5s ease, transform 6s ease; cursor: zoom-in;
+}
+.live-shot.is-active { opacity: 1; transform: scale(1); }
+.live-expand {
+  position: absolute; right: 14px; bottom: 14px; z-index: 3;
+  font-family: var(--font-body-medium); font-size: 12px; letter-spacing: .03em;
+  color: var(--brand-white); background: rgba(29,29,29,.6);
+  border: 1px solid rgba(255,255,255,.22); padding: 8px 15px;
+  border-radius: var(--radius-pill); cursor: zoom-in;
+  transition: background .25s ease, border-color .25s ease;
+}
+.live-expand::before { content: "\2922  "; }
+.live-expand:hover, .live-expand:focus-visible { background: var(--brand-orange); border-color: var(--brand-orange); }
+.live-cap {
+  font-family: var(--font-body-light); font-size: 14px; color: var(--slate);
+  line-height: 1.55; margin: 14px 0 0; max-width: 760px;
+}
+.live-cap strong { font-family: var(--font-body-medium); font-weight: normal; color: var(--brand-black); }
+.live-cap em { font-style: normal; color: var(--slate); opacity: .85; }
+.live-cap > span { display: none; }
+.live-stage.stage-fto .live-cap > [data-cap="fto"],
+.live-stage.stage-verifier .live-cap > [data-cap="verifier"] { display: block; }
+
+.lightbox {
+  position: fixed; inset: 0; z-index: 1000; display: flex;
+  align-items: center; justify-content: center; padding: 4vw;
+  background: rgba(14,11,9,.9); opacity: 0; transition: opacity .25s ease;
+}
+.lightbox.open { opacity: 1; }
+.lightbox[hidden] { display: none; }
+.lb-img {
+  max-width: 94vw; max-height: 90vh; width: auto; height: auto;
+  border-radius: var(--radius-md); box-shadow: 0 40px 90px -30px rgba(0,0,0,.7);
+}
+.lb-close {
+  position: fixed; top: 20px; right: 24px; width: 44px; height: 44px;
+  border-radius: 50%; font-size: 19px; line-height: 1; color: var(--brand-white);
+  background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.25); cursor: pointer;
+}
+.lb-close:hover, .lb-close:focus-visible { background: var(--brand-orange); border-color: var(--brand-orange); }
+
+@media (max-width: 720px) { .live-stage-frame { aspect-ratio: 3 / 2; } }
+@media (prefers-reduced-motion: reduce) {
+  .live-shot { transition: opacity .001s linear; transform: none; }
+  .live-shot.is-active { transform: none; }
+  .lightbox { transition: none; }
+}
 </style>
 </head>
 <body>
@@ -1386,9 +1459,9 @@ section { position: relative; }
     <div class="subsection">
       <h3 class="subgroup-label">In production today</h3>
 
-      <div class="wedge-grid">
+      <div class="wedge-grid live-cards" id="liveCards">
 
-      <div class="wedge-card">
+      <div class="wedge-card is-active" data-shot="fto" tabindex="0" role="button" aria-label="Preview the FTO Studio screenshot below">
         <div class="wedge-head">
           <h3>FTO</h3>
           <span class="wedge-status">Live</span>
@@ -1398,9 +1471,10 @@ section { position: relative; }
           <li><strong>Per-component decomposition</strong> with a claim-level evidence trail on every verdict — not a similarity score on the whole filing.</li>
           <li><strong>Defensible under IP-committee review</strong> — one isolated agent per patent, no cross-contamination.</li>
         </ul>
+        <span class="wedge-peek">See it running ↓</span>
       </div>
 
-      <div class="wedge-card">
+      <div class="wedge-card" data-shot="verifier" tabindex="0" role="button" aria-label="Preview the Elman Verifier screenshot below">
         <div class="wedge-head">
           <h3>Verification</h3>
           <span class="wedge-status">Live</span>
@@ -1410,27 +1484,22 @@ section { position: relative; }
           <li><strong>Source-span resolution on every claim</strong> — paper sentence, trial arm, or figure.</li>
           <li><strong>Audit-grade depth</strong> across hundreds-to-thousands of papers and in-silico runs per claim, with pharma-specific provenance.</li>
         </ul>
+        <span class="wedge-peek">See it running ↓</span>
       </div>
 
-    </div>
-    </div>
-
-    <div class="subsection">
-      <h3 class="subgroup-label">See them running</h3>
-      <div class="example-grid">
-        <div>
-          <div class="figure-frame">
-            <img src="assets/product-fto.jpg" width="1600" height="880" loading="lazy" alt="Elman FTO Studio: a completed freedom-to-operate analysis — 589 patents searched and ranked by risk, with an executive summary and a per-patent risk table.">
-          </div>
-          <p class="figure-cap"><strong>FTO Studio.</strong> A completed freedom-to-operate run — 589 patents searched and ranked by risk, with an executive summary and every high-risk family traceable to its source.</p>
-        </div>
-        <div>
-          <div class="figure-frame">
-            <img src="assets/product-verifier.jpg" width="1600" height="922" loading="lazy" alt="Elman Verifier: a hypothesis validation report that disproved a hypothesis, showing the supporting and refuted edges and the full knowledge graph.">
-          </div>
-          <p class="figure-cap"><strong>Elman Verifier.</strong> Validates a hypothesis against the evidence and shows its work — here it disproved one, with the supporting and refuted edges and the full knowledge graph.</p>
-        </div>
       </div>
+
+      <figure class="live-stage stage-fto" id="liveStage">
+        <div class="live-stage-frame">
+          <img class="live-shot is-active" data-shot="fto" src="assets/product-fto.jpg" width="2200" height="1210" alt="Elman FTO Studio: a completed freedom-to-operate analysis — 589 patents searched and ranked by risk, with an executive summary and a per-patent risk table.">
+          <img class="live-shot" data-shot="verifier" src="assets/product-verifier.jpg" width="2200" height="1267" alt="Elman Verifier: a hypothesis validation report that disproved a hypothesis, showing the supporting and refuted edges and the full knowledge graph.">
+          <button class="live-expand" type="button" aria-label="Enlarge screenshot">Enlarge</button>
+        </div>
+        <figcaption class="live-cap" aria-live="polite">
+          <span data-cap="fto"><strong>FTO Studio.</strong> A completed freedom-to-operate run — 589 patents ranked by risk, every high-risk family traceable to its source. <em>Hover a card to switch; click to enlarge.</em></span>
+          <span data-cap="verifier"><strong>Elman Verifier.</strong> A hypothesis disproved — with the supporting and refuted edges and the full knowledge graph. <em>Hover a card to switch; click to enlarge.</em></span>
+        </figcaption>
+      </figure>
     </div>
 
     <div class="subsection">
@@ -1844,5 +1913,66 @@ section { position: relative; }
 })();
 </script>
 
+<div class="lightbox" id="lightbox" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-label="Product screenshot, enlarged">
+  <button class="lb-close" type="button" aria-label="Close enlarged screenshot">&#10005;</button>
+  <img class="lb-img" id="lightboxImg" src="" alt="">
+</div>
+<script>
+(function(){
+  var cards = document.getElementById('liveCards');
+  var stage = document.getElementById('liveStage');
+  if (!cards || !stage) return;
+  var shots = [].slice.call(stage.querySelectorAll('.live-shot'));
+  var cardEls = [].slice.call(cards.querySelectorAll('.wedge-card[data-shot]'));
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var current = 'fto';
+
+  function activate(shot){
+    if (!shot) return; current = shot;
+    shots.forEach(function(i){ i.classList.toggle('is-active', i.dataset.shot === shot); });
+    cardEls.forEach(function(c){ c.classList.toggle('is-active', c.dataset.shot === shot); });
+    stage.classList.remove('stage-fto','stage-verifier');
+    stage.classList.add('stage-' + shot);
+  }
+  cardEls.forEach(function(c){
+    var shot = c.dataset.shot;
+    c.addEventListener('mouseenter', function(){ activate(shot); });
+    c.addEventListener('focus', function(){ activate(shot); });
+    c.addEventListener('click', function(){ activate(shot); });
+    c.addEventListener('keydown', function(e){
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(shot); openLB(); }
+    });
+  });
+
+  var lb = document.getElementById('lightbox');
+  var lbImg = document.getElementById('lightboxImg');
+  var lbClose = lb ? lb.querySelector('.lb-close') : null;
+  function openLB(){
+    if (!lb) return;
+    var img = shots.filter(function(i){ return i.dataset.shot === current; })[0];
+    if (!img) return;
+    lbImg.src = img.currentSrc || img.src; lbImg.alt = img.alt;
+    lb.hidden = false; lb.setAttribute('aria-hidden','false');
+    requestAnimationFrame(function(){ lb.classList.add('open'); });
+    document.body.style.overflow = 'hidden';
+    if (lbClose) lbClose.focus();
+  }
+  function closeLB(){
+    if (!lb) return;
+    lb.classList.remove('open'); document.body.style.overflow = '';
+    if (reduced) { lb.hidden = true; lb.setAttribute('aria-hidden','true'); return; }
+    var done = function(){ lb.hidden = true; lb.setAttribute('aria-hidden','true'); lb.removeEventListener('transitionend', done); };
+    lb.addEventListener('transitionend', done);
+  }
+  [].slice.call(stage.querySelectorAll('.live-shot, .live-expand')).forEach(function(el){
+    el.addEventListener('click', function(e){ e.preventDefault(); openLB(); });
+  });
+  if (lb){
+    lb.addEventListener('click', function(e){ if (e.target === lb) closeLB(); });
+    if (lbClose) lbClose.addEventListener('click', closeLB);
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !lb.hidden) closeLB(); });
+  }
+})();
+</script>
 </body>
 </html>
