@@ -1810,6 +1810,19 @@ section { position: relative; }
 
   // Stat cards: also need .in-view on the card itself for the underline animation
   document.querySelectorAll('.stat-card').forEach(el => io.observe(el));
+
+  // Safety net for non-scrolling renderers (search crawlers, link-preview and
+  // compliance/screenshot bots): they run JS but never scroll, so the
+  // IntersectionObserver never fires and .reveal content would stay invisible —
+  // making the page look blank/broken to them. After a short delay, force any
+  // still-hidden content visible so the full page is always captured. Real
+  // visitors have already triggered the scroll animation by this point.
+  window.setTimeout(function () {
+    document.querySelectorAll('.reveal:not(.in-view), .stat-card:not(.in-view)').forEach(function (el) {
+      el.style.transition = 'none';
+      el.classList.add('in-view');
+    });
+  }, 1500);
 })();
 </script>
 
