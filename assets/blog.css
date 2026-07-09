@@ -125,16 +125,18 @@ header.site .links .cta:hover { background: var(--brand-orange); color: var(--br
 .news-hero { padding: clamp(64px, 10vw, 120px) 0 clamp(40px, 6vw, 64px); }
 .news-hero h1 {
   font-family: var(--font-display);
-  font-size: clamp(44px, 8vw, 88px);
+  /* capped at 80px so the headline holds one line at full width */
+  font-size: clamp(40px, 6vw, 80px);
   line-height: 1.02; letter-spacing: -.02em;
-  margin: 0 0 20px;
+  text-wrap: balance;
+  margin: 0 0 22px;
 }
 .news-hero h1 em { font-style: normal; color: var(--brand-orange); }
 .news-hero p {
   font-family: var(--font-body-light);
   font-size: clamp(17px, 2vw, 21px);
   line-height: 1.6; color: var(--ink-soft);
-  max-width: 34rem; margin: 0;
+  margin: 0;
 }
 
 .post-list { padding-bottom: clamp(72px, 10vw, 128px); display: grid; gap: 22px; }
