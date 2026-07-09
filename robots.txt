@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
 
+# PREVIEW ONLY — delete the Disallow line below on publication day.
+# The /news pages also carry their own <meta name="robots" content="noindex">.
+Disallow: /news/
+
 Sitemap: https://elman.ai/sitemap.xml

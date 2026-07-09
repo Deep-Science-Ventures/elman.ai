@@ -1,0 +1,321 @@
+/* ═══════════════════════════════════════════════════════════════════
+   blog.css — shared by /news and every post under /news/<slug>/
+   Tokens duplicated from index.html on purpose. Do not refactor the
+   landing page to import this; the landing page works, leave it alone.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ───────── Fonts (absolute paths: these pages live below root) ───────── */
+@font-face { font-family: 'BWGradualMedium';
+  src: url('/fonts/BwGradual-Medium.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'BWGradualRegular';
+  src: url('/fonts/BwGradual-Regular.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'InterLight';
+  src: url('/fonts/Inter-Light.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'InterRegular';
+  src: url('/fonts/Inter-Regular.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'InterMedium';
+  src: url('/fonts/Inter-Medium.ttf') format('truetype'); font-display: swap; }
+
+/* ───────── Tokens ───────── */
+:root {
+  --brand-black:  #1D1D1D;
+  --brand-white:  #FBFBFB;
+  --brand-orange: #F76233;
+  --brand-yellow: #FDD02B;
+
+  --orange-deep:  #D74D12;
+  --peach-soft:   #FBE8E2;
+
+  --cream:        #E5E5D9;
+  --white-warm:   #F4F4EF;
+  --white-near:   #F8F8F6;
+  --grey-mid:     #ABABAB;
+  --ink-soft:     #55565A;
+
+  --font-display:         'BWGradualMedium', 'BW Gradual', system-ui, sans-serif;
+  --font-display-regular: 'BWGradualRegular', 'BW Gradual', system-ui, sans-serif;
+  --font-body:            'InterRegular', 'Inter', system-ui, sans-serif;
+  --font-body-medium:     'InterMedium', 'Inter', system-ui, sans-serif;
+  --font-body-light:      'InterLight', 'Inter', system-ui, sans-serif;
+
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+
+  --shadow-card: 0 1px 2px rgba(29,29,29,.05), 0 4px 12px rgba(29,29,29,.06);
+
+  --measure: 43rem;          /* ≈ 68 characters at 19px */
+  --wide:    62rem;          /* figures break out to here */
+  --pad-x:   clamp(20px, 5vw, 48px);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+html, body { margin: 0; padding: 0; background: var(--white-warm); }
+body {
+  font-family: var(--font-body);
+  color: var(--brand-black);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  line-height: 1.55;
+}
+img { max-width: 100%; display: block; height: auto; }
+
+/* ───────── Header ───────── */
+header.site {
+  position: sticky; top: 0; z-index: 40;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 24px;
+  padding: 16px var(--pad-x);
+  background: rgba(244,244,239,.86);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--cream);
+}
+header.site .wm-link { display: inline-flex; align-items: center; text-decoration: none; }
+header.site .wm-link img { height: 24px; width: auto; }
+header.site .links {
+  display: flex; gap: 26px; align-items: center;
+  font-family: var(--font-body-medium); font-size: 13px; letter-spacing: .02em;
+}
+header.site .links a { text-decoration: none; color: var(--brand-black); transition: color .2s ease; }
+header.site .links a:hover { color: var(--brand-orange); }
+header.site .links a.here { color: var(--brand-orange); }
+header.site .links .cta {
+  padding: 8px 16px; border-radius: var(--radius-pill);
+  background: var(--brand-black); color: var(--brand-white);
+  transition: background .2s ease;
+}
+header.site .links .cta:hover { background: var(--brand-orange); color: var(--brand-white); }
+@media (max-width: 720px) { header.site .links a:not(.cta) { display: none; } }
+
+/* ───────── Preview banner ─────────
+   Delete this element (and the noindex meta, and the robots.txt Disallow)
+   on publication day. Nothing else about the page changes. */
+.preview-bar {
+  background: var(--brand-orange);
+  color: var(--brand-white);
+  font-family: var(--font-body-medium);
+  font-size: 13px; letter-spacing: .01em;
+  text-align: center;
+  padding: 11px var(--pad-x);
+  line-height: 1.4;
+}
+.preview-bar strong {
+  font-family: var(--font-body-medium);
+  letter-spacing: .16em; text-transform: uppercase; font-size: 11px;
+  border: 1px solid rgba(251,251,251,.55);
+  border-radius: var(--radius-pill);
+  padding: 3px 9px; margin-right: 10px; white-space: nowrap;
+}
+
+/* ───────── Shared layout ───────── */
+.wrap { max-width: var(--wide); margin: 0 auto; padding: 0 var(--pad-x); }
+.eyebrow {
+  font-family: var(--font-body-medium); font-size: 12px;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--brand-orange);
+  margin: 0 0 14px;
+}
+
+/* ───────── /news index ───────── */
+.news-hero { padding: clamp(64px, 10vw, 120px) 0 clamp(40px, 6vw, 64px); }
+.news-hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(44px, 8vw, 88px);
+  line-height: 1.02; letter-spacing: -.02em;
+  margin: 0 0 20px;
+}
+.news-hero h1 em { font-style: normal; color: var(--brand-orange); }
+.news-hero p {
+  font-family: var(--font-body-light);
+  font-size: clamp(17px, 2vw, 21px);
+  line-height: 1.6; color: var(--ink-soft);
+  max-width: 34rem; margin: 0;
+}
+
+.post-list { padding-bottom: clamp(72px, 10vw, 128px); display: grid; gap: 22px; }
+
+.post-card {
+  display: block; text-decoration: none; color: inherit;
+  background: var(--white-near);
+  border: 1px solid var(--cream);
+  border-radius: var(--radius-lg);
+  padding: clamp(24px, 3.4vw, 40px);
+  box-shadow: var(--shadow-card);
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+.post-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--brand-orange);
+  box-shadow: 0 8px 28px rgba(29,29,29,.10);
+}
+.post-meta {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 12px;
+  font-family: var(--font-body-medium); font-size: 12px;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--grey-mid);
+  margin-bottom: 16px;
+}
+.post-meta .cat { color: var(--brand-orange); }
+.post-meta .dot { color: var(--cream); }
+.badge-preview {
+  font-family: var(--font-body-medium); font-size: 10px;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--orange-deep); background: var(--peach-soft);
+  border: 1px solid rgba(247,98,51,.32);
+  border-radius: var(--radius-pill);
+  padding: 4px 10px;
+}
+.post-card h2 {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 3.4vw, 40px);
+  line-height: 1.08; letter-spacing: -.015em;
+  margin: 0 0 14px;
+}
+.post-card p {
+  font-family: var(--font-body-light);
+  font-size: clamp(16px, 1.6vw, 18px);
+  line-height: 1.62; color: var(--ink-soft);
+  max-width: 42rem; margin: 0 0 20px;
+}
+.read-on {
+  font-family: var(--font-body-medium); font-size: 14px;
+  color: var(--brand-orange);
+}
+.post-card:hover .read-on { color: var(--orange-deep); }
+
+/* ───────── Post page ─────────
+   Every direct child is centred on the text measure by `article.post > *`.
+   So each rule below sets margin-top/margin-bottom LONGHAND — a `margin:`
+   shorthand would reset margin-left/right to 0 and slam the column left. */
+article.post {
+  max-width: var(--wide); margin: 0 auto;
+  padding: clamp(48px, 7vw, 88px) var(--pad-x) clamp(64px, 8vw, 104px);
+}
+article.post > * { max-width: var(--measure); margin-left: auto; margin-right: auto; }
+
+article.post .eyebrow { margin-top: 0; margin-bottom: 14px; }
+
+article.post h1 {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5.6vw, 62px);
+  line-height: 1.03; letter-spacing: -.02em;
+  margin-top: 0; margin-bottom: 28px;
+}
+
+.byline {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px;
+  font-family: var(--font-body-medium); font-size: 13px;
+  letter-spacing: .06em; text-transform: uppercase;
+  color: var(--grey-mid);
+  padding-bottom: 28px; margin-bottom: 40px;
+  border-bottom: 1px solid var(--cream);
+}
+.byline .who { color: var(--brand-black); }
+.byline .dot { color: var(--cream); }
+
+article.post p {
+  font-size: 19px; line-height: 1.72;
+  margin-top: 0; margin-bottom: 26px;
+}
+article.post p.lede {
+  font-family: var(--font-body-light);
+  font-size: 22px; line-height: 1.62; color: var(--brand-black);
+}
+article.post strong { font-family: var(--font-body-medium); font-weight: 400; }
+article.post em { font-style: italic; }
+
+article.post h2 {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 3.2vw, 38px);
+  line-height: 1.12; letter-spacing: -.015em;
+  margin-top: 64px; margin-bottom: 24px;
+}
+article.post h3 {
+  font-family: var(--font-body-medium);
+  font-size: 17px; letter-spacing: .02em;
+  color: var(--brand-orange);
+  margin-top: 48px; margin-bottom: 8px;
+}
+
+article.post a {
+  color: var(--brand-orange);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(247,98,51,.38);
+  transition: text-decoration-color .2s ease, color .2s ease;
+}
+article.post a:hover { color: var(--orange-deep); text-decoration-color: currentColor; }
+
+/* Method paragraphs: "1. Date-gated tools (prevent) …" */
+.method .lead { font-family: var(--font-body-medium); }
+.pill {
+  display: inline-block; vertical-align: 2px;
+  font-family: var(--font-body-medium); font-size: 10px;
+  letter-spacing: .14em; text-transform: uppercase;
+  border-radius: var(--radius-pill);
+  padding: 3px 9px; margin: 0 6px 0 2px;
+  border: 1px solid rgba(29,29,29,.16);
+  color: var(--ink-soft); background: rgba(29,29,29,.03);
+}
+.pill.prevent { color: var(--orange-deep); background: var(--peach-soft); border-color: rgba(247,98,51,.3); }
+
+/* Figures break out past the text measure */
+article.post figure {
+  max-width: var(--wide);
+  margin-top: 48px; margin-bottom: 52px;
+}
+article.post figure img {
+  width: 100%;
+  border: 1px solid var(--cream);
+  border-radius: var(--radius-md);
+  background: var(--white-near);
+}
+article.post figcaption {
+  max-width: var(--measure); margin: 18px auto 0;
+  font-family: var(--font-body-light);
+  font-size: 15px; line-height: 1.6; color: var(--ink-soft);
+}
+article.post figcaption em { font-style: normal; }
+
+/* Sign-off */
+.signoff {
+  margin-top: 56px; padding-top: 32px;
+  border-top: 1px solid var(--cream);
+}
+.signoff .name { font-family: var(--font-body-medium); font-size: 17px; margin: 0; }
+.signoff .role { font-size: 16px; color: var(--ink-soft); margin: 2px 0 0; }
+.signoff .role a { color: var(--brand-orange); }
+.signoff .thanks {
+  margin: 26px 0 0;
+  font-family: var(--font-body-light);
+  font-size: 15px; color: var(--ink-soft);
+}
+
+/* ───────── Footer ───────── */
+footer.site {
+  border-top: 1px solid var(--cream);
+  background: var(--white-near);
+  padding: clamp(40px, 5vw, 64px) 0;
+}
+footer.site .row {
+  max-width: var(--wide); margin: 0 auto; padding: 0 var(--pad-x);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 24px; flex-wrap: wrap;
+}
+footer.site img.wm { height: 22px; width: auto; opacity: .8; }
+footer.site .meta {
+  font-size: 14px; color: var(--ink-soft);
+  display: flex; gap: 20px; flex-wrap: wrap; align-items: center;
+}
+footer.site .meta a { color: var(--brand-black); text-decoration: none; }
+footer.site .meta a:hover { color: var(--brand-orange); }
+
+@media (max-width: 720px) {
+  article.post p { font-size: 18px; }
+  article.post p.lede { font-size: 20px; }
+  /* stop the body text wrapping around the inline PREVIEW pill */
+  .preview-bar strong { display: block; width: max-content; margin: 0 auto 7px; }
+}

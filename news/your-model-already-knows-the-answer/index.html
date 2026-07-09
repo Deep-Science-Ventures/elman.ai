@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Your Model Already Knows the Answer — Elman</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="The best test of an AI model is a real world problem with a known answer. It is also the easiest test to cheat. Three ways the answer leaks in, and the eight methods used to catch it.">
+
+<!-- ══ PREVIEW ONLY — remove these two lines on publication day ══ -->
+<meta name="robots" content="noindex, nofollow">
+<!-- (see also: the .preview-bar element below, and Disallow: /news/ in /robots.txt) -->
+
+<link rel="canonical" href="https://elman.ai/news/your-model-already-knows-the-answer/">
+<meta name="author" content="Francesco Moramarco">
+<meta name="theme-color" content="#1D1D1D">
+
+<meta property="og:title" content="Your Model Already Knows the Answer">
+<meta property="og:description" content="The best test of an AI model is a real world problem with a known answer. It is also the easiest test to cheat.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://elman.ai/news/your-model-already-knows-the-answer/">
+<meta property="og:site_name" content="Elman">
+<meta property="og:locale" content="en_GB">
+<meta property="og:image" content="https://elman.ai/assets/og-news-contamination.png">
+<meta property="og:image:width" content="2400">
+<meta property="og:image:height" content="1260">
+<meta property="og:image:alt" content="Your Model Already Knows the Answer — the three leaks by which a benchmark answer reaches a model.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Your Model Already Knows the Answer">
+<meta name="twitter:description" content="The best test of an AI model is a real world problem with a known answer. It is also the easiest test to cheat.">
+<meta name="twitter:image" content="https://elman.ai/assets/og-news-contamination.png">
+
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/blog.css">
+</head>
+<body>
+
+<header class="site">
+  <a class="wm-link" href="/" aria-label="Elman home">
+    <img src="/assets/elman-wordmark.svg" alt="Elman" width="427" height="106">
+  </a>
+  <div class="links">
+    <a href="/#problem">Problem</a>
+    <a href="/#approach">Approach</a>
+    <a href="/#products">Products</a>
+    <a href="/#team">Team</a>
+    <a class="here" href="/news/">News</a>
+    <a class="cta" href="mailto:hello@elman.ai">Get in touch &rarr;</a>
+  </div>
+</header>
+
+<!-- ══ PREVIEW ONLY — delete this whole element on publication day ══ -->
+<div class="preview-bar">
+  <strong>Preview</strong> This post is not announced yet and is hidden from search engines. Please don&rsquo;t share the link.
+</div>
+
+<article class="post">
+  <p class="eyebrow">Essay &middot; July 2026</p>
+  <h1>Your Model Already Knows the Answer</h1>
+  <div class="byline">
+    <span class="who">Francesco Moramarco</span>
+    <span class="dot">&bull;</span>
+    <span>Co-founder, Elman</span>
+  </div>
+
+  <p class="lede">The best test of an AI model is a real world problem with a known answer. It is also the easiest test to cheat. A modern model has read much of the internet, so <strong>it may have met your question, the answer or both</strong> long before you asked. A high score then hides two very different things: a model that reasoned its way to the answer, and one that is repeating something it already read. Telling those apart is the <strong>contamination problem</strong>, and it sits under a surprising share of the benchmarks the field relies on.</p>
+
+  <p>Imagine you want to know how reliably a model can predict whether a drug will succeed in the clinic. Rather than wait years for fresh trials, you test on ones that have already finished: take drug programmes that reached late-stage trials, hide whether each worked, and ask the model to predict. On paper it looks like a clean test, fast and scored on real outcomes, but it is not: <strong>the trials worth testing are often the famous ones</strong>, and their outcomes recur across the textbooks, reviews, news and patents the model trained on. When the model says a drug will succeed, the score cannot separate a model that reasoned its way there from one that recognised the name and recalled what happened.</p>
+
+  <p>Clinical trials are our field, but the trap is general: it springs on any benchmark built from resolved events, in finance, law, forecasting or anywhere the outcome is already public. These benchmarks are built from public history for a good reason: a real outcome is a better test case than any expert can invent, because it reflects true biology and the real ways a drug fails, not just what a question-writer thought to ask. Those outcomes are the <strong>gold standard</strong> we want to score against, and being public is <strong>exactly what makes them leak</strong>. So, what can we do?</p>
+
+  <h2>The three ways the answer gets in</h2>
+
+  <p>The answer can reach the model by three routes. This split is our own way of organising the problem rather than a named taxonomy, though each route has an established basis.</p>
+
+  <figure>
+    <img src="fig_leak_map.png" width="3120" height="1440"
+         alt="Three side-by-side panels, one per leak, each showing how the answer, drawn as a red check-mark badge, reaches the same model. Input leak, at test time: a document dated after the decision date is read straight into the model's inputs. Benchmark leak, during training: your own test case, drawn as a question-and-answer card with the answer marked in red, is copied into the training data the model learns from. Outcome leak, during training: the public record of papers, news and patents carries the outcome into that same training data. In all three the same answer reaches the same model, two leaks baked in during training and one arriving at test time.">
+    <figcaption><strong>Figure 1.</strong> The three leaks, side by side. In each panel the red mark is the answer the model is meant to predict. The input leak reaches the model at test time, inside a document it reads for the case. The benchmark leak is your own test file, pulled into the training data. The outcome leak is the public result, learned from papers, news and patents during training. It is the same answer in all three; only the route in is different.</figcaption>
+  </figure>
+
+  <p><strong>Input leak</strong> happens at test time, through the documents the model reads for the case in front of it, whether you feed those documents in or the model fetches them itself with a search tool. Any document written after the decision date can announce the very outcome the model is meant to predict, which is as good as letting it read the future (<a href="https://dl.acm.org/doi/10.1145/2382577.2382579">Kaufman et al., 2012</a>).</p>
+
+  <p><strong>Benchmark leak</strong> happens when a model is released after your benchmark and the model might have been trained on the benchmark set itself, memorising both the questions and answers. This is the most common way in which a benchmark decays over time. Balloccu and colleagues traced more than four million test samples leaking into GPT-3.5 and GPT-4 within a year of their release (<a href="https://arxiv.org/abs/2402.03927">Balloccu et al., 2024</a>), and when other researchers rewrote a set of grade-school maths problems from scratch, several model families scored markedly lower on the fresh version (<a href="https://arxiv.org/abs/2405.00332">GSM1k, Zhang et al., 2024</a>).</p>
+
+  <p><strong>Outcome leak</strong> happens when the outcome is itself a public fact and the model has trained on it: a completed trial, a regulatory approval or a drug that worked is repeated across thousands of papers and filings, and the model absorbs it during training, whether in pre-training or in the later fine-tuning that follows, with no contact of any kind with your particular benchmark. The model comes to hold the result in the same way that it holds any other widely reported fact, such as the year in which a war ended. As a consequence, you can write a completely fresh test set that the model has never seen and date-blind every input you give it, and the model will still know that this well-known drug succeeded. Keeping the benchmark secret does not help either, because the answer was never contained in your file in the first place; it was already part of the model&rsquo;s general knowledge of the world.</p>
+
+  <h2>Waiting for fresh outcomes works, until the outcome is a decade away</h2>
+
+  <p>The cleanest way to prevent any type of leak is to stop testing on history altogether and to score the model only on events that have not yet happened, so that there is simply no answer available to leak. Live benchmarks refresh their questions on a fixed schedule (<a href="https://arxiv.org/abs/2406.19314">LiveBench, White et al., 2024</a>), and forecasting benchmarks like ForecastBench score models on events that have not yet resolved at the time of the test (<a href="https://arxiv.org/abs/2409.19839">ForecastBench, Karger et al., 2024</a>). CT Open is a live platform that scores models on clinical trials before their results are public, and it dates when each trial&rsquo;s outcome first appeared online, so that a prediction only counts if it was made while the answer was still nowhere to be found (<a href="https://arxiv.org/abs/2604.16742">Wang et al., 2026</a>). Unfortunately, the decision that costs a billion dollars is taken a decade before the readout that settles it; put that decision to a live benchmark and your first score arrives in 2036.</p>
+
+  <p>So we are stuck with history, and with the outcome leak that comes with it. That leaves eight methods worth knowing. Each one either prevents or detects a leak. The split that matters more, though, is which of the three leaks a method tackles. Most of the field&rsquo;s work targets the benchmark leak, but for a benchmark built from real world outcomes, the methods that matter most are the three aimed at the outcome leak.</p>
+
+  <figure>
+    <img src="fig_methods_visual.png" width="3120" height="2100"
+         alt="Eight cards, one per method, arranged in three rows by the leak each one tackles. Input leak, one card: date-gated tools, where a document dated before the decision date passes and one dated after it is blocked. Benchmark leak, four cards: fresh or private test set, a locked file kept out of training; membership inference, fluency bars in which a spike means the model has seen the text; perturbation, a maths question reworded so the score drops; watermarks and canaries, a planted marker the model repeats back. Outcome leak, three cards shaded to mark them as the ones that matter: the cutoff gap, a tall accuracy bar before the training cutoff and a short one after; recognition tests, where hiding the name Drug X flips the verdict; grading the reasoning, three claims each needing a source dated before the case, one of which fails.">
+    <figcaption><strong>Figure 2.</strong> How each of the eight methods works, grouped by the leak it tackles. The two prevention methods stop a leak before it happens; the six detection methods catch one after. For a benchmark of resolved outcomes, the three outcome-leak methods on the bottom row carry the most weight.</figcaption>
+  </figure>
+
+  <h2>The eight methods, grouped by the leak each one works on</h2>
+
+  <h3>Input leak: shut it at the source.</h3>
+
+  <p class="method"><span class="lead">1. Date-gated tools</span> <span class="pill prevent">prevent</span> give the model a search-and-retrieval tool that refuses anything published after the decision date, for example a web search with a before-date limit. Forecasting systems already work this way, restricting retrieval to news published before the question&rsquo;s decision date (<a href="https://arxiv.org/abs/2402.18563">Halawi et al., 2024</a>). This is the one move that closes the input leak, and because it works at the source there is nothing left to detect afterwards. It is only as good as the dates its sources carry, so in practice it leans on scholarly sources with reliable publication dates rather than the open web.</p>
+
+  <h3>Benchmark leak: whether the model saw your file.</h3>
+
+  <p class="method"><span class="lead">2. Fresh or private test set</span> <span class="pill prevent">prevent</span> is the clean move here: test on cases no model has been trained on, or keep the set unpublished so that none can be. A number of newer benchmarks now take exactly this route, collecting fresh problems released after each model&rsquo;s training cutoff so the test set cannot have been trained on (<a href="https://arxiv.org/abs/2403.07974">LiveCodeBench, Jain et al., 2024</a>).</p>
+
+  <p>The other three methods for this leak try to detect it after the fact. They make up the most developed part of the field, and yet for a benchmark of public outcomes they are the least useful of the eight, because a model can know an outcome perfectly well without ever having seen the specific file in which you posed the question.</p>
+
+  <p class="method"><span class="lead">3. Membership inference</span> <span class="pill">detect</span> asks whether the model has seen a specific piece of text, by checking how confident it is on each word (log probability of each token in the sequence), since a model is unusually fluent on text it trained on (<a href="https://arxiv.org/abs/2310.16789">Min-K%, Shi et al., 2023</a>). For us it is weak on two counts: a single file barely moves the statistics of a model trained on trillions of words, so the signal is close to chance, and the method needs the model&rsquo;s word-by-word probabilities, which not every provider exposes (Anthropic&rsquo;s API returns none, forcing sampling-based workarounds like <a href="https://arxiv.org/abs/2404.11262">SaMIA, Kaneko et al., 2024</a>). Either way it tells you only whether the model read your file, not whether it knows the answer.</p>
+
+  <p class="method"><span class="lead">4. Perturbation</span> <span class="pill">detect</span> rephrases the benchmark question while keeping its true answer, then checks whether accuracy drops, since a large drop means the model was matching remembered wording rather than reasoning. GSM-Symbolic does this by swapping the numbers in maths problems and catches models that had only appeared to master them (<a href="https://arxiv.org/abs/2410.05229">Mirzadeh et al., 2024</a>). It works where the reworded question still has an answer you can work out, as with those maths problems. But a real trial gives you nothing to work out: change the drug or the patient group and you have described a trial that was never run, so nobody knows how it would have ended.</p>
+
+  <p class="method"><span class="lead">5. Watermarks and canaries</span> <span class="pill">detect</span> plant a hidden marker in the benchmark before release, so that a model which later reproduces it must have trained on the file; the classic is the canary string buried in <a href="https://github.com/google/BIG-bench">BIG-bench</a>. Like keeping a benchmark private, this only protects a benchmark you have not published yet, and does nothing about outcomes that were public for years before any model trained.</p>
+
+  <h3>Outcome leak: whether the model already knows the result.</h3>
+
+  <p>These last three are the ones that matter for a benchmark built from cases that have already resolved, because they aim at the outcome leak directly rather than at whether the model happened to see a particular file.</p>
+
+  <p class="method"><span class="lead">6. The cutoff gap</span> <span class="pill">detect</span> compares the model&rsquo;s accuracy on cases decided before its training cutoff with cases decided after it. Strong before and near-chance after is a signature of memorised outcomes, since real skill should not care which side of a date a case falls on. Researchers have run this split on financial forecasts and on knowledge tied to publication dates (<a href="https://arxiv.org/abs/2504.14765">Lopez-Lira et al., 2025</a>; <a href="https://arxiv.org/abs/2310.10628">Roberts et al., 2023</a>). It is a diagnostic, not a design choice, and so is different from only scoring post-cutoff cases or from date-blinding the inputs; it works only if both halves are built identically, or you measure a change in format instead of memory.</p>
+
+  <p class="method"><span class="lead">7. Recognition tests</span> <span class="pill">detect</span> ask whether the model is running on recognition rather than evidence, in three variants: ask for the outcome with no supporting material, hide the entity&rsquo;s name but keep the facts, or give only the name and nothing else. A model that truly reasons should be steady when the name is hidden and helpless when the evidence is removed, while a model riding on a famous name does the reverse. In a study of oncology targets, hiding the name changed about one in six of the model&rsquo;s top picks while its hit rate on known-good targets held (<a href="https://arxiv.org/abs/2604.06013">Cuccarese, 2026</a>); the caveat is that a name also carries real biology, so a shift is a warning, not proof.</p>
+
+  <p class="method"><span class="lead">8. Grading the reasoning</span> <span class="pill">detect</span> ignores the final answer and judges the argument behind it, checking that every claim rests on a source that existed before the decision date, because a model that only memorised the outcome can state it but cannot build a dated case for it. Our own method sits here, the Receipts Test: we ask the model to show its receipts, a dated and checkable case using only evidence available at the decision date, count a correct answer it cannot defend as a miss, track the gap between how often it is right and how often it can prove it, and let it answer &ldquo;not yet knowable&rdquo; instead of guessing. Grading reasoning traces against dated sources is established (<a href="https://arxiv.org/abs/2305.20050">process supervision, Lightman et al., 2023</a>), and TimeSPEC breaks a prediction into atomic claims and reports how much of the decision rested on post-cutoff information (<a href="https://arxiv.org/abs/2602.17234">Zhang et al., 2026</a>).</p>
+
+  <h2>No method can prove a model is completely clean</h2>
+
+  <p>No method can prove that a model is completely clean. Prevention comes closest: a date-gated tool is built to keep post-dated documents out, and a test set no model has trained on cannot leak through your file, so those two leaks can be designed out rather than merely caught. The outcome leak is the one you cannot close. There is no way to demonstrate that the weights gave no help at all, and you can only catch the cases where they plainly did. Each method also has its own blind spot, and even the two prevention moves are not airtight: date-gating is only as reliable as the publication dates it trusts, and a fresh test set does nothing about an outcome the model already absorbed from the wider literature. Membership inference is weak at scale, and watermarks protect the file rather than the public outcome. Perturbation depends on an answer that can be regenerated, which a real trial does not provide, and the cutoff gap collapses into a measurement of formatting if the question format is allowed to drift across the boundary. Blinding the name flags a shift that genuine biology would also produce, and grading the reasoning can be defeated by a fluent argument constructed backwards from an answer the model already knew. For these reasons we do not rely on any single method, but run several of them together and pay particular attention to the cases where they disagree, which is what turns a number one cannot trust into a number one can defend. For a benchmark built from resolved outcomes, the three methods worth their weight are the ones aimed at the outcome leak.</p>
+
+  <h2>We are building a benchmark that must survive every leak</h2>
+
+  <p>The benchmark we are building for drug-development outcomes has to survive every one of these leaks at once, because the cases that are most worth scoring are precisely the famous ones that a model is most likely to have memorised, and waiting a decade for fresh outcomes is not a realistic option.</p>
+
+  <p>We are not alone here. CT Open avoids the outcome leak by going live (<a href="https://arxiv.org/abs/2604.16742">Wang et al., 2026</a>). TimeSPEC grades the trace (<a href="https://arxiv.org/abs/2602.17234">Zhang et al., 2026</a>). MemGuard-Alpha filters memorised signals out of a financial backtest (<a href="https://arxiv.org/abs/2603.26797">Roy and Roy, 2026</a>). All three score whether the prediction was right; none scores why. A verdict is not something a drug developer can act on. The mechanism is, because the mechanism is what you would change: the target, the cohort, the biomarker you select patients on. So that is what we are scoring, on a bet we would rather test than assert, that a model can memorise a verdict far more easily than a mechanism it never had to reason about.</p>
+
+  <p>If you build or evaluate models on historical data, in drug discovery or anywhere else, tell us what catches memorisation and what slips through, especially where it contradicts what we have written here. And if you hold outcome data with accurate dates attached, that is the raw material a benchmark of this kind is made of. We would love to hear from you!</p>
+
+  <div class="signoff">
+    <p class="name">Francesco Moramarco</p>
+    <p class="role">Co-founder at Elman Bio &middot; <a href="mailto:francesco@elman.ai">francesco@elman.ai</a></p>
+    <p class="thanks">Thanks to Moustafa Khedr for review.</p>
+  </div>
+</article>
+
+<footer class="site">
+  <div class="row">
+    <a href="/" aria-label="Elman home"><img class="wm" src="/assets/elman-wordmark.svg" alt="Elman" width="427" height="106"></a>
+    <div class="meta">
+      <a href="/news/">News</a>
+      <a href="/">Home</a>
+      <a href="mailto:hello@elman.ai">hello@elman.ai</a>
+      <span>&copy; 2026 Elman</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
