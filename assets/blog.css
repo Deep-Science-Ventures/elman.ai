@@ -132,12 +132,8 @@ header.site .links .cta:hover { background: var(--brand-orange); color: var(--br
   margin: 0 0 22px;
 }
 .news-hero h1 em { font-style: normal; color: var(--brand-orange); }
-.news-hero p {
-  font-family: var(--font-body-light);
-  font-size: clamp(17px, 2vw, 21px);
-  line-height: 1.6; color: var(--ink-soft);
-  margin: 0;
-}
+.news-hero h1:last-child { margin-bottom: 0; }
+/* If a standfirst paragraph ever comes back under the headline, style it here. */
 
 .post-list { padding-bottom: clamp(72px, 10vw, 128px); display: grid; gap: 22px; }
 
