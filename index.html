@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Elman — Drug development AI you can audit, end to end</title>
+<title>Elman · Drug development AI you can audit, end to end</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Drug development AI where every claim resolves to a paper sentence, trial arm, or figure. No memorised priors, no averaged-out signal, no black-box verdicts.">
 <link rel="canonical" href="https://elman.ai/">
 <meta name="author" content="Elman">
 <meta name="theme-color" content="#1D1D1D">
 
-<meta property="og:title" content="Elman — Drug development AI you can audit, end to end">
+<meta property="og:title" content="Elman · Drug development AI you can audit, end to end">
 <meta property="og:description" content="Drug development AI where every claim resolves to a paper sentence, trial arm, or figure. No memorised priors, no averaged-out signal, no black-box verdicts.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://elman.ai/">
@@ -18,9 +18,9 @@
 <meta property="og:image" content="https://elman.ai/assets/og-card.png">
 <meta property="og:image:width" content="2400">
 <meta property="og:image:height" content="1260">
-<meta property="og:image:alt" content="Elman — verifiable AI across the five steps of drug development, from collecting datasets to engineering mitigation.">
+<meta property="og:image:alt" content="Elman: verifiable AI across the five steps of drug development, from collecting datasets to engineering mitigation.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Elman — Drug development AI you can audit, end to end">
+<meta name="twitter:title" content="Elman · Drug development AI you can audit, end to end">
 <meta name="twitter:description" content="Drug development AI where every claim resolves to a paper sentence, trial arm, or figure. No memorised priors, no averaged-out signal, no black-box verdicts.">
 <meta name="twitter:image" content="https://elman.ai/assets/og-card.png">
 
@@ -180,7 +180,7 @@ section { position: relative; }
 .section-pad.tight { padding: 88px 0 72px; }
 @media (max-width: 720px) { .section-pad { padding: 72px 0 64px; } .section-pad.tight { padding: 56px 0; } }
 
-/* Section eyebrow — uppercase orange tag, no bar (brand-spec aligned, matches deck .slide-tag) */
+/* Section eyebrow: uppercase orange tag, no bar (brand-spec aligned, matches deck .slide-tag) */
 .eyebrow-row {
   display: block;
   margin-bottom: 14px;
@@ -292,7 +292,7 @@ section { position: relative; }
 .hero-meta .dot { width: 4px; height: 4px; background: rgba(255,255,255,.4); border-radius: 50%; }
 .hero-meta strong { color: rgba(255,255,255,.85); font-family: var(--font-body-medium); font-weight: normal; }
 
-/* Cover wordmark in hero — 64px to match brand cover spec.
+/* Cover wordmark in hero: 64px to match brand cover spec.
    align-self + explicit width stop the SVG stretching to full column width
    (which would centre the glyph via preserveAspectRatio); pins it top-left. */
 .hero .wordmark { height: 64px; width: 258px; align-self: flex-start; fill: var(--brand-white); }
@@ -917,7 +917,7 @@ section { position: relative; }
 }
 .nav-anchor:hover::after { transform: scaleX(1); }
 
-/* ───────── End-to-end network — cards + bidirectional connectors + wet-lab feed (JS-drawn) ───────── */
+/* ───────── End-to-end network: cards + bidirectional connectors + wet-lab feed (JS-drawn) ───────── */
 .pipeline-graph {
   position: relative;
   margin-top: 40px;
@@ -1129,7 +1129,7 @@ section { position: relative; }
   padding: 0 4px;
 }
 
-/* Subgroup label — BW Gradual sub-heading, distinct from the orange section eyebrow */
+/* Subgroup label: BW Gradual sub-heading, distinct from the orange section eyebrow */
 .subgroup-label {
   font-family: var(--font-display);
   font-size: 20px; line-height: 1.2;
@@ -1756,13 +1756,13 @@ section { position: relative; }
   const hero = document.querySelector('.hero');
 
   // ───── Nav: reveal background + wordmark only once the hero has scrolled out ─────
-  // (Always runs — state toggle, not an animation; CSS transition handles reduced-motion.)
+  // (Always runs: state toggle, not an animation; CSS transition handles reduced-motion.)
   const closing = document.querySelector('.closing');
   const onScroll = () => {
     const navH = nav.offsetHeight;
     const heroBottom = hero ? hero.getBoundingClientRect().bottom : 0;
     const closingTop = closing ? closing.getBoundingClientRect().top : Infinity;
-    // Dark-mode nav (transparent bg, white text, orange pill) over the dark sections — hero and closing.
+    // Dark-mode nav (transparent bg, white text, orange pill) over the dark sections: hero and closing.
     // Scrolled nav (light bg) only over the light sections in between.
     const overDark = heroBottom > navH || closingTop <= navH;
     nav.classList.toggle('scrolled', !overDark);
@@ -1799,7 +1799,7 @@ section { position: relative; }
       const targetY = Math.max(0, target.getBoundingClientRect().top + startY);
       const dist = targetY - startY;
       if (reduced || Math.abs(dist) < 4) { window.scrollTo(0, targetY); return; }
-      // Distance-scaled duration, clamped 1000–1400ms — slow and measured, per brand feel
+      // Distance-scaled duration, clamped 1000-1400ms. Slow and measured, per brand feel
       const duration = Math.min(1400, Math.max(1000, Math.abs(dist) * 0.8));
       let start;
       const stepFrame = (ts) => {
@@ -1829,11 +1829,11 @@ section { position: relative; }
     const arc = (x1, y1, x2, y2, bend) => `<path d="M ${x1.toFixed(1)} ${y1.toFixed(1)} Q ${((x1 + x2) / 2).toFixed(1)} ${((y1 + y2) / 2 + bend).toFixed(1)} ${x2.toFixed(1)} ${y2.toFixed(1)}"/>`;
     const line = (x1, y1, x2, y2) => `<path d="M ${x1.toFixed(1)} ${y1.toFixed(1)} L ${x2.toFixed(1)} ${y2.toFixed(1)}"/>`;
     let d = '';
-    // adjacent links — bidirectional connectors in the gaps, right-edge-centre ↔ left-edge-centre (arrowheads sit clear of the cards)
+    // adjacent links: bidirectional connectors in the gaps, right-edge-centre ↔ left-edge-centre (arrowheads sit clear of the cards)
     for (let i = 0; i < 4; i++) d += line(N[i].right + 4, N[i].midY, N[i + 1].left - 4, N[i + 1].midY);
-    // non-adjacent links — arcs above, top-edge-centres (offset above so arrowheads show) — any card to any card
+    // non-adjacent links: arcs above, top-edge-centres (offset above so arrowheads show), any card to any card
     [[0, 2], [1, 4]].forEach(([a, b]) => d += arc(N[a].cx, N[a].top - 6, N[b].cx, N[b].top - 6, -46));
-    // wet-lab feeds into steps 2 & 4 — bottom-edge-centres (offset below)
+    // wet-lab feeds into steps 2 & 4: bottom-edge-centres (offset below)
     [1, 3].forEach(i => d += arc(Wn.cx, Wn.top - 2, N[i].cx, N[i].bottom + 6, i < 2 ? -14 : 14));
     g.innerHTML = d;
   };
@@ -1842,7 +1842,7 @@ section { position: relative; }
   window.addEventListener('load', drawPipe);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawPipe);
 
-  // ───── Reveal animations (motion — skip entirely for reduced-motion) ─────
+  // ───── Reveal animations (motion: skip entirely for reduced-motion) ─────
   if (reduced) return;
 
   // Mark html as animation-enabled so reveal CSS kicks in
@@ -1901,7 +1901,7 @@ section { position: relative; }
 
   // Safety net for non-scrolling renderers (search crawlers, link-preview and
   // compliance/screenshot bots): they run JS but never scroll, so the
-  // IntersectionObserver never fires and .reveal content would stay invisible —
+  // IntersectionObserver never fires and .reveal content would stay invisible,
   // making the page look blank/broken to them. After a short delay, force any
   // still-hidden content visible so the full page is always captured. Real
   // visitors have already triggered the scroll animation by this point.
@@ -1975,7 +1975,7 @@ section { position: relative; }
   }
 })();
 </script>
-<!-- Cloudflare Web Analytics — no cookies, stores nothing in the browser. See /privacy/ -->
+<!-- Cloudflare Web Analytics. No cookies, stores nothing in the browser. See /privacy/ -->
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "4fa4710b4d8b4d0b86959ba203c3bbc4"}'></script>
 </body>
 </html>

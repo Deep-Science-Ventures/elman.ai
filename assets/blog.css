@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════
-   blog.css — shared by /news and every post under /news/<slug>/
+   blog.css. Shared by /news and every post under /news/<slug>/
    Tokens duplicated from index.html on purpose. Do not refactor the
    landing page to import this; the landing page works, leave it alone.
    ═══════════════════════════════════════════════════════════════════ */
@@ -46,7 +46,7 @@
 
   /* Text column and figures share one width, so the article reads as a
      single block. A line this long needs a bigger type size and more
-     leading to stay readable — see article.post p. */
+     leading to stay readable. See article.post p. */
   --measure: 66rem;
   --wide:    66rem;
   --pad-x:   clamp(20px, 5vw, 48px);
@@ -188,7 +188,7 @@ header.site .links .cta:hover { background: var(--brand-orange); color: var(--br
 
 /* ───────── Post page ─────────
    Every direct child is centred on the text measure by `article.post > *`.
-   So each rule below sets margin-top/margin-bottom LONGHAND — a `margin:`
+   So each rule below sets margin-top/margin-bottom LONGHAND. A `margin:`
    shorthand would reset margin-left/right to 0 and slam the column left. */
 article.post {
   max-width: var(--wide); margin: 0 auto;
