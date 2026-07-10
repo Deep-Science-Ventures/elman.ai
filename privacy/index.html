@@ -40,9 +40,15 @@
 
   <h2>Analytics</h2>
 
-  <p>We count page views using Cloudflare Web Analytics. It sets no cookies, stores nothing in your browser, and does not identify you or follow you across other sites. We see aggregate counts only: how many times a page was loaded, which site you arrived from, and which country the request came from.</p>
+  <p>We count page views using Cloudflare Web Analytics. It sets no cookies and stores nothing in your browser. In Cloudflare's own words, it &ldquo;does not use any client-side state, such as cookies or localStorage, to collect usage metrics&rdquo; and does not &ldquo;fingerprint&rdquo; individuals via their IP address, user agent or any other data.</p>
 
-  <p>Your IP address is used to work out the country and is then discarded. It is never stored and never shared.</p>
+  <p>What we see is a count: how many times a page was loaded, which site the reader arrived from, which country the request came from, and which browser. Not who. We cannot identify you from it, and we could not single you out even if we wanted to.</p>
+
+  <h2>Who else touches the request</h2>
+
+  <p>Two companies receive your request before we count it, because that is how the web works. This site is served by GitHub Pages, and the analytics beacon is answered by Cloudflare. Both therefore see your IP address, as does every website you visit. Their handling of it is governed by <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement">GitHub's privacy statement</a> and <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare's privacy policy</a>.</p>
+
+  <p>Neither of them passes your IP address to us. We never see it, and we hold no record of you.</p>
 
   <h2>Email</h2>
 
