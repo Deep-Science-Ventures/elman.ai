@@ -1251,6 +1251,23 @@ section { position: relative; }
   .live-shot { transition: opacity .001s linear; }
   .lightbox { transition: none; }
 }
+
+/* ───────── Embedded live demo (studio walkthrough in an iframe) ───────── */
+.demo-frame {
+  position: relative; width: 100%; aspect-ratio: 7 / 5;
+  margin-top: 22px; border-radius: var(--radius-lg); overflow: hidden;
+  border: 1px solid var(--cream); background: var(--brand-black);
+  box-shadow: 0 30px 60px -28px rgba(29,24,18,.45), 0 10px 26px -16px rgba(29,24,18,.28);
+}
+.demo-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+.demo-fs {
+  display: inline-flex; align-items: center; gap: 6px; margin: 14px 0 0;
+  font-family: var(--font-body-medium); font-size: 14px; letter-spacing: .02em;
+  color: var(--brand-black); text-decoration: none;
+  border-bottom: 1px solid rgba(29,29,29,.25); padding-bottom: 1px;
+}
+.demo-fs:hover, .demo-fs:focus-visible { color: var(--brand-orange); border-color: var(--brand-orange); }
+@media (max-width: 720px) { .demo-frame { aspect-ratio: 3 / 4; } }
 </style>
 </head>
 <body>
@@ -1444,6 +1461,22 @@ section { position: relative; }
       <p class="wt-cite"><span class="kk">McKinsey · 2024</span> ~32% of pharma have scaled gen AI; <strong>~5% report consistent differentiation</strong>.</p>
       <p class="wt-claim">Verifiable output at scale is what unblocks the <span class="hl">95%</span>.</p>
     </div>
+  </div>
+</section>
+
+
+<!-- ───────── Live demo (embedded studio walkthrough) ───────── -->
+<section class="bg-warm-white section-pad" id="demo">
+  <div class="wrap">
+    <div class="eyebrow-row">
+      <span class="tag">Live demo</span>
+    </div>
+    <h2 class="s-title">See the engine run.</h2>
+    <p class="s-sub">A step-by-step replay of one real discovery. Thousands of siloed datasets narrowed to one validated target. Press play or step through it yourself.</p>
+    <div class="demo-frame">
+      <iframe src="/demo/" title="Elman engine walkthrough: a step-by-step replay of one real discovery, from thousands of siloed datasets to one validated target" loading="lazy" allow="autoplay"></iframe>
+    </div>
+    <a class="demo-fs" href="/demo/" target="_blank" rel="noopener">Open full screen ↗</a>
   </div>
 </section>
 
