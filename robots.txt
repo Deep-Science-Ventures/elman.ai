@@ -5,4 +5,7 @@ Allow: /
 # The /news pages also carry their own <meta name="robots" content="noindex">.
 Disallow: /news/
 
+# Unlisted demo — not linked anywhere yet. Also carries <meta robots noindex>.
+Disallow: /demo/
+
 Sitemap: https://elman.ai/sitemap.xml

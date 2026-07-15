@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Elman — how the engine works</title>
+<meta name="theme-color" content="#F76233">
+<!-- Unlisted demo: not linked from the home page or sitemap. Keep it out of search. -->
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://elman.ai/demo/">
+<link rel="icon" type="image/svg+xml" href="/demo/icon.svg">
+<link rel="stylesheet" href="/demo/allen_story_v2.css">
+</head>
+<body class="story">
+<div class="story-root">
+  <div class="beatbar" id="beatbar"></div>
+  <div class="kbd-hint">← → step · space play/pause</div>
+
+  <div class="stage" id="stage">
+    <div class="diagram">
+      <!-- persistent pipeline rail (JS-built; grows step by step) -->
+      <div class="rail" id="rail"></div>
+      <!-- current step's example (JS-swapped) -->
+      <div class="detail" id="detail"></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="ctrl-btns">
+      <button class="cbtn" id="btn-prev" title="Previous (←)">‹ Back</button>
+      <button class="cbtn play" id="btn-play" title="Play / pause (space)">▶ Play</button>
+      <button class="cbtn" id="btn-next" title="Next (→)">Next ›</button>
+      <button class="cbtn" id="btn-restart" title="Restart">↺</button>
+    </div>
+    <div class="caption" id="caption"></div>
+    <div class="dots" id="dots"></div>
+    <div class="timer" id="timer" title="Elapsed / total run time">0:00 / 0:00</div>
+  </div>
+</div>
+
+<script>
+  window.STORY_DATA_URL = "/demo/story_data.json";
+</script>
+<script src="/demo/allen_story_v2.js"></script>
+</body>
+</html>
