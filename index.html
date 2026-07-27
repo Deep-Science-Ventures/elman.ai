@@ -291,6 +291,16 @@ section { position: relative; }
 }
 .hero-meta .dot { width: 4px; height: 4px; background: rgba(255,255,255,.4); border-radius: 50%; }
 .hero-meta strong { color: rgba(255,255,255,.85); font-family: var(--font-body-medium); font-weight: normal; }
+/* The FTO item links to the live product. Inherit the strip's quiet styling
+   rather than looking like a link — a hairline underline is the only tell,
+   so the credibility strip stays a strip and does not become a button row. */
+.hero-meta a {
+  color: inherit; text-decoration: none;
+  border-bottom: 1px solid rgba(255,255,255,.28);
+  transition: color .2s ease, border-color .2s ease;
+}
+.hero-meta a:hover, .hero-meta a:focus-visible { color: rgba(255,255,255,.95); border-bottom-color: var(--brand-orange); }
+.hero-meta a:hover strong, .hero-meta a:focus-visible strong { color: #fff; }
 
 /* Cover wordmark in hero: 64px to match brand cover spec.
    align-self + explicit width stop the SVG stretching to full column width
@@ -1229,6 +1239,19 @@ section { position: relative; }
 .live-stage.stage-fto .live-cap > [data-cap="fto"],
 .live-stage.stage-verifier .live-cap > [data-cap="verifier"] { display: block; }
 
+/* Sits below the live stage, outside the figure, so it stays put when the
+   caption swaps between FTO and Verifier on hover. */
+.live-cta {
+  font-family: var(--font-body-light); font-size: 15px; color: var(--slate);
+  line-height: 1.55; margin: 20px 0 0;
+}
+.live-cta a {
+  font-family: var(--font-body-medium); color: var(--brand-orange);
+  text-decoration: none; border-bottom: 1px solid transparent;
+  transition: border-color .2s ease;
+}
+.live-cta a:hover, .live-cta a:focus-visible { border-bottom-color: var(--brand-orange); }
+
 .lightbox {
   position: fixed; inset: 0; z-index: 1000; display: flex;
   align-items: center; justify-content: center; padding: 4vw;
@@ -1363,7 +1386,7 @@ section { position: relative; }
       <span class="dot"></span>
       <span><strong>~170k</strong> arm-level facts in the graph</span>
       <span class="dot"></span>
-      <span><strong>FTO</strong> live to customers</span>
+      <a href="https://studio.elman.ai/fto-studio"><strong>FTO</strong> live to customers</a>
     </div>
   </div>
 </section>
@@ -1535,6 +1558,11 @@ section { position: relative; }
           <span data-cap="verifier"><strong>Elman Verifier.</strong> A hypothesis disproved, with the supporting and refuted edges and the full knowledge graph. <em>Hover a card to switch; click to enlarge.</em></span>
         </figcaption>
       </figure>
+
+      <p class="live-cta">
+        FTO Studio is open to new users.
+        <a href="https://studio.elman.ai/fto-studio">See how it works and request a pilot →</a>
+      </p>
     </div>
 
     <div class="subsection">
