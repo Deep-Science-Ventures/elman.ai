@@ -4,4 +4,7 @@ Allow: /
 # Unlisted demo, not linked anywhere yet. Also carries <meta robots noindex>.
 Disallow: /demo/
 
+# Unlisted mission page, not linked anywhere yet. Also carries <meta robots noindex>.
+Disallow: /mission/
+
 Sitemap: https://elman.ai/sitemap.xml

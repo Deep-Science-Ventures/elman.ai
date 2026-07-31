@@ -250,6 +250,51 @@ article.post a {
 }
 article.post a:hover { color: var(--orange-deep); text-decoration-color: currentColor; }
 
+/* Lists. Body copy is 20px/1.78, so a list has to match it or it reads as a
+   different document. Same longhand-margin rule as everything else here. */
+article.post ol, article.post ul {
+  font-size: 20px; line-height: 1.78;
+  margin-top: 0; margin-bottom: 30px;
+  padding-left: 1.4em;
+}
+article.post li { margin-bottom: 12px; }
+article.post li::marker { color: var(--grey-mid); }
+
+/* In-text citation marker, e.g. "… never reach approval [1]." */
+a.ref {
+  font-family: var(--font-body-medium); font-size: .72em;
+  vertical-align: .42em; margin-left: 2px;
+  text-decoration: none;
+}
+a.ref:hover { text-decoration: underline; }
+
+/* Source list at the foot of an article. Numbers are the source document's
+   own, so they are set explicitly and may be non-contiguous.
+   NOTE on the selectors below: they are written `article.post .refs p`, not
+   `.refs p`. The generic rules above are `article.post p` / `h2` / `ol`, which
+   at (0,1,2) out-specify a bare (0,1,1) class selector and would win. */
+article.post .refs {
+  margin-top: 56px; padding-top: 32px;
+  border-top: 1px solid var(--cream);
+}
+/* A label, not an <h2>. Every other h2 on these pages is a 38px section
+   heading; a 12px one would lie about the document outline. */
+article.post .refs .label {
+  font-family: var(--font-body-medium);
+  font-size: 12px; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--grey-mid);
+  margin-top: 0; margin-bottom: 20px;
+  /* it is a <p>, so it inherits the hanging indent below. Undo it. */
+  padding-left: 0; text-indent: 0;
+}
+article.post .refs p {
+  font-family: var(--font-body-light);
+  font-size: 15px; line-height: 1.62; color: var(--ink-soft);
+  margin-top: 0; margin-bottom: 14px;
+  padding-left: 2.4em; text-indent: -2.4em;
+}
+article.post .refs .n { font-family: var(--font-body-medium); color: var(--brand-black); }
+
 /* Method paragraphs: "1. Date-gated tools (prevent) …" */
 .method .lead { font-family: var(--font-body-medium); }
 .pill {

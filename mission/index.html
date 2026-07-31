@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mission · Elman</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Predictable biology will be won by whoever encodes the scientific judgement that no model can learn from data. The Elman thesis in one page.">
+
+<!-- Unlisted. Not in the sitemap, not in the nav, nothing links to it, and
+     robots.txt Disallows it. Delete this meta and the /mission/ Disallow in
+     robots.txt on publication day. -->
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+
+<link rel="canonical" href="https://elman.ai/mission/">
+<meta name="author" content="Elman">
+<meta name="theme-color" content="#1D1D1D">
+
+<meta property="og:title" content="Mission · Elman">
+<meta property="og:description" content="Predictable biology will be won by whoever encodes the scientific judgement that no model can learn from data. The Elman thesis in one page.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://elman.ai/mission/">
+<meta property="og:site_name" content="Elman">
+<meta property="og:locale" content="en_GB">
+<meta property="og:image" content="https://elman.ai/assets/og-card.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/blog.css">
+</head>
+<body>
+
+<header class="site">
+  <a class="wm-link" href="/" aria-label="Elman home">
+    <img src="/assets/elman-wordmark.svg" alt="Elman" width="427" height="106">
+  </a>
+  <div class="links">
+    <a href="/#problem">Problem</a>
+    <a href="/#approach">Approach</a>
+    <a href="/#products">Products</a>
+    <a href="/#team">Team</a>
+    <a href="/news/">News</a>
+    <a class="cta" href="mailto:hello@elman.ai">Get in touch &rarr;</a>
+  </div>
+</header>
+
+<article class="post">
+  <p class="eyebrow">Mission</p>
+  <h1>The judgement no model can <em>learn from data</em>.</h1>
+
+  <p>Predictable biology will be won by whoever encodes the scientific judgement that no model can learn from data. Everywhere else in AI the opposite has held, with more data beating hand-built expertise across vision, language, code, game play and even protein structure, so the claim needs explaining. The pattern that won those domains rests on conditions therapeutic development cannot supply: it needs a cheap way to generate near-unlimited labelled experience, a simulator or a game an agent can play against itself billions of times, it needs a reset so that a failure costs nothing and the next attempt is free, and above both it needs that experience to be drawn from the same space as the question rather than from a cheaper proxy for it. Therapeutic development denies the first two outright, because no simulator is faithful to a living human and building one would mean solving the biology first, and because when a prediction fails in the clinic a person dies rather than resetting, and it starves the third for every question that matters, because representative human outcomes are far too sparse to train on and what is left beneath them is mostly adjacent, a mouse that is not a human, a cell measured outside its niche, an organoid that is neither.</p>
+
+  <p>The data that would let scale win was therefore never collected at the breadth the problem needs and for almost all questions it can never be. A representative sample would mean measuring every biological layer, DNA, RNA, protein, cell, tissue, organ and whole system, inside living humans at once and without perturbing them, which is impossible. What exists instead is sparse evidence scattered across those layers, each source unfaithful in its own way, a cell measured outside its niche, a mouse that is not a human, an organoid that is neither. Roughly 90% of drugs that enter clinical trials never reach approval<a class="ref" href="#ref-1">[1]</a>. The causes are many, from efficacy to safety to commercial choice, but our thesis is that evidence this sparse and this unfaithful is a first-order reason the problem has resisted scale.</p>
+
+  <p>The winning move is a system that reasons across the unfaithful layers and judges how far each piece of evidence can be trusted on the way to the human answer. That system is the <a href="/demo/"><strong>Judgement Engine</strong></a>, a portable, model-agnostic layer that encodes how an expert scientist reasons and prunes evidence, the judgement that has never been written down in a form a model can train on. It extracts and structures evidence before it reasons, separating fact from the bias baked into a model and the bias carried in the prompt and input. It lays that evidence onto a provenance-tracked causal graph across the biological layers. It reasons across that graph the way a scientist reasons over thin data, carrying full provenance and a confidence on every link, pruning to the low-magnitude signals that actually decide whether a drug works.</p>
+
+  <p>This is where durable value sits and the frontier labs cannot reach it by doing what they do best. Their weapon is scale on data, and the data here, how good scientists reason, does not exist in capturable form, because expert judgement is not written down and is not revealed to a chatbot. To get it they would have to build a judgement layer of their own, which is to say build this. The <strong>Judgement Engine</strong> runs on top of the frontier models rather than inside them, so it is model-agnostic, we already move between Anthropic, OpenAI and Google by subtask, and a better base model is one we drop in rather than one that obsoletes us.</p>
+
+  <p>With the Allen Institute, the engine has already produced a result of exactly the kind this thesis describes. Their multi-region Alzheimer&rsquo;s atlas shows one population of visual-cortex neurons dying while its near neighbours survive, and from that atlas the engine proposed why those specific cells are the ones lost, that they carry a molecular profile leaving them chronically over-excited, a hypothesis it generated from the single-cell data and <a href="https://studio.elman.ai/seaad_hypothesis_generation">traced back to the evidence</a>, now in a paper submitted to Cell with the preprint public<a class="ref" href="#ref-9">[9]</a>.</p>
+
+  <p>Beyond that result, the proof we have committed to is the one most of the field avoids because it is the most difficult to nail, a clinical trial outcome prediction benchmark. A clinical trial is the one place biology gives a straight answer, so the fairest test of whether the engine predicts a human outcome, rather than recognising a drug it has already read about is a benchmark scored on trials. It asks the engine to put a trustworthy number on a specific trial failing and to name the biological reason it fails, the kind a sponsor could act on, from evidence frozen before the trial read out. Building the benchmark itself is difficult, the outcome can leak both from a model&rsquo;s memory of the result and from fetching it online, so the plan is to screen out any trial a model already recognises (leaked into the training data) and date-gate the retrieval to before the readout.</p>
+
+  <div class="refs">
+    <p class="label">Sources</p>
+    <p id="ref-1"><span class="n">[1]</span> Hay M, Thomas DW, Craighead JL, Economides C, Rosenthal J. <em>Clinical development success rates for investigational drugs</em>. <a href="https://www.nature.com/articles/nbt.2786">Nature Biotechnology, 32(1):40&ndash;51, 2014</a>. Likelihood of approval from Phase 1 &asymp; 10%, i.e. roughly 90% of drugs entering trials never reach approval.</p>
+    <p id="ref-9"><span class="n">[9]</span> Elman &times; Allen Institute. Collaboration preprint (mechanism of Alzheimer&rsquo;s-vulnerable neurons). <a href="https://www.biorxiv.org/content/10.64898/2026.07.01.734821v1">bioRxiv, 2026</a>. Submitted to Cell.</p>
+  </div>
+</article>
+
+<footer class="site">
+  <div class="row">
+    <a href="/" aria-label="Elman home"><img class="wm" src="/assets/elman-wordmark.svg" alt="Elman" width="427" height="106"></a>
+    <div class="meta">
+      <a href="/news/">News</a>
+      <a href="/">Home</a>
+      <a href="mailto:hello@elman.ai">hello@elman.ai</a>
+      <a href="/privacy/">Privacy</a>
+      <span>&copy; 2026 Elman</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Cloudflare Web Analytics. No cookies, stores nothing in the browser. See /privacy/ -->
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "4fa4710b4d8b4d0b86959ba203c3bbc4"}'></script>
+</body>
+</html>
