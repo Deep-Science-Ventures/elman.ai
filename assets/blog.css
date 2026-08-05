@@ -369,6 +369,9 @@ article.post figcaption em { font-style: normal; }
 .subscribe .fine a { color: var(--brand-orange); }
 .subscribe .subscribe-done { margin: 0; font-family: var(--font-body-medium); font-size: 16px; color: var(--brand-black); }
 
+.post .discuss { margin: 40px 0 0; font-family: var(--font-body-medium); font-size: 16px; }
+.post .discuss a { color: var(--brand-orange); }
+
 /* ───────── Footer ───────── */
 footer.site {
   border-top: 1px solid var(--cream);
