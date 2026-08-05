@@ -340,6 +340,34 @@ article.post figcaption em { font-style: normal; }
   font-size: 15px; color: var(--ink-soft);
 }
 
+/* ───────── Subscribe ───────── */
+.subscribe {
+  margin-top: 48px; padding: 28px 32px;
+  background: var(--white-near);
+  border: 1px solid var(--cream);
+  border-radius: var(--radius-lg);
+}
+.subscribe h3 { font-family: var(--font-display-regular); font-size: 20px; margin: 0 0 6px; }
+.subscribe p.k { margin: 0 0 16px; font-size: 15px; color: var(--ink-soft); }
+.subscribe form { display: flex; gap: 10px; flex-wrap: wrap; }
+.subscribe input[type=email] {
+  flex: 1 1 240px; min-width: 0; padding: 12px 14px;
+  font-family: var(--font-body); font-size: 16px; color: var(--brand-black);
+  background: var(--brand-white); border: 1px solid var(--grey-mid);
+  border-radius: var(--radius-md);
+}
+.subscribe input[type=email]:focus { outline: none; border-color: var(--brand-orange); }
+.subscribe button {
+  padding: 12px 20px;
+  font-family: var(--font-body-medium); font-size: 15px;
+  color: var(--brand-white); background: var(--brand-black);
+  border: 0; border-radius: var(--radius-md); cursor: pointer;
+  transition: background .2s ease;
+}
+.subscribe button:hover { background: var(--brand-orange); }
+.subscribe .fine { margin: 12px 0 0; font-size: 13px; color: var(--grey-mid); }
+.subscribe .fine a { color: var(--brand-orange); }
+
 /* ───────── Footer ───────── */
 footer.site {
   border-top: 1px solid var(--cream);
