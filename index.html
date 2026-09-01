@@ -124,7 +124,8 @@ a{ color:inherit; }
 .pill:hover{ background:var(--orange-deep); }
 @media (max-width:900px){ .nav-links{ display:none; } }
 
-.hero{ background:var(--brand-black); color:var(--brand-white); position:relative; overflow:hidden; min-height:calc(100vh - 60px); display:flex; flex-direction:column; }
+.hero{ background:var(--brand-black); color:var(--brand-white); position:relative; overflow:hidden;
+  min-height:100vh; min-height:100svh; display:flex; flex-direction:column; }
 .hero .glow-y,.hero .glow-o{ position:absolute; pointer-events:none; }
 .hero .glow-y{ left:-260px; top:-180px; width:1100px; opacity:.5; animation:drift-y 22s ease-in-out infinite; }
 .hero .glow-o{ right:-300px; bottom:-260px; width:1000px; opacity:.85; animation:drift-o 28s ease-in-out infinite; }
@@ -343,8 +344,6 @@ a{ color:inherit; }
 .cta h2{ font-family:var(--font-display); font-weight:400; margin:24px 0 0;
   font-size:clamp(38px,6.4vw,72px); line-height:1.0; letter-spacing:-.015em;
   color:var(--brand-white); max-width:900px; text-wrap:balance; }                        
-.cta .lead{ font-family:var(--font-display); font-weight:400; font-size:24px; line-height:1.2;
-  letter-spacing:-.005em; margin:32px 0 0; max-width:44ch; color:var(--brand-white); }    
 .cta .sub{ font-family:var(--font-body-light); font-size:18px; line-height:1.5;
   letter-spacing:normal; color:rgba(251,251,251,.72); margin:24px 0 0; max-width:62ch; }  
 .cta .shelf{ margin-top:64px; padding-top:32px; border-top:1px solid rgba(251,251,251,.16);
@@ -371,7 +370,6 @@ a{ color:inherit; }
 @media (max-width:600px){
   .cta-inner{ padding:16px 0; }
   .cta h2{ margin-top:8px; }
-  .cta .lead{ margin-top:16px; }
   .cta .sub{ margin-top:12px; }
   .cta .shelf{ margin-top:24px; padding-top:24px; }
 }
@@ -589,7 +587,7 @@ footer a{ color:rgba(255,255,255,.75); }
   </svg>
   <div class="hero-inner">
     <svg class="wordmark" viewBox="0 0 427 106" aria-label="Elman"><use href="#elman-wordmark"/></svg>
-    <h1>We built the <br class="lb-phone"><em>AI judgement engine</em> <br class="lb-wide">for therapeutic development, <br class="lb-wide">not another model.</h1>
+    <h1>We built the <br class="lb-phone"><em>AI judgement engine</em> <br class="lb-wide">for therapeutic development.</h1>
     <div class="hero-foot">
       <p class="hero-lead">Your data, proprietary or public, reasoned over the way a scientist weighs thin evidence, down to the <strong>low-magnitude signals that brute-force averaging destroys</strong>.</p>
       <div class="hero-links">
@@ -793,8 +791,7 @@ footer a{ color:rgba(255,255,255,.75); }
     <div class="wrap">
       <p class="eyebrow">Our mission</p>
       <h2>Make therapeutic development predictable.</h2>
-      <p class="lead">The clinical trial should confirm the answer, not reveal it.</p>
-      <p class="sub">We are building toward knowing how far the evidence will carry before hundreds of millions and years are committed to finding out.</p>
+      <p class="sub">The clinical trial should confirm the answer, not reveal it.</p>
       <div class="shelf">
         <p class="invite">If you are developing therapeutics, generating evidence, or want to help make this possible, we should talk.</p>
         <a class="mail" href="mailto:hello@elman.ai">hello@elman.ai &rarr;</a>
