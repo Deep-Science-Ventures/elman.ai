@@ -1,10 +1,12 @@
 User-agent: *
 Allow: /
 
-# Unlisted demo, not linked anywhere yet. Also carries <meta robots noindex>.
-Disallow: /demo/
-
-# Unlisted mission page, not linked anywhere yet. Also carries <meta robots noindex>.
-Disallow: /mission/
+# /demo/ and /mission/ are linked from the homepage and open to any visitor.
+# They still carry <meta robots="noindex">, which is what keeps them out of
+# search results. Do NOT re-add a Disallow for them: a crawler blocked by
+# robots.txt never fetches the page, so it never sees the noindex, and Google
+# can still list a blocked URL as a bare result. Crawl-then-obey is the config
+# that actually works. To index them, delete the noindex meta from each page
+# and add both URLs to sitemap.xml.
 
 Sitemap: https://elman.ai/sitemap.xml
