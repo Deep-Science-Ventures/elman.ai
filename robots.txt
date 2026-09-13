@@ -1,12 +1,16 @@
 User-agent: *
 Allow: /
 
-# /demo/ and /mission/ are linked from the homepage and open to any visitor.
-# They still carry <meta robots="noindex">, which is what keeps them out of
-# search results. Do NOT re-add a Disallow for them: a crawler blocked by
-# robots.txt never fetches the page, so it never sees the noindex, and Google
-# can still list a blocked URL as a bare result. Crawl-then-obey is the config
-# that actually works. To index them, delete the noindex meta from each page
-# and add both URLs to sitemap.xml.
+# /thesis/ and /demo/ are linked from the homepage and open to any visitor.
+# /thesis/ is indexed and in the sitemap. /demo/ still carries <meta
+# robots="noindex">, which is what keeps it out of search results. Do NOT
+# re-add a Disallow for either: a crawler blocked by robots.txt never fetches
+# the page, so it never sees the noindex, and Google can still list a blocked
+# URL as a bare result. Crawl-then-obey is the config that actually works. To
+# index /demo/, delete the noindex meta from it and add the URL to sitemap.xml.
+#
+# /mission/ is the old home of /thesis/ and is now a meta-refresh redirect
+# stub. It must stay crawlable for Google to follow the redirect and move the
+# old URL's ranking across.
 
 Sitemap: https://elman.ai/sitemap.xml
