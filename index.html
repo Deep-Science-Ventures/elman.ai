@@ -216,7 +216,12 @@ a{ color:inherit; }
 .ladder-track{ position:relative; background:var(--brand-black); color:var(--brand-white); }
 .ladder-stage{
   position:sticky; top:60px; height:calc(100vh - 60px);
-  display:grid; grid-template-rows:auto 1fr auto; padding:clamp(24px,3.5vh,44px) 0; overflow:hidden;
+  display:grid; grid-template-rows:auto 1fr auto;
+  /* Edge margins track the other sections (.section-pad is 80/64) but stay
+     proportional to viewport height, because the stage is a fixed-height
+     sticky box with overflow:hidden. Slack lives in the middle 1fr row; these
+     move some of it out to the edges without starving the chart. */
+  padding:clamp(32px,6.5vh,80px) 0 clamp(28px,5.2vh,64px); overflow:hidden;
   max-width:var(--maxw); margin:0 auto; padding-left:var(--pad-x); padding-right:var(--pad-x);
 }
 .ladder-stage > div:nth-child(2){ align-self:center; width:100%; }
@@ -282,7 +287,10 @@ a{ color:inherit; }
 .ladder-spacer{ height:60vh; }
 
 @media (min-height:761px) and (max-height:1000px) and (min-width:1025px){
-  .ladder-stage{ padding-top:16px; padding-bottom:16px; }
+  /* Laptop band. 16px flat was a squeeze for the old five-line note; the note
+     is two lines now, so give the edges back what the foot no longer needs —
+     still vh-scaled so a 761px screen keeps room around the chart. */
+  .ladder-stage{ padding-top:clamp(16px,5vh,52px); padding-bottom:clamp(16px,4vh,42px); }
   .ladder-head{ margin-bottom:12px; }
   .ladder-head .eyebrow{ margin-bottom:8px; }
   .ladder-head h2{ font-size:clamp(24px,2.5vw,33px); }
