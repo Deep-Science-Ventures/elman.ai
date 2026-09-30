@@ -337,6 +337,32 @@ footer a{ color:rgba(255,255,255,.75); }
   </div>
 </footer>
 
+<script>
+// Pass an inbound utm_source through to the Workable apply links.
+//
+// Why: the apply hrefs are hardcoded to utm_source=elman.ai, so without this an
+// applicant who arrived from Hacker News is attributed to this page and the
+// channel that actually sent them is lost. Workable cannot tell the difference;
+// everything untagged lands as "Company Marketing". The hardcoded values stay
+// in the href as the fallback for direct visits and for JS-off.
+//
+// Channel links live in Strategy/recruitment/ai-lead/application_links.md.
+(function () {
+  var src = new URLSearchParams(location.search).get('utm_source');
+  if (!src || !/^[\w.\-]{1,40}$/.test(src)) return;   // ignore junk, keep the default
+  var q = new URLSearchParams(location.search);
+  var med = q.get('utm_medium') || 'referral';
+  var camp = q.get('utm_campaign') || 'cto_2026';
+  document.querySelectorAll('a[href*="apply.workable.com"]').forEach(function (a) {
+    var u = new URL(a.href);
+    u.searchParams.set('utm_source', src);
+    u.searchParams.set('utm_medium', med);
+    u.searchParams.set('utm_campaign', camp);
+    a.href = u.toString();
+  });
+})();
+</script>
+
 <!-- Cloudflare Web Analytics. No cookies, stores nothing in the browser. See /privacy/ -->
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "4fa4710b4d8b4d0b86959ba203c3bbc4"}'></script>
 </body>
