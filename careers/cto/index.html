@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Co-founder &amp; CTO, AI for therapeutic development &middot; Elman</title>
+<meta name="description" content="Elman is building AI to predict clinical trial and drug development outcomes, and quantify how much confidence those predictions deserve. We're hiring a technical co-founder to lead development and measure its predictive performance. Benchmark design, contamination control, applied statistics, Bayesian inference, graph learning, production LLM systems. London-anchored, remote considered, pre-seed.">
+<link rel="canonical" href="https://elman.ai/careers/cto/">
+<meta name="author" content="Elman">
+<meta name="theme-color" content="#1D1D1D">
+
+<meta property="og:title" content="Co-founder &amp; CTO, AI for therapeutic development &middot; Elman">
+<meta property="og:description" content="Elman is building AI to predict clinical trial outcomes, and to quantify how much confidence those predictions deserve. The engine already works. We're looking for the technical co-founder who measures it.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://elman.ai/careers/cto/">
+<meta property="og:site_name" content="Elman">
+<meta property="og:locale" content="en_GB">
+<meta property="og:image" content="https://elman.ai/assets/og-card.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+
+<!-- JobPosting structured data. This is what Google for Jobs reads and what the
+     AI search crawlers (OAI-SearchBot, Claude-SearchBot, PerplexityBot) parse
+     when someone asks an assistant to find roles like this one.
+
+     Rules that matter if you edit this:
+       - Required: title, description, datePosted, hiringOrganization, jobLocation.
+       - The structured data must not say anything the visible page does not.
+       - One job per page. Never put JobPosting on a listing page.
+       - When the role closes: set validThrough to a past date, or return 410,
+         or delete this block. Leaving a filled role live is a Google penalty.
+       - baseSalary is deliberately absent because there is no salary before a
+         round closes. It costs ranking. Do not invent one to fix that.
+       - hiringOrganization is DSV while Elman is pre-spin-out. Flip both this
+         and the apply link to Elman Bio Ltd (company 17269354) at IP transfer.
+       - Disclosure rule, per Strategy/recruitment/candidate_disclosure_policy:
+         no names, no architecture or stack, no assessment detail. The skills
+         list describes the candidate, not our system. Keep it that way. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "JobPosting",
+  "title": "Co-founder & CTO",
+  "datePosted": "2026-09-30",
+  "validThrough": "2026-12-31T23:59:59+00:00",
+  "employmentType": "FULL_TIME",
+  "identifier": {
+    "@type": "PropertyValue",
+    "name": "Elman",
+    "value": "ELMAN-CTO-2026-09"
+  },
+  "hiringOrganization": {
+    "@type": "Organization",
+    "name": "Deep Science Ventures",
+    "sameAs": "https://deepscienceventures.com/",
+    "logo": "https://elman.ai/assets/og-card.png"
+  },
+  "jobLocation": {
+    "@type": "Place",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "London",
+      "addressRegion": "England",
+      "addressCountry": "GB"
+    }
+  },
+  "industry": "Biotechnology, Artificial Intelligence, Drug Discovery",
+  "occupationalCategory": "11-3021.00 Computer and Information Systems Managers",
+  "skills": "Machine learning, evaluation and benchmark design, data contamination and leakage control, applied statistics, calibration, confidence intervals, base rates, hierarchical and Bayesian inference, classical statistics, graph learning, deep learning on graphs, graph neural networks, probabilistic graphical models, large language model systems, agent orchestration, multi-provider LLM routing, Python, computational biology",
+  "qualifications": "Designs evaluations rather than only models. Owns the statistics behind a claim, including calibration and confidence intervals on small or noisy datasets. Breadth across machine-learning approaches, from hierarchical and Bayesian inference through classical statistics to deep learning on graphs, and the judgement to choose between them. Production LLM and agent systems across more than one provider. Leads development hands-on, working through AI coding assistants and automated pipelines and accountable for what they produce.",
+  "responsibilities": "Take ownership of the existing platform and set technical priorities. Build the measurement programme: define what to predict, how to assess it, and where the system is reliable and where it is not. Prevent misleading evaluations by addressing leakage, label quality and contamination. Hire the first technical team once funding is in place: computational biologists to widen data acquisition, and engineers to run evaluation. Support fundraising by explaining the technical approach, evidence, limitations and development plan to investors.",
+  "educationRequirements": "No specific degree required.",
+  "directApply": true,
+  "description": "<p>Elman is building AI to predict clinical trial and drug development outcomes, and quantify how much confidence those predictions deserve. Our starting point is the evidence available when a decision is made, what we judge from it, and what happens next. By linking those records, we aim to learn which experimental findings predict outcomes in which therapeutic settings. The engine already gathers evidence and tests scientific explanations. We're looking for a technical co-founder to lead its development and work out how to measure and improve its predictive performance.</p><p><strong>What we are working on.</strong> Drug development involves decisions about targets, treatment approaches, delivery and patient populations. Each decision depends on evidence that may not transfer well to the setting that matters: treating people. A treatment working in mice does not tell us how much confidence to place in its chances in humans. Around nine in ten drugs entering clinical trials never reach approval. The causes run from efficacy to safety to commercial choice, and the claim here is narrower than blaming that number on translation: the field has never systematically measured how far any given kind of evidence should carry. We want to measure how reliably different kinds of biological evidence predict human outcomes, and that is difficult to test. Outcomes can take years to arrive, suitable labels are often missing, and a failed trial does not necessarily reveal which earlier assumption was wrong. There is no established dataset or method that settles this question. Defining what to measure, building reliable evaluations and choosing appropriate methods are central to the role.</p><p><strong>Your role.</strong> The founding team covers biology and commercial development. You will be responsible for the technology and the research needed to evaluate it. There is no engineering team yet: you will be building the system yourself and should expect to remain hands-on for at least the first year. Responsibilities include developing the platform; building the measurement programme and identifying where the system is reliable and where it is not; preventing misleading evaluations by addressing leakage, label quality and contamination; hiring the first technical team once funding is in place; and supporting fundraising. The modelling approach is open. You will choose methods based on the problem and the available data, whether those involve Bayesian or hierarchical inference, graph learning, calibration, classical statistics or a combination.</p><p><strong>What we are looking for.</strong> Evaluation and benchmark design, including defining labels where they are not readily available and designing splits that prevent leakage. Applied statistics: calibration, confidence intervals, base rates and the limits of small or noisy datasets. Breadth across modelling approaches: hierarchical and Bayesian inference, classical statistics, graph learning, probabilistic graphical models and learned calibration, and the judgement to choose between them. Production LLM systems: agent orchestration, tool integrations, context management and evaluation systems that catch regressions; the platform is model-agnostic and routes across Anthropic, OpenAI, Google and specialist models. Hands-on technical leadership: you lead development and build the system yourself, working through AI coding assistants and automated pipelines and owning how we use them. Careful interpretation of results, and clear technical communication. Experience with biological or clinical data is useful but a biology background is not required. Location is flexible: the company is UK-based and we prefer candidates here or willing to relocate, but we already work distributed and remote is workable for the right person.</p><p><strong>Stage.</strong> Elman is a pre-seed company spinning out of Deep Science Ventures. The platform is already running and has produced a scientific result through work with the Allen Institute, described in a public preprint at https://www.biorxiv.org/content/10.64898/2026.07.01.734821v1. The next funding round will fund the measurement programme. This is a co-founder role, with founder equity and technical authority from day one.</p><p>Apply by email to hello@elman.ai with a short paragraph on what you would measure first.</p>"
+}
+</script>
+
+<style>
+@font-face { font-family:'BWGradualMedium';  src:url('/fonts/BwGradual-Medium.otf')  format('opentype'); font-display:swap; }
+@font-face { font-family:'InterLight';       src:url('/fonts/Inter-Light.ttf')       format('truetype'); font-display:swap; }
+@font-face { font-family:'InterRegular';     src:url('/fonts/Inter-Regular.ttf')     format('truetype'); font-display:swap; }
+@font-face { font-family:'InterMedium';      src:url('/fonts/Inter-Medium.ttf')      format('truetype'); font-display:swap; }
+
+:root{
+  --brand-black:#1D1D1D; --brand-white:#FBFBFB; --brand-orange:#F76233; --brand-yellow:#FDD02B;
+  --orange-deep:#D74D12; --slate:#666F8D;
+  --cream:#E5E5D9; --cream-off:#EDEDE3; --white-warm:#F4F4EF; --white-pure:#FEFEFF;
+  --grey-mid:#ABABAB; --charcoal:#323231;
+
+  --font-display:'BWGradualMedium','BW Gradual',system-ui,sans-serif;
+  --font-body:'InterRegular','Inter',system-ui,sans-serif;
+  --font-body-medium:'InterMedium','Inter',system-ui,sans-serif;
+  --font-body-light:'InterLight','Inter',system-ui,sans-serif;
+
+  --maxw:1180px; --pad-x:clamp(20px,4vw,56px); --radius-md:10px;
+  --shadow-card:0 1px 2px rgba(29,29,29,.05), 0 4px 12px rgba(29,29,29,.06);
+}
+*,*::before,*::after{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+body{
+  margin:0; background:var(--white-warm); color:var(--brand-black);
+  font-family:var(--font-body); font-size:16px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+}
+h1,h2,h3,h4{ font-family:var(--font-display); font-weight:400; margin:0; letter-spacing:-.01em; line-height:1.1; }
+p{ margin:0 0 14px; }
+a{ color:inherit; }
+.wrap{ max-width:var(--maxw); margin:0 auto; padding:0 var(--pad-x); }
+.section-pad{ padding:88px 0 72px; }
+.narrow{ max-width:760px; }
+
+.eyebrow{
+  font-family:var(--font-body-medium); font-size:12px; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--brand-orange); margin:0 0 14px;
+}
+.lead{ font-family:var(--font-body-light); font-size:clamp(15px,1.35vw,18px); color:var(--slate); line-height:1.5; max-width:820px; margin:18px 0 0; }
+
+.nav{ position:sticky; top:0; z-index:60; background:rgba(244,244,239,.88); backdrop-filter:saturate(140%) blur(10px); border-bottom:1px solid var(--cream); }
+.nav-inner{ max-width:var(--maxw); margin:0 auto; padding:0 var(--pad-x); height:60px; display:flex; align-items:center; gap:28px; }
+.nav .wordmark-nav{ height:24px; width:auto; fill:var(--brand-black); }
+.nav-links{ display:flex; gap:22px; margin-left:auto; font-size:14px; color:var(--charcoal); }
+.nav-links a{ text-decoration:none; }
+.nav-links a:hover{ color:var(--brand-orange); }
+.pill{
+  font-family:var(--font-body-medium); font-size:13px; text-decoration:none;
+  background:var(--brand-black); color:var(--brand-white); padding:9px 16px; border-radius:100px;
+}
+.pill:hover{ background:var(--orange-deep); }
+@media (max-width:900px){ .nav-links{ display:none; } }
+
+.hero{ background:var(--brand-black); color:var(--brand-white); padding:96px 0 84px; }
+.hero h1{ font-size:clamp(34px,5.4vw,66px); line-height:1.04; letter-spacing:-.015em; color:var(--brand-white); max-width:17ch; }
+.hero h1 em{ font-style:normal; color:var(--brand-orange); }
+.hero-lead{ font-family:var(--font-body-light); font-size:clamp(15px,1.35vw,18px); color:rgba(255,255,255,.78); line-height:1.55; max-width:660px; margin:30px 0 0; }
+.hero-lead strong{ font-family:var(--font-body-medium); font-weight:normal; color:var(--brand-white); }
+.hero-meta{ display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-family:var(--font-body-light); font-size:13px; color:rgba(255,255,255,.55); letter-spacing:.04em; margin:34px 0 0; }
+.hero-meta .dot{ width:4px; height:4px; background:rgba(255,255,255,.4); border-radius:50%; }
+.hero-meta strong{ color:rgba(255,255,255,.85); font-family:var(--font-body-medium); font-weight:normal; }
+.hero-cta{ display:inline-block; margin-top:32px; font-family:var(--font-body-medium); font-size:15px; text-decoration:none; background:var(--brand-orange); color:#fff; padding:13px 22px; border-radius:100px; transition:background .3s, color .3s; }
+.hero-cta:hover{ background:var(--brand-white); color:var(--brand-black); }
+
+.band{ background:var(--cream-off); border-top:1px solid var(--cream); border-bottom:1px solid var(--cream); }
+h2.section{ font-size:clamp(24px,3vw,34px); margin:0 0 6px; }
+
+ul.plain{ padding-left:18px; margin:0 0 14px; }
+ul.plain li{ margin-bottom:10px; }
+ul.plain li strong{ font-family:var(--font-body-medium); font-weight:normal; }
+
+.card{
+  background:var(--white-pure); border:1px solid var(--cream); border-radius:var(--radius-md);
+  padding:26px 24px 22px;
+}
+.card .headline{ font-family:var(--font-display); font-size:22px; line-height:1.2; margin:0 0 10px; }
+.grid{ display:grid; gap:18px; margin-top:28px; }
+.g2{ grid-template-columns:repeat(2,1fr); }
+@media (max-width:720px){ .g2{ grid-template-columns:1fr; } }
+
+.steps{ counter-reset:step; list-style:none; padding:0; margin:22px 0 0; }
+.steps li{ counter-increment:step; position:relative; padding-left:44px; margin-bottom:16px; }
+.steps li::before{
+  content:counter(step); position:absolute; left:0; top:-1px;
+  width:28px; height:28px; border-radius:50%; background:var(--brand-black); color:var(--brand-white);
+  font-family:var(--font-body-medium); font-size:13px; display:grid; place-items:center;
+}
+
+details.qa{ border-bottom:1px solid var(--cream); padding:16px 0; }
+details.qa summary{ font-family:var(--font-body-medium); font-size:16px; cursor:pointer; list-style:none; }
+details.qa summary::-webkit-details-marker{ display:none; }
+details.qa summary::after{ content:'+'; float:right; color:var(--brand-orange); font-size:19px; line-height:1; }
+details.qa[open] summary::after{ content:'\2013'; }
+details.qa p{ margin:12px 0 0; color:var(--charcoal); }
+
+.anchor{ font-family:var(--font-body-light); font-size:12px; color:var(--grey-mid); line-height:1.55; margin:8px 0 0; }
+.anchor a{ color:var(--grey-mid); }
+.anchor a:hover{ color:var(--orange-deep); }
+
+.readmore{ font-family:var(--font-body-medium); font-size:14px; color:var(--orange-deep); text-decoration:none; }
+.readmore:hover{ text-decoration:underline; }
+
+.cta{ background:var(--brand-black); color:var(--brand-white); }
+.cta-inner{ max-width:var(--maxw); margin:0 auto; padding:88px var(--pad-x); }
+.cta h2{ font-size:clamp(28px,4vw,48px); line-height:1.06; color:var(--brand-white); max-width:18ch; }
+.cta p{ font-family:var(--font-body-light); color:rgba(255,255,255,.7); max-width:56ch; margin-top:18px; }
+.cta a.big{ display:inline-block; margin-top:28px; font-family:var(--font-body-medium); font-size:15px; text-decoration:none; background:var(--brand-orange); color:#fff; padding:13px 22px; border-radius:100px; }
+
+footer{ background:var(--brand-black); color:rgba(255,255,255,.5); font-family:var(--font-body-light); font-size:12.5px; padding:0 0 44px; }
+footer .wrap{ border-top:1px solid rgba(255,255,255,.1); padding-top:26px; }
+footer a{ color:rgba(255,255,255,.75); }
+
+@media (prefers-reduced-motion:reduce){
+  html{ scroll-behavior:auto; }
+  *,*::before,*::after{ transition-duration:.01ms !important; animation:none !important; }
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="elman-wordmark" viewBox="0 0 427 106">
+      <path d="M187.659 88.178H143.641V18.7797H186.37V26.711H152.266V48.9184H180.918V56.8496H152.266V80.2468H187.659V88.178Z"/>
+      <path d="M222.998 80.7425H238.365V88.178H199.601V80.7425H214.869V26.2153H199.601V18.7797H222.998V80.7425Z"/>
+      <path d="M296.074 37.0216C306.087 37.0216 312.531 44.0605 312.531 55.5608V88.178H304.401V55.8582C304.401 49.1167 301.229 44.6554 294.983 44.6554C288.341 44.6554 284.474 49.7115 284.474 56.3539V88.178H276.345V55.8582C276.345 49.6124 273.767 44.6554 266.629 44.6554C260.086 44.6554 256.418 49.8107 256.418 57.0479V88.178H248.288V37.6164H255.129L255.823 42.97C258.4 39.3018 262.763 37.0216 268.513 37.0216C274.56 37.0216 279.319 40.0949 281.599 44.7545C284.573 40.0949 289.431 37.0216 296.074 37.0216Z"/>
+      <path d="M369.348 80.7425H371.926V88.178H367.465C360.723 88.178 358.443 85.3029 358.344 80.3459C355.171 84.9064 350.115 88.7728 341.391 88.7728C330.287 88.7728 322.752 83.221 322.752 74.0009C322.752 63.8886 329.791 58.2376 343.076 58.2376H357.947V54.7677C357.947 48.2244 353.288 44.2588 345.356 44.2588C338.218 44.2588 333.46 47.6296 332.468 52.7849H324.339C325.528 42.8708 333.559 37.0216 345.753 37.0216C358.641 37.0216 366.077 43.4657 366.077 55.2634V77.3717C366.077 80.0485 367.068 80.7425 369.348 80.7425ZM357.947 67.5568V65.0783H342.283C335.046 65.0783 330.981 67.7551 330.981 73.5052C330.981 78.4622 335.244 81.833 341.986 81.833C352.098 81.833 357.947 75.9837 357.947 67.5568Z"/>
+      <path d="M407.124 37.0216C418.029 37.0216 426.952 42.97 426.952 59.0307V88.178H418.823V59.5264C418.823 49.7115 414.064 44.4571 405.736 44.4571C396.813 44.4571 391.063 51.0995 391.063 61.9058V88.178H382.934V37.6164H389.973L391.063 44.4571C394.037 40.5906 399.094 37.0216 407.124 37.0216Z"/>
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M14.3232 0C6.4127 0 0 6.4127 0 14.3232C0 22.2336 6.4127 28.6463 14.3232 28.6463C17.3575 28.6463 20.1714 27.7028 22.4876 26.0931L34.0446 39.1457L25.6695 43.8752C23.0504 40.4809 18.9421 38.2946 14.3232 38.2946C6.4127 38.2946 0 44.7073 0 52.6178C0 60.5282 6.4127 66.9409 14.3232 66.9409C19.2672 66.9409 23.6262 64.436 26.2001 60.626C26.1602 60.685 26.1199 60.7438 26.0791 60.8023L34.0446 65.3004L22.0484 78.849C19.8195 77.4187 17.1682 76.5892 14.3232 76.5892C6.4127 76.5892 0 83.0019 0 90.9124C0 98.8228 6.4127 105.236 14.3232 105.236C21.6618 105.236 27.7115 99.7163 28.5477 92.6023L67.2129 92.6023C68.0491 99.7163 74.0987 105.236 81.4374 105.236C89.3479 105.236 95.7606 98.8228 95.7606 90.9124C95.7606 83.0019 89.3479 76.5892 81.4374 76.5892C78.5925 76.5892 75.9414 77.4186 73.7126 78.8488L50.1377 52.2231L73.2734 26.0934C75.5895 27.7029 78.4033 28.6463 81.4374 28.6463C89.3479 28.6463 95.7606 22.2336 95.7606 14.3232C95.7606 6.4127 89.3479 0 81.4374 0C74.0986 0 68.049 5.51927 67.2129 12.6334L28.5477 12.6334C27.7116 5.51927 21.6619 0 14.3232 0ZM3.37978 14.3232C3.37979 8.2793 8.2793 3.37978 14.3232 3.37978C20.367 3.37979 25.2665 8.2793 25.2665 14.3232C25.2665 20.367 20.367 25.2665 14.3232 25.2665C8.2793 25.2665 3.37978 20.367 3.37978 14.3232ZM28.5477 16.0131C28.1959 19.0055 26.9218 21.7157 25.0173 23.8517L37.0541 37.4462L68.2184 19.8475C67.7149 18.644 67.3709 17.357 67.2129 16.0131L28.5477 16.0131ZM69.8828 22.7891L39.3452 40.0339L47.8806 49.6739L70.7437 23.8521C70.4403 23.5119 70.153 23.1572 69.8828 22.7891ZM71.1008 80.9974L47.8806 54.7723L39.3452 64.4122L70.3071 81.8966C70.5592 81.5858 70.824 81.2858 71.1008 80.9974ZM68.5003 84.7577L37.0541 66.9999L24.6602 80.9977C26.7622 83.1888 28.1744 86.0468 28.5477 89.2226H67.2129C67.3987 87.6411 67.8422 86.1385 68.5003 84.7577ZM27.6721 57.8204L36.3358 62.7128L45.6235 52.2231L36.3358 41.7333L27.405 46.7766C27.3971 46.7588 27.3891 46.741 27.3811 46.7233C28.1939 48.521 28.6463 50.5165 28.6463 52.6178C28.6463 54.4531 28.3011 56.2077 27.6721 57.8204ZM70.494 14.3232C70.494 8.2793 75.3935 3.37978 81.4374 3.37978C87.4813 3.37979 92.3808 8.2793 92.3808 14.3232C92.3808 20.367 87.4813 25.2665 81.4374 25.2665C75.3935 25.2665 70.494 20.367 70.494 14.3232ZM3.37978 52.6178C3.37979 46.5739 8.2793 41.6744 14.3232 41.6744C20.367 41.6744 25.2665 46.5739 25.2665 52.6178C25.2665 58.6616 20.367 63.5611 14.3232 63.5611C8.2793 63.5611 3.37978 58.6616 3.37978 52.6178ZM3.37978 90.9124C3.37979 84.8685 8.2793 79.969 14.3232 79.969C20.367 79.969 25.2665 84.8685 25.2665 90.9124C25.2665 96.9562 20.367 101.856 14.3232 101.856C8.2793 101.856 3.37978 96.9562 3.37978 90.9124ZM70.494 90.9124C70.494 84.8685 75.3935 79.969 81.4374 79.969C87.4813 79.969 92.3808 84.8685 92.3808 90.9124C92.3808 96.9562 87.4813 101.856 81.4374 101.856C75.3935 101.856 70.494 96.9562 70.494 90.9124Z"/>
+    </symbol>
+</defs></svg>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" style="display:flex;align-items:center;text-decoration:none;">
+      <svg class="wordmark-nav" viewBox="0 0 427 106" aria-label="Elman"><use href="#elman-wordmark"/></svg>
+    </a>
+    <div class="nav-links">
+      <a href="/#problem">Problem</a><a href="/#work">How it works</a><a href="/#evidence">Evidence</a>
+      <a href="/thesis/">Thesis</a><a href="/news/">News</a><a href="/demo/">Demo</a>
+    </div>
+    <a class="pill" href="mailto:hello@elman.ai?subject=CTO">Apply &rarr;</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow" style="color:var(--brand-yellow)">Open role</p>
+    <h1>Co-founder &amp; <em>CTO</em>, AI for therapeutic development</h1>
+    <p class="hero-lead">Elman is building AI to predict clinical trial and drug development outcomes, and quantify how much confidence those predictions deserve. Our starting point is the evidence available when a decision is made, what we judge from it, and what happens next. By linking those records, we aim to learn which experimental findings predict outcomes in which therapeutic settings. The engine already gathers evidence and tests scientific explanations. <strong>We're looking for a technical co-founder to lead its development and work out how to measure and improve its predictive performance.</strong></p>
+    <div class="hero-meta">
+      <span><strong>London</strong> or remote, flexible</span><span class="dot"></span>
+      <span>Full time</span><span class="dot"></span>
+      <span>Pre-seed, spinning out of <strong>Deep Science Ventures</strong></span><span class="dot"></span>
+      <span>Founder equity</span>
+    </div>
+    <a class="hero-cta" href="mailto:hello@elman.ai?subject=CTO">Apply by email &rarr;</a>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="wrap narrow">
+    <h2 class="section">What we are working on</h2>
+    <p class="lead" style="margin-bottom:26px">How reliably different kinds of biological evidence predict human outcomes, and whether that can be measured at all.</p>
+
+    <p>Drug discovery and development involve decisions about targets, treatment approaches, delivery and patient populations. Each decision depends on evidence that may not transfer well to the setting that matters: treating people. A treatment working in mice, for example, does not tell us how much confidence to place in its chances in humans.</p>
+    <p>Around nine in ten drugs entering clinical trials never reach approval. The causes run from efficacy to safety to commercial choice, and the claim here is narrower than blaming that number on translation: the field has never systematically measured how far any given kind of evidence should carry.</p>
+    <p>We want to measure that. It is difficult to test. Outcomes can take years to arrive, suitable labels are often missing, and a failed trial does not necessarily reveal which earlier assumption was wrong. There is no established dataset or method that settles the question, so defining what to measure, building reliable evaluations and choosing appropriate methods are central to the role.</p>
+    <p style="margin-top:22px"><a class="readmore" href="/thesis/">Read the full thesis &rarr;</a></p>
+    <p class="anchor">Approval likelihood from Phase 1 is roughly 10%. Hay M, Thomas DW, Craighead JL, Economides C, Rosenthal J, <em>Clinical development success rates for investigational drugs</em>, Nature Biotechnology 32(1):40-51, 2014.</p>
+  </div>
+</section>
+
+<section class="band section-pad">
+  <div class="wrap narrow">
+    <h2 class="section">Your role</h2>
+    <p class="lead" style="margin-bottom:26px">The founding team covers biology and commercial development. You will be responsible for the technology and the research needed to evaluate it. There is no engineering team yet: you will be building the system yourself and should expect to remain hands-on for at least the first year.</p>
+    <ul class="plain">
+      <li><strong>Developing the platform.</strong> Take ownership of the existing system, set technical priorities and implement improvements.</li>
+      <li><strong>Building the measurement programme.</strong> Define what to predict and how to assess it, develop suitable datasets and methods, and report uncertainty alongside results. Identify where the system is reliable and where it is not.</li>
+      <li><strong>Preventing misleading evaluations.</strong> Address leakage, label quality and contamination. Retrospective tests need particular care when an LLM may have encountered the outcome during training.</li>
+      <li><strong>Hiring the first technical team</strong> once funding is in place: computational biologists to widen data acquisition, and engineers to run evaluation.</li>
+      <li><strong>Supporting fundraising.</strong> Explain the technical approach, evidence, limitations and development plan to investors.</li>
+    </ul>
+    <p style="margin-top:18px">The modelling approach is open. You will choose methods based on the problem and the available data, whether those involve Bayesian or hierarchical inference, graph learning, calibration, classical statistics or a combination.</p>
+    <p style="margin-top:18px"><a class="readmore" href="/news/your-model-already-knows-the-answer/">How we think about contamination &rarr;</a></p>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="wrap narrow">
+    <h2 class="section">What we are looking for</h2>
+    <div class="grid">
+      <div class="card">
+        <h4 class="headline">Core</h4>
+        <ul class="plain" style="margin:0">
+          <li><strong>Evaluation and benchmark design.</strong> Experience defining labels where they are not readily available, checking their reliability and designing data splits that prevent leakage.</li>
+          <li><strong>Applied statistics.</strong> A strong understanding of calibration, confidence intervals, base rates and the limits of small or noisy datasets.</li>
+          <li><strong>Breadth across machine-learning approaches.</strong> Hierarchical and Bayesian inference, classical statistics, deep learning on graphs including graph neural networks, probabilistic graphical models and learned calibration. We care less about depth in any one of these than about how you decide between them on a given dataset.</li>
+          <li><strong>Production LLM systems.</strong> Agent orchestration, tool integrations, context management and evaluation systems that catch regressions. The platform is model-agnostic and routes across Anthropic, OpenAI, Google and specialist models, so experience running more than one provider in production is useful.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4 class="headline">How you work</h4>
+        <ul class="plain" style="margin:0">
+          <li><strong>Hands-on technical leadership.</strong> You lead development and build the system yourself. AI coding assistants and automated pipelines run through most of our work. You would own how we use them, and be responsible for reviewing and testing what they produce.</li>
+          <li><strong>Careful interpretation of results.</strong> You report uncertainty and limitations, and recognise when the available evidence is insufficient to support a conclusion.</li>
+          <li><strong>Clear technical communication.</strong> You can explain and defend your decisions to collaborators and technical investors.</li>
+          <li>You write production Python.</li>
+          <li>Experience with biological or clinical data would be useful, but a biology background is not required. Previous founding experience, and research, software or open-source work we can review, are also welcome.</li>
+          <li>Location is flexible. The company is UK-based and we prefer candidates here or willing to relocate, but we already work distributed and remote is workable for the right person.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band section-pad">
+  <div class="wrap narrow">
+    <h2 class="section">Stage</h2>
+    <p>Elman is a pre-seed company, and the spin-out from Deep Science Ventures completes over the coming months. The platform is already running and has produced a scientific result through work with the Allen Institute, described in a <a href="https://www.biorxiv.org/content/10.64898/2026.07.01.734821v1" style="color:var(--orange-deep)">public preprint</a>. The next funding round will fund the measurement programme.</p>
+    <p>Worth reading before you apply: <a class="readmore" href="/thesis/">the thesis</a>, <a class="readmore" href="https://www.biorxiv.org/content/10.64898/2026.07.01.734821v1">the preprint</a>, and <a class="readmore" href="/demo/">the engine running</a>.</p>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="wrap narrow">
+    <h2 class="section">Questions people ask first</h2>
+    <div style="margin-top:22px">
+      <details class="qa"><summary>Do I need a biology background?</summary>
+        <p>No. The founding team covers biology. Experience with biological or clinical data is useful, and what matters more is the instinct to ask whether a measurement means what it claims.</p></details>
+      <details class="qa"><summary>Is this remote?</summary>
+        <p>Location is flexible. The company is UK-based and we prefer candidates here or willing to relocate, but we already work distributed and remote is workable for the right person.</p></details>
+      <details class="qa"><summary>What stage is the company at?</summary>
+        <p>Pre-seed. Elman was built inside Deep Science Ventures and is spinning out. The platform is already running and has produced a scientific result through work with the Allen Institute, described in a <a href="https://www.biorxiv.org/content/10.64898/2026.07.01.734821v1">public preprint</a>. No round has closed yet.</p></details>
+      <details class="qa"><summary>How do you work with AI coding assistants?</summary>
+        <p>They run through most of our development, along with automated pipelines around them. You would lead that work and own how we use and improve these tools.</p></details>
+      <details class="qa"><summary>Would this be called Head of AI somewhere else?</summary>
+        <p>Possibly. The work is what a Head of AI or founding engineer does at a larger company, plus the research programme and the fundraising. Here it is a co-founder seat with founder equity, which is the material difference.</p></details>
+      <details class="qa"><summary>Is this a CTO role or a co-founder role?</summary>
+        <p>Both. You would join as a co-founder, with founder equity and technical authority from day one. The title is CTO because that is what the job is.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="cta-inner">
+    <h2>Apply</h2>
+    <p>Send a short paragraph on what you would measure first, with links to relevant work. No cover letter. Email <a href="mailto:hello@elman.ai?subject=CTO" style="color:var(--brand-yellow)">hello@elman.ai</a> with CTO in the subject.</p>
+    <a class="big" href="mailto:hello@elman.ai?subject=CTO">Apply &rarr;</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    &copy; 2026 Elman Bio Ltd &middot; Incubated at Deep Science Ventures &middot; Registered in England &amp; Wales, Company No. <a href="https://find-and-update.company-information.service.gov.uk/company/17269354">17269354</a> &middot; <a href="/privacy/">Privacy</a>
+  </div>
+</footer>
+
+<!-- Cloudflare Web Analytics. No cookies, stores nothing in the browser. See /privacy/ -->
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "4fa4710b4d8b4d0b86959ba203c3bbc4"}'></script>
+</body>
+</html>

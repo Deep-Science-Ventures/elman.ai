@@ -13,4 +13,52 @@ Allow: /
 # stub. It must stay crawlable for Google to follow the redirect and move the
 # old URL's ranking across.
 
+# The blocks below are redundant against the wildcard above and exist as a
+# standing decision, not a change in behaviour: Elman wants to be retrievable
+# and citable by AI assistants. Three kinds of agent are named, because they do
+# different jobs and a future blanket Disallow should have to argue with each
+# one separately:
+#   - search indexers (OAI-SearchBot, Claude-SearchBot, PerplexityBot) decide
+#     whether we can be cited in an AI answer at all. These are the ones that
+#     matter for /careers/ and for anyone asking an assistant about Elman.
+#   - user-triggered fetchers (ChatGPT-User, Claude-User, Perplexity-User) pull
+#     a page live when a person pastes or asks about a URL.
+#   - training crawlers (GPTBot, ClaudeBot, Google-Extended, CCBot) feed model
+#     training. Allowing these is the arguable one. Leave them allowed while we
+#     are trying to be found; revisit if we ever publish something we would
+#     rather not have memorised.
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
 Sitemap: https://elman.ai/sitemap.xml
